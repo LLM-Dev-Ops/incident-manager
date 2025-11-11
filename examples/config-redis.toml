@@ -1,0 +1,52 @@
+# LLM Incident Manager Configuration - Redis Storage Backend
+# Redis provides high-performance distributed storage with support for clustering
+
+[server]
+host = "0.0.0.0"
+http_port = 8080
+grpc_port = 9000
+metrics_port = 9090
+tls_enabled = false
+request_timeout_secs = 30
+max_connections = 10000
+
+[deployment]
+mode = "distributed"
+
+[state]
+# Use Redis for distributed persistent storage
+backend = "redis"
+# Redis connection URL (supports authentication: redis://username:password@host:port/db)
+redis_url = "redis://localhost:6379/0"
+# Connection pool size
+pool_size = 100
+
+# Example with authentication:
+# redis_url = "redis://:your_password@localhost:6379/0"
+
+# Example with Redis Sentinel:
+# redis_url = "redis+sentinel://localhost:26379/mymaster/0"
+
+[processing]
+max_concurrent_incidents = 10000
+processing_timeout_secs = 300
+deduplication_enabled = true
+deduplication_window_secs = 900
+correlation_enabled = true
+
+[observability]
+log_level = "info"
+json_logs = true
+otlp_enabled = false
+service_name = "llm-incident-manager"
+prometheus_enabled = true
+
+[notifications]
+slack_enabled = false
+email_enabled = false
+pagerduty_enabled = false
+webhook_enabled = true
+max_retries = 3
+retry_backoff_secs = 5
+queue_size = 10000
+worker_threads = 4

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  incident-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llm-incident-manager
+    ports:
+      - "8080:8080"   # HTTP API
+      - "9000:9000"   # gRPC (future use)
+      - "9090:9090"   # Metrics
+    environment:
+      - RUST_LOG=info,llm_incident_manager=debug
+      - LLM_IM__SERVER__HOST=0.0.0.0
+      - LLM_IM__SERVER__HTTP_PORT=8080
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # Optional: Add Redis for distributed deployments
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: llm-im-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   restart: unless-stopped
+
+# volumes:
+#   redis-data:

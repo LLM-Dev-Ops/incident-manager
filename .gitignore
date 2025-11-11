@@ -1,0 +1,44 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Data
+/data/
+*.db
+*.sled/
+*.redb
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+dist/
+build/
+
+# Test artifacts
+coverage/
+*.profraw
+*.profdata
+
+# Docker
+docker-compose.override.yml
+
+# Temporary
+tmp/
+temp/

@@ -1,0 +1,39 @@
+# LLM Incident Manager - Default Configuration
+
+[server]
+host = "0.0.0.0"
+http_port = 8080
+grpc_port = 9000
+metrics_port = 9090
+tls_enabled = false
+request_timeout_secs = 30
+max_connections = 10000
+
+[deployment]
+mode = "standalone"  # standalone, worker, sidecar, ha
+
+[state]
+backend = "sled"  # sled, redb, redis, redis_cluster
+path = "./data/state"
+pool_size = 100
+
+[observability]
+log_level = "info"
+json_logs = false
+otlp_enabled = false
+service_name = "llm-incident-manager"
+prometheus_enabled = true
+
+[processing]
+max_concurrent_incidents = 10000
+processing_timeout_secs = 300
+deduplication_enabled = true
+deduplication_window_secs = 900  # 15 minutes
+correlation_enabled = true
+
+[notifications]
+slack_enabled = false
+email_enabled = false
+smtp_port = 587
+max_retries = 3
+retry_backoff_secs = 5
