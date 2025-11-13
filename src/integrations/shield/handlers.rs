@@ -32,13 +32,14 @@ impl SecurityEventHandler {
             event_type: SecurityEventType::SuspiciousActivity,
             source: "IncidentManager".to_string(),
             description: incident.description.clone(),
-            metadata: incident.metadata.clone(),
+            metadata: incident.labels.clone(),
             timestamp: incident.created_at,
-            severity: match incident.severity.as_str() {
-                "critical" => EventSeverity::Critical,
-                "high" => EventSeverity::High,
-                "medium" => EventSeverity::Medium,
-                _ => EventSeverity::Low,
+            severity: match incident.severity {
+                crate::models::incident::Severity::P0 => EventSeverity::Critical,
+                crate::models::incident::Severity::P1 => EventSeverity::High,
+                crate::models::incident::Severity::P2 => EventSeverity::Medium,
+                crate::models::incident::Severity::P3 => EventSeverity::Low,
+                crate::models::incident::Severity::P4 => EventSeverity::Low,
             },
         };
 
@@ -122,26 +123,18 @@ mod tests {
     use uuid::Uuid;
 
     fn create_test_incident() -> Incident {
-        Incident {
-            id: Uuid::new_v4(),
-            title: "Test Security Incident".to_string(),
-            description: "Suspicious activity detected".to_string(),
-            severity: "high".to_string(),
-            status: "open".to_string(),
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-            source: "test".to_string(),
-            metadata: HashMap::new(),
-            alert_ids: vec![],
-            assigned_to: None,
-            resolved_at: None,
-            resolution: None,
-        }
+        Incident::new(
+            "test".to_string(),
+            "Test Security Incident".to_string(),
+            "Suspicious activity detected".to_string(),
+            crate::models::incident::Severity::P1,
+            crate::models::incident::IncidentType::Security,
+        )
     }
 
     #[test]
     fn test_incident_conversion() {
         let incident = create_test_incident();
-        assert_eq!(incident.severity, "high");
+        assert_eq!(incident.severity, crate::models::incident::Severity::P1);
     }
 }

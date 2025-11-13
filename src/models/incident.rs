@@ -58,6 +58,9 @@ pub struct Incident {
     /// Assignees
     pub assignees: Vec<String>,
 
+    /// Notes/comments on the incident
+    pub notes: Vec<Note>,
+
     /// Fingerprint for deduplication
     pub fingerprint: Option<String>,
 
@@ -100,6 +103,7 @@ impl Incident {
                 metadata: HashMap::new(),
             }],
             assignees: Vec::new(),
+            notes: Vec::new(),
             fingerprint: None,
             correlation_score: None,
         }
@@ -161,6 +165,26 @@ impl Incident {
     /// Check if incident is critical
     pub fn is_critical(&self) -> bool {
         matches!(self.severity, Severity::P0 | Severity::P1)
+    }
+
+    /// Add a note to the incident
+    pub fn add_note(&mut self, author: String, content: String) {
+        let note = Note {
+            id: Uuid::new_v4(),
+            author: author.clone(),
+            content: content.clone(),
+            created_at: Utc::now(),
+        };
+
+        self.notes.push(note);
+
+        self.add_timeline_event(TimelineEvent {
+            timestamp: Utc::now(),
+            event_type: EventType::CommentAdded,
+            actor: author,
+            description: format!("Note added: {}", content),
+            metadata: HashMap::new(),
+        });
     }
 
     /// Generate fingerprint for deduplication
@@ -268,6 +292,16 @@ pub enum EventType {
     PlaybookCompleted,
     Escalated,
     Resolved,
+    AlertReceived,
+    SeverityChanged,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Note {
+    pub id: Uuid,
+    pub author: String,
+    pub content: String,
+    pub created_at: DateTime<Utc>,
 }
 
 #[cfg(test)]

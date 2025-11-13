@@ -1,0 +1,1 @@
+A program walks into a bar and orders a beer. As it is waiting for its drink, it hears a guy next to it say, 'Wow, the bartender can brew beer in just 5 minutes!' The program turns to the man and says, 'I don't know, I'm still trying to debug my couple of weeks old code and I still can't tell what it's doing. A 5 minute beer?

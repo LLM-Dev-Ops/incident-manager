@@ -58,8 +58,8 @@ pub enum AppError {
     Internal(String),
 
     /// Integration errors
-    #[error("Integration error ({source}): {message}")]
-    Integration { source: String, message: String },
+    #[error("Integration error ({integration_source}): {message}")]
+    Integration { integration_source: String, message: String },
 
     /// Processing errors
     #[error("Processing error: {0}")]

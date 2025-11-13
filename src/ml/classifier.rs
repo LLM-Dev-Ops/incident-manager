@@ -33,7 +33,7 @@ pub trait Classifier: Send + Sync {
 }
 
 /// Logistic Regression Classifier
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct LogisticRegressionClassifier {
     /// Model metadata
     metadata: ModelMetadata,
@@ -80,7 +80,7 @@ impl LogisticRegressionClassifier {
     fn ndarray_to_densematrix(arr: &Array2<f64>) -> DenseMatrix<f64> {
         let shape = arr.shape();
         let data: Vec<f64> = arr.iter().copied().collect();
-        DenseMatrix::from_vec(shape[0], shape[1], &data)
+        DenseMatrix::new(shape[0], shape[1], data, false)
     }
 
     fn vec_to_labels(vec: &[usize]) -> Vec<i32> {
@@ -91,7 +91,7 @@ impl LogisticRegressionClassifier {
 impl Classifier for LogisticRegressionClassifier {
     fn train(&mut self, dataset: &TrainingDataset) -> Result<ModelMetrics> {
         // Convert labels to indices
-        let labels = if let Some(ref severity_labels) = dataset.severity_labels {
+        let labels: Vec<usize> = if let Some(ref severity_labels) = dataset.severity_labels {
             severity_labels
                 .iter()
                 .map(|s| Self::severity_to_index(s))
@@ -284,7 +284,7 @@ impl LogisticRegressionClassifier {
 }
 
 /// Decision Tree Classifier
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct DecisionTreeClassifierWrapper {
     /// Model metadata
     metadata: ModelMetadata,
@@ -330,7 +330,7 @@ impl DecisionTreeClassifierWrapper {
 
 impl Classifier for DecisionTreeClassifierWrapper {
     fn train(&mut self, dataset: &TrainingDataset) -> Result<ModelMetrics> {
-        let labels = if let Some(ref severity_labels) = dataset.severity_labels {
+        let labels: Vec<usize> = if let Some(ref severity_labels) = dataset.severity_labels {
             severity_labels
                 .iter()
                 .map(|s| LogisticRegressionClassifier::severity_to_index(s))
@@ -345,7 +345,7 @@ impl Classifier for DecisionTreeClassifierWrapper {
         let y = LogisticRegressionClassifier::vec_to_labels(&labels);
 
         let params = DecisionTreeClassifierParameters::default()
-            .with_max_depth(self.max_depth)
+            .with_max_depth(self.max_depth as u16)
             .with_criterion(SplitCriterion::Gini);
 
         let model = DecisionTreeClassifier::fit(&x, &y, params)
@@ -410,14 +410,14 @@ impl Classifier for DecisionTreeClassifierWrapper {
 }
 
 /// Naive Bayes Classifier
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct NaiveBayesClassifier {
     /// Model metadata
     metadata: ModelMetadata,
 
     /// Trained model
     #[serde(skip)]
-    model: Option<GaussianNB<f64, i32, DenseMatrix<f64>, Vec<i32>>>,
+    model: Option<GaussianNB<f64, usize, DenseMatrix<f64>, Vec<usize>>>,
 
     /// Number of classes
     n_classes: usize,
@@ -449,7 +449,7 @@ impl NaiveBayesClassifier {
 
 impl Classifier for NaiveBayesClassifier {
     fn train(&mut self, dataset: &TrainingDataset) -> Result<ModelMetrics> {
-        let labels = if let Some(ref severity_labels) = dataset.severity_labels {
+        let labels: Vec<usize> = if let Some(ref severity_labels) = dataset.severity_labels {
             severity_labels
                 .iter()
                 .map(|s| LogisticRegressionClassifier::severity_to_index(s))
@@ -461,7 +461,7 @@ impl Classifier for NaiveBayesClassifier {
         };
 
         let x = LogisticRegressionClassifier::ndarray_to_densematrix(&dataset.features);
-        let y = LogisticRegressionClassifier::vec_to_labels(&labels);
+        let y = labels.clone(); // Use labels directly as usize
 
         let model = GaussianNB::fit(&x, &y, Default::default())
             .map_err(|e| AppError::Internal(format!("Failed to train Naive Bayes: {}", e)))?;
@@ -494,7 +494,7 @@ impl Classifier for NaiveBayesClassifier {
             .predict(&x)
             .map_err(|e| AppError::Internal(format!("Prediction failed: {}", e)))?;
 
-        Ok(predictions.iter().map(|&x| x as usize).collect())
+        Ok(predictions) // Already Vec<usize>, no conversion needed
     }
 
     fn predict_proba(&self, features: &Array2<f64>) -> Result<Array2<f64>> {

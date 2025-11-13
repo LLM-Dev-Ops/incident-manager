@@ -193,22 +193,21 @@ impl ComplianceEventHandler {
         let mut frameworks = Vec::new();
 
         // Check labels for compliance indicators
-        if let Some(labels) = &incident.labels {
-            if labels.contains_key("gdpr") || labels.contains_key("pii") {
-                frameworks.push(ComplianceFramework::GDPR);
-            }
-            if labels.contains_key("hipaa") || labels.contains_key("phi") {
-                frameworks.push(ComplianceFramework::HIPAA);
-            }
-            if labels.contains_key("pci") || labels.contains_key("payment") {
-                frameworks.push(ComplianceFramework::PCI);
-            }
-            if labels.contains_key("soc2") {
-                frameworks.push(ComplianceFramework::SOC2);
-            }
-            if labels.contains_key("iso27001") {
-                frameworks.push(ComplianceFramework::ISO27001);
-            }
+        let labels = &incident.labels;
+        if labels.contains_key("gdpr") || labels.contains_key("pii") {
+            frameworks.push(ComplianceFramework::GDPR);
+        }
+        if labels.contains_key("hipaa") || labels.contains_key("phi") {
+            frameworks.push(ComplianceFramework::HIPAA);
+        }
+        if labels.contains_key("pci") || labels.contains_key("payment") {
+            frameworks.push(ComplianceFramework::PCI);
+        }
+        if labels.contains_key("soc2") {
+            frameworks.push(ComplianceFramework::SOC2);
+        }
+        if labels.contains_key("iso27001") {
+            frameworks.push(ComplianceFramework::ISO27001);
         }
 
         // Default to SOC2 for all incidents (general security control framework)
@@ -221,22 +220,16 @@ impl ComplianceEventHandler {
 
     /// Extract compliance data from incident
     fn extract_compliance_data(&self, incident: &Incident) -> Result<ComplianceData> {
-        let classification = if incident.labels.as_ref()
-            .map(|l| l.contains_key("restricted"))
-            .unwrap_or(false) {
+        let classification = if incident.labels.contains_key("restricted") {
             DataClassification::Restricted
-        } else if incident.labels.as_ref()
-            .map(|l| l.contains_key("confidential"))
-            .unwrap_or(false) {
+        } else if incident.labels.contains_key("confidential") {
             DataClassification::Confidential
         } else {
             DataClassification::Internal
         };
 
         // Extract personal data info
-        let personal_data = if incident.labels.as_ref()
-            .map(|l| l.contains_key("pii"))
-            .unwrap_or(false) {
+        let personal_data = if incident.labels.contains_key("pii") {
             Some(PersonalDataInfo {
                 contains_pii: true,
                 data_subjects_affected: None,
@@ -248,9 +241,7 @@ impl ComplianceEventHandler {
         };
 
         // Extract health data info
-        let health_data = if incident.labels.as_ref()
-            .map(|l| l.contains_key("phi"))
-            .unwrap_or(false) {
+        let health_data = if incident.labels.contains_key("phi") {
             Some(HealthDataInfo {
                 contains_phi: true,
                 covered_entities_affected: vec![],
@@ -261,9 +252,7 @@ impl ComplianceEventHandler {
         };
 
         // Extract payment data info
-        let payment_data = if incident.labels.as_ref()
-            .map(|l| l.contains_key("payment"))
-            .unwrap_or(false) {
+        let payment_data = if incident.labels.contains_key("payment") {
             Some(PaymentDataInfo {
                 contains_cardholder_data: true,
                 card_brands_affected: vec![],
@@ -279,16 +268,15 @@ impl ComplianceEventHandler {
         metadata.insert("source".to_string(), serde_json::json!(&incident.source));
 
         // Check for compliance-related metadata
-        if let Some(labels) = &incident.labels {
-            if let Some(notification_sent) = labels.get("notification_sent") {
-                metadata.insert("notification_sent".to_string(), serde_json::json!(notification_sent == "true"));
-            }
-            if let Some(encrypted) = labels.get("data_encrypted") {
-                metadata.insert("data_encrypted".to_string(), serde_json::json!(encrypted == "true"));
-            }
-            if let Some(access_controls) = labels.get("access_controls") {
-                metadata.insert("access_controls_enabled".to_string(), serde_json::json!(access_controls == "enabled"));
-            }
+        let labels = &incident.labels;
+        if let Some(notification_sent) = labels.get("notification_sent") {
+            metadata.insert("notification_sent".to_string(), serde_json::json!(notification_sent == "true"));
+        }
+        if let Some(encrypted) = labels.get("data_encrypted") {
+            metadata.insert("data_encrypted".to_string(), serde_json::json!(encrypted == "true"));
+        }
+        if let Some(access_controls) = labels.get("access_controls") {
+            metadata.insert("access_controls_enabled".to_string(), serde_json::json!(access_controls == "enabled"));
         }
 
         Ok(ComplianceData {

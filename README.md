@@ -91,55 +91,83 @@ LLM Incident Manager is an enterprise-grade, production-ready incident managemen
 - Severity-based routing
 - Service-aware routing
 
-#### 10. **LLM Integrations** ✅ NEW
+#### 10. **LLM Integrations** ✅
 - **Sentinel Client**: Monitoring & anomaly detection with ML-powered analysis
 - **Shield Client**: Security threat analysis and mitigation planning
 - **Edge-Agent Client**: Distributed edge inference with offline queue management
 - **Governance Client**: Multi-framework compliance (GDPR, HIPAA, SOC2, PCI, ISO27001)
 - Enterprise features: Exponential backoff retry, circuit breaker, rate limiting
 - Comprehensive error handling and observability
-- gRPC bidirectional streaming support
-- **Lines of Code**: 5,913 production code + 1,578 test code
-- **Documentation**: Complete architecture and implementation guides in `/docs`
+
+#### 11. **GraphQL API with WebSocket Streaming** ✅
+- Full-featured GraphQL API alongside REST
+- Real-time WebSocket subscriptions for incident updates
+- Type-safe schema with queries, mutations, and subscriptions
+- DataLoaders for efficient batch loading and N+1 prevention
+- GraphQL Playground for interactive API exploration
+- Support for filtering, pagination, and complex queries
+- **Documentation**: [GRAPHQL_GUIDE.md](./docs/GRAPHQL_GUIDE.md), [WEBSOCKET_STREAMING_GUIDE.md](./docs/WEBSOCKET_STREAMING_GUIDE.md)
+
+#### 12. **Metrics & Observability** ✅
+- **Prometheus Integration**: Native Prometheus metrics export on port 9090
+- **Real-time Performance Tracking**: Request rates, latency, success/error rates
+- **Integration Metrics**: Per-integration monitoring (Sentinel, Shield, Edge-Agent, Governance)
+- **System Metrics**: Processing pipeline, correlation, enrichment, ML classification
+- **Zero-Overhead Collection**: Lock-free atomic operations with <1μs recording time
+- **Grafana Dashboards**: Pre-built dashboards for system overview and deep-dive analysis
+- **Alert Rules**: Production-ready alerting for critical conditions
+- **Documentation**: [METRICS_GUIDE.md](./docs/METRICS_GUIDE.md) | [Implementation](./docs/METRICS_IMPLEMENTATION.md) | [Runbook](./docs/METRICS_OPERATIONAL_RUNBOOK.md)
+
+#### 13. **Circuit Breaker Pattern** ✅
+- **Resilience Pattern**: Prevent cascading failures with automatic circuit breaking
+- **State Management**: Closed, Open, and Half-Open states with intelligent transitions
+- **Per-Service Configuration**: Individual circuit breakers for each external dependency
+- **Fast Failure**: Millisecond response time when circuit is open (vs. 30s+ timeouts)
+- **Automatic Recovery**: Self-healing with configurable recovery strategies
+- **Fallback Support**: Graceful degradation with fallback mechanisms
+- **Comprehensive Metrics**: Real-time state tracking and Prometheus integration
+- **Manual Control**: API endpoints for operational override and testing
+- **Documentation**: [CIRCUIT_BREAKER_GUIDE.md](./docs/CIRCUIT_BREAKER_GUIDE.md) | [API Reference](./docs/CIRCUIT_BREAKER_API_REFERENCE.md) | [Integration Guide](./docs/CIRCUIT_BREAKER_INTEGRATION_GUIDE.md) | [Operations](./docs/CIRCUIT_BREAKER_OPERATIONS_GUIDE.md)
 
 ## Architecture
 
 ### System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        LLM Incident Manager                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │   REST API   │  │   gRPC API   │  │  GraphQL API │         │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
-│         │                  │                  │                  │
-│         └──────────────────┼──────────────────┘                 │
-│                            ▼                                     │
-│                 ┌─────────────────────┐                         │
-│                 │ IncidentProcessor   │                         │
-│                 │  - Deduplication    │                         │
-│                 │  - Classification   │                         │
-│                 │  - Enrichment       │                         │
-│                 │  - Correlation      │                         │
-│                 └─────────┬───────────┘                         │
-│                           │                                      │
-│         ┌─────────────────┼─────────────────┐                  │
-│         ▼                 ▼                 ▼                   │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐           │
-│  │  Escalation │  │ Notification │  │  Playbook   │           │
-│  │   Engine    │  │   Service    │  │   Service   │           │
-│  └─────────────┘  └─────────────┘  └─────────────┘           │
-│         │                 │                 │                   │
-│         └─────────────────┼─────────────────┘                  │
-│                           ▼                                      │
-│                 ┌─────────────────────┐                         │
-│                 │   Storage Layer     │                         │
-│                 │  - PostgreSQL       │                         │
-│                 │  - In-Memory        │                         │
-│                 └─────────────────────┘                         │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                        LLM Incident Manager                          │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐  │
+│  │   REST API   │  │   gRPC API   │  │    GraphQL API           │  │
+│  │  (HTTP/JSON) │  │ (Protobuf)   │  │ (Queries/Mutations/Subs) │  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────────────────┘  │
+│         │                  │                  │                       │
+│         └──────────────────┼──────────────────┘                      │
+│                            ▼                                          │
+│                 ┌─────────────────────┐                              │
+│                 │ IncidentProcessor   │                              │
+│                 │  - Deduplication    │                              │
+│                 │  - Classification   │                              │
+│                 │  - Enrichment       │                              │
+│                 │  - Correlation      │                              │
+│                 └─────────┬───────────┘                              │
+│                           │                                           │
+│         ┌─────────────────┼─────────────────┐                       │
+│         ▼                 ▼                 ▼                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │
+│  │  Escalation │  │ Notification │  │  Playbook   │                │
+│  │   Engine    │  │   Service    │  │   Service   │                │
+│  └─────────────┘  └─────────────┘  └─────────────┘                │
+│         │                 │                 │                        │
+│         └─────────────────┼─────────────────┘                       │
+│                           ▼                                           │
+│                 ┌─────────────────────┐                              │
+│                 │   Storage Layer     │                              │
+│                 │  - PostgreSQL       │                              │
+│                 │  - In-Memory        │                              │
+│                 └─────────────────────┘                              │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Data Flow
@@ -345,6 +373,61 @@ notifications:
 
 ## API Examples
 
+### WebSocket Streaming (Real-Time Updates)
+
+The LLM Incident Manager provides a GraphQL WebSocket API for real-time incident streaming. This allows clients to subscribe to incident events and receive immediate notifications.
+
+**Quick Start:**
+
+```typescript
+import { createClient } from 'graphql-ws';
+
+const client = createClient({
+  url: 'ws://localhost:8080/graphql/ws',
+  connectionParams: {
+    Authorization: 'Bearer YOUR_JWT_TOKEN'
+  }
+});
+
+// Subscribe to critical incidents
+client.subscribe(
+  {
+    query: `
+      subscription {
+        criticalIncidents {
+          id
+          title
+          severity
+          state
+          createdAt
+        }
+      }
+    `
+  },
+  {
+    next: (data) => {
+      console.log('Critical incident:', data.criticalIncidents);
+    },
+    error: (error) => console.error('Subscription error:', error),
+    complete: () => console.log('Subscription completed')
+  }
+);
+```
+
+**Available Subscriptions:**
+- `criticalIncidents` - Subscribe to P0 and P1 incidents
+- `incidentUpdates` - Subscribe to incident lifecycle events
+- `newIncidents` - Subscribe to newly created incidents
+- `incidentStateChanges` - Subscribe to state transitions
+- `alerts` - Subscribe to incoming alert submissions
+
+**Documentation:**
+- [WebSocket Streaming Guide](./docs/WEBSOCKET_STREAMING_GUIDE.md) - Architecture and overview
+- [WebSocket API Reference](./docs/WEBSOCKET_API_REFERENCE.md) - Complete API documentation
+- [WebSocket Client Guide](./docs/WEBSOCKET_CLIENT_GUIDE.md) - Integration examples
+- [WebSocket Deployment Guide](./docs/WEBSOCKET_DEPLOYMENT_GUIDE.md) - Production setup
+- [Example Clients](./examples/websocket/) - TypeScript, Python, Rust examples
+
 ### REST API
 
 ```bash
@@ -389,6 +472,71 @@ service IncidentService {
   rpc AnalyzeCorrelations(AnalyzeCorrelationsRequest) returns (CorrelationResult);
 }
 ```
+
+### GraphQL API
+
+The GraphQL API provides a flexible, type-safe interface with real-time subscriptions:
+
+```graphql
+# Query incidents with advanced filtering
+query GetIncidents {
+  incidents(
+    first: 20
+    filter: {
+      severity: [P0, P1]
+      status: [NEW, ACKNOWLEDGED]
+      environment: [PRODUCTION]
+    }
+    orderBy: { field: CREATED_AT, direction: DESC }
+  ) {
+    edges {
+      node {
+        id
+        title
+        severity
+        status
+        assignedTo {
+          name
+          email
+        }
+        sla {
+          resolutionDeadline
+          resolutionBreached
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Subscribe to real-time incident updates
+subscription IncidentUpdates {
+  incidentUpdated(filter: { severity: [P0, P1] }) {
+    incident {
+      id
+      title
+      status
+    }
+    updateType
+    changedFields
+  }
+}
+```
+
+**GraphQL Endpoints:**
+- Query/Mutation: `POST http://localhost:8080/graphql`
+- Subscriptions: `WS ws://localhost:8080/graphql`
+- Playground: `GET http://localhost:8080/graphql/playground`
+
+**Documentation:**
+- [GraphQL API Guide](./docs/GRAPHQL_API_GUIDE.md) - Complete API documentation with authentication, pagination, and best practices
+- [GraphQL Schema Reference](./docs/GRAPHQL_SCHEMA_REFERENCE.md) - Full schema documentation with all types, queries, mutations, and subscriptions
+- [GraphQL Integration Guide](./docs/GRAPHQL_INTEGRATION_GUIDE.md) - Client integration examples for Apollo Client, Relay, urql, and plain fetch
+- [GraphQL Development Guide](./docs/GRAPHQL_DEVELOPMENT_GUIDE.md) - Implementation guide for extending the API
+- [GraphQL Examples](./docs/GRAPHQL_EXAMPLES.md) - Common query patterns and real-world use cases
 
 ## Feature Guides
 
@@ -512,6 +660,114 @@ service.trigger_training().await?;
 
 See [ML_CLASSIFICATION_GUIDE.md](./ML_CLASSIFICATION_GUIDE.md) for complete documentation.
 
+### 5. Circuit Breakers
+
+Protect your system from cascading failures with automatic circuit breaking:
+
+```rust
+use llm_incident_manager::circuit_breaker::CircuitBreaker;
+use std::time::Duration;
+
+// Create circuit breaker for external service
+let circuit_breaker = CircuitBreaker::new("sentinel-api")
+    .failure_threshold(5)       // Open after 5 failures
+    .timeout(Duration::from_secs(60))  // Wait 60s before testing recovery
+    .success_threshold(2)       // Close after 2 successful tests
+    .build();
+
+// Execute request through circuit breaker
+let result = circuit_breaker.call(|| async {
+    sentinel_client.fetch_alerts(Some(10)).await
+}).await;
+
+match result {
+    Ok(alerts) => {
+        println!("Fetched {} alerts", alerts.len());
+    }
+    Err(e) if e.is_circuit_open() => {
+        println!("Circuit breaker is open, using fallback");
+        // Use cached data or alternative service
+        let fallback_data = cache.get_alerts()?;
+        Ok(fallback_data)
+    }
+    Err(e) => {
+        println!("Request failed: {}", e);
+        Err(e)
+    }
+}
+```
+
+#### Key Features
+
+1. **Three States**:
+   - **Closed**: Normal operation, requests flow through
+   - **Open**: Service failing, requests fail immediately (< 1ms)
+   - **Half-Open**: Testing recovery with limited requests
+
+2. **Automatic Recovery**:
+   - Configurable timeout before recovery testing
+   - Multiple recovery strategies (fixed, linear, exponential backoff)
+   - Gradual traffic restoration
+
+3. **Comprehensive Monitoring**:
+```rust
+// Check circuit breaker state
+let state = circuit_breaker.state().await;
+println!("Circuit state: {:?}", state);
+
+// Get detailed information
+let info = circuit_breaker.info().await;
+println!("Error rate: {:.2}%", info.error_rate * 100.0);
+println!("Total requests: {}", info.total_requests);
+println!("Failures: {}", info.failure_count);
+
+// Health check
+let health = circuit_breaker.health_check().await;
+```
+
+4. **Manual Control** (for operations):
+```bash
+# Force open (maintenance mode)
+curl -X POST http://localhost:8080/v1/circuit-breakers/sentinel/open
+
+# Force close (after maintenance)
+curl -X POST http://localhost:8080/v1/circuit-breakers/sentinel/close
+
+# Reset circuit breaker
+curl -X POST http://localhost:8080/v1/circuit-breakers/sentinel/reset
+
+# Get status
+curl http://localhost:8080/v1/circuit-breakers/sentinel
+```
+
+5. **Configuration Example**:
+```yaml
+# config/circuit_breakers.yaml
+circuit_breakers:
+  sentinel:
+    name: "sentinel-api"
+    failure_threshold: 5
+    success_threshold: 2
+    timeout_secs: 60
+    volume_threshold: 10
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 60
+      max_timeout_secs: 300
+      multiplier: 2.0
+```
+
+6. **Prometheus Metrics**:
+```
+circuit_breaker_state{name="sentinel"} 0           # 0=closed, 1=open, 2=half-open
+circuit_breaker_requests_total{name="sentinel"}
+circuit_breaker_requests_failed{name="sentinel"}
+circuit_breaker_error_rate{name="sentinel"}
+circuit_breaker_open_count{name="sentinel"}
+```
+
+See [CIRCUIT_BREAKER_GUIDE.md](./docs/CIRCUIT_BREAKER_GUIDE.md) for complete documentation.
+
 ## Testing
 
 ### Run All Tests
@@ -558,24 +814,32 @@ cargo tarpaulin --all-features --workspace --timeout 120
 ## Documentation
 
 ### Implementation Guides
-- [Escalation Engine Guide](./ESCALATION_GUIDE.md) - Complete escalation documentation
-- [Escalation Implementation](./ESCALATION_IMPLEMENTATION.md) - Technical details
-- [Storage Implementation](./STORAGE_IMPLEMENTATION.md) - Storage layer details
-- [Correlation Guide](./CORRELATION_GUIDE.md) - Correlation engine usage
-- [Correlation Implementation](./CORRELATION_IMPLEMENTATION.md) - Technical details
-- [ML Classification Guide](./ML_CLASSIFICATION_GUIDE.md) - ML usage and training
-- [ML Implementation](./ML_CLASSIFICATION_IMPLEMENTATION.md) - Technical details
-- [Enrichment Guide](./ENRICHMENT_GUIDE.md) - Context enrichment usage
-- [Enrichment Implementation](./ENRICHMENT_IMPLEMENTATION.md) - Technical details
-- **[LLM Integrations Overview](./docs/LLM_CLIENT_README.md)** - NEW: Complete LLM integration guide
-- **[LLM Architecture](./docs/LLM_CLIENT_ARCHITECTURE.md)** - NEW: Detailed architecture specs
-- **[LLM Implementation Guide](./docs/LLM_CLIENT_IMPLEMENTATION_GUIDE.md)** - NEW: Step-by-step implementation
-- **[LLM Quick Reference](./docs/LLM_CLIENT_QUICK_REFERENCE.md)** - NEW: Fast lookup guide
+- [Escalation Engine Guide](./docs/ESCALATION_GUIDE.md) - Complete escalation documentation
+- [Escalation Implementation](./docs/ESCALATION_IMPLEMENTATION.md) - Technical details
+- [Storage Implementation](./docs/STORAGE_IMPLEMENTATION.md) - Storage layer details
+- [Correlation Guide](./docs/CORRELATION_GUIDE.md) - Correlation engine usage
+- [Correlation Implementation](./docs/CORRELATION_IMPLEMENTATION.md) - Technical details
+- [ML Classification Guide](./docs/ML_GUIDE.md) - ML usage and training
+- [ML Implementation](./docs/ML_IMPLEMENTATION.md) - Technical details
+- [Enrichment Guide](./docs/ENRICHMENT_GUIDE.md) - Context enrichment usage
+- [Enrichment Implementation](./docs/ENRICHMENT_IMPLEMENTATION.md) - Technical details
+- [LLM Integrations Overview](./docs/LLM_CLIENT_README.md) - Complete LLM integration guide
+- [LLM Architecture](./docs/LLM_CLIENT_ARCHITECTURE.md) - Detailed architecture specs
+- [LLM Implementation Guide](./docs/LLM_CLIENT_IMPLEMENTATION_GUIDE.md) - Step-by-step implementation
+- [LLM Quick Reference](./docs/LLM_CLIENT_QUICK_REFERENCE.md) - Fast lookup guide
+- **[Metrics Guide](./docs/METRICS_GUIDE.md)** - NEW: Complete metrics and observability documentation
+- **[Metrics Implementation](./docs/METRICS_IMPLEMENTATION.md)** - NEW: Technical implementation details
+- **[Metrics Operational Runbook](./docs/METRICS_OPERATIONAL_RUNBOOK.md)** - NEW: Operations and troubleshooting
 
 ### API Documentation
-- REST API: `cargo doc --open`
-- gRPC: See `proto/` directory
-- GraphQL: See `src/api/graphql/schema.rs`
+- **REST API**: `cargo doc --open`
+- **gRPC API**: See `proto/` directory for Protocol Buffer definitions
+- **GraphQL API**: Comprehensive documentation suite
+  - [GraphQL API Guide](./docs/GRAPHQL_API_GUIDE.md) - Complete API overview
+  - [GraphQL Schema Reference](./docs/GRAPHQL_SCHEMA_REFERENCE.md) - Full schema documentation
+  - [GraphQL Integration Guide](./docs/GRAPHQL_INTEGRATION_GUIDE.md) - Client integration examples
+  - [GraphQL Development Guide](./docs/GRAPHQL_DEVELOPMENT_GUIDE.md) - Implementation guide
+  - [GraphQL Examples](./docs/GRAPHQL_EXAMPLES.md) - Query patterns and use cases
 
 ## Project Structure
 
@@ -700,25 +964,57 @@ spec:
 
 ### Metrics (Prometheus)
 
-```rust
-// Exposed metrics
-- incident_manager_alerts_processed_total
-- incident_manager_incidents_created_total
-- incident_manager_escalations_triggered_total
-- incident_manager_enrichment_duration_seconds
-- incident_manager_correlation_groups_created_total
-- incident_manager_ml_predictions_total
-- incident_manager_cache_hit_rate
+The system exposes comprehensive metrics on port 9090 (configurable via `LLM_IM__SERVER__METRICS_PORT`).
+
+**Integration Metrics** (per LLM integration):
 ```
+llm_integration_requests_total{integration="sentinel|shield|edge-agent|governance"}
+llm_integration_requests_successful{integration="..."}
+llm_integration_requests_failed{integration="..."}
+llm_integration_success_rate_percent{integration="..."}
+llm_integration_latency_milliseconds_average{integration="..."}
+llm_integration_last_request_timestamp{integration="..."}
+```
+
+**Core System Metrics**:
+```
+incident_manager_alerts_processed_total
+incident_manager_incidents_created_total
+incident_manager_incidents_resolved_total
+incident_manager_escalations_triggered_total
+incident_manager_enrichment_duration_seconds
+incident_manager_enrichment_cache_hit_rate
+incident_manager_correlation_groups_created_total
+incident_manager_ml_predictions_total
+incident_manager_ml_prediction_confidence
+incident_manager_notifications_sent_total
+incident_manager_processing_duration_seconds
+```
+
+**Quick Access**:
+```bash
+# Prometheus format
+curl http://localhost:9090/metrics
+
+# JSON format
+curl http://localhost:8080/v1/metrics/integrations
+```
+
+For complete metrics documentation, dashboards, and alerting:
+- [Metrics Guide](./docs/METRICS_GUIDE.md) - Metrics catalog and configuration
+- [Operational Runbook](./docs/METRICS_OPERATIONAL_RUNBOOK.md) - Troubleshooting and alerts
 
 ### Health Checks
 
 ```bash
 # Liveness probe
-curl http://localhost:3000/health/live
+curl http://localhost:8080/health/live
 
 # Readiness probe
-curl http://localhost:3000/health/ready
+curl http://localhost:8080/health/ready
+
+# Full health status with metrics
+curl http://localhost:8080/health
 ```
 
 ## Security

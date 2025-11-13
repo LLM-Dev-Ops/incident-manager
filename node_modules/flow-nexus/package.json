@@ -1,0 +1,100 @@
+{
+  "name": "flow-nexus",
+  "mcpName": "io.github.ruvnet/flow-nexus",
+  "version": "0.1.128",
+  "description": "🚀 AI-Powered Swarm Intelligence Platform - Gamified MCP Development with 70+ Tools",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "flow-nexus": "cli.js",
+    "fnx": "cli.js",
+    "neural-trader": "cli.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js --mode dev",
+    "store": "node src/index.js --mode store",
+    "swarm": "node src/index.js --mode swarm",
+    "gamer": "node src/index.js --mode gamer",
+    "http": "node src/index.js --http-port 3000",
+    "test": "node src/index.js --help && node src/index.js --list-modes",
+    "test:accounting": "npm test -- tests/accounting-system.test.ts",
+    "deploy:accounting": "./scripts/deploy-accounting-system.sh",
+    "test:accounting:full": "./scripts/test-accounting-system.sh",
+    "setup:monitoring": "./scripts/setup-monitoring.sh",
+    "build": "echo 'No build step required for ES modules'",
+    "init-user": "node scripts/init-user.js",
+    "test-user": "node test-user-system.js",
+    "test:judge": "node test/test-judge-system.js",
+    "test:validate": "node test/validate-judge-system.js",
+    "test:integration": "node test/integration-test-judge.js",
+    "test:e2e": "node test/e2e-secure-judge-test.js",
+    "deploy:functions": "bash scripts/deploy-judge-functions.sh",
+    "configure:webhook": "node scripts/configure-webhook.js",
+    "sandbox:cleanup": "node scripts/cleanup-sandboxes.js",
+    "sandbox:status": "node -e \"import('./src/services/sandbox-lifecycle-manager.js').then(m => new m.default().checkAllSandboxes())\"",
+    "sandbox:monitor": "node -e \"import('./src/services/sandbox-lifecycle-manager.js').then(m => new m.default().startMonitoring())\""
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "multi-agent",
+    "swarm",
+    "gamification",
+    "ruv-credits",
+    "claude",
+    "anthropic",
+    "flow-nexus",
+    "sandbox",
+    "challenges",
+    "ai-orchestration"
+  ],
+  "author": {
+    "name": "rUv",
+    "email": "ruv@ruv.net",
+    "url": "https://ruv.io"
+  },
+  "license": "Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruvnet/flow-nexus.git"
+  },
+  "homepage": "https://flow-nexus.ruv.io",
+  "bugs": {
+    "url": "https://github.com/ruvnet/flow-nexus/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "@supabase/supabase-js": "^2.55.0",
+    "bcryptjs": "^2.4.3",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "dotenv": "^17.2.2",
+    "inquirer": "^9.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.1",
+    "rate-limiter-flexible": "^7.2.0",
+    "validator": "^13.15.15"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "cli.js",
+    "scripts/",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "e2b": "^2.0.3"
+  }
+}

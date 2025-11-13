@@ -159,7 +159,7 @@ impl ScheduleResolver {
             .single()
             .ok_or_else(|| AppError::Internal("Failed to create epoch time".to_string()))?;
 
-        let duration = local_time.signed_duration_since(epoch);
+        let duration = local_time.clone().signed_duration_since(epoch);
         let days = duration.num_days();
 
         // Adjust if we haven't reached handoff hour today
@@ -208,7 +208,7 @@ impl ScheduleResolver {
             .single()
             .ok_or_else(|| AppError::Internal("Failed to create epoch time".to_string()))?;
 
-        let duration = local_time.signed_duration_since(epoch);
+        let duration = local_time.clone().signed_duration_since(epoch);
         let total_days = duration.num_days() - days_since_handoff as i64;
         let weeks = total_days / 7;
 
@@ -229,7 +229,7 @@ impl ScheduleResolver {
             .single()
             .ok_or_else(|| AppError::Internal("Failed to create epoch time".to_string()))?;
 
-        let duration = local_time.signed_duration_since(epoch);
+        let duration = local_time.clone().signed_duration_since(epoch);
         let hours = duration.num_hours();
         let rotations = hours / duration_hours as i64;
 
@@ -311,7 +311,7 @@ impl ScheduleResolver {
                     .with_timezone(&Utc))
             }
             RotationStrategy::Custom { duration_hours } => {
-                let next = *local_time + Duration::hours(*duration_hours as i64);
+                let next = local_time.clone() + Duration::hours(*duration_hours as i64);
                 Ok(next.with_timezone(&Utc))
             }
         }

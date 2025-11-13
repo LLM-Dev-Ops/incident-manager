@@ -122,7 +122,7 @@ impl AlertHandler {
             alert.title.clone(),
             alert.description.clone(),
             alert.severity,
-            alert.alert_type,
+            alert.alert_type.clone(),
         );
 
         // Set affected resources
@@ -270,7 +270,7 @@ mod tests {
             "title".to_string(),
             "desc".to_string(),
             Severity::P1,
-            IncidentType::ModelIssue,
+            IncidentType::Application,
         );
         assert!(handler.should_create_incident(&alert));
 
@@ -281,7 +281,7 @@ mod tests {
             "title".to_string(),
             "desc".to_string(),
             Severity::P3,
-            IncidentType::ModelIssue,
+            IncidentType::Application,
         );
         assert!(!handler.should_create_incident(&alert));
     }
@@ -296,7 +296,7 @@ mod tests {
             "title".to_string(),
             "desc".to_string(),
             Severity::P0,
-            IncidentType::ModelIssue,
+            IncidentType::Application,
         );
         assert!(!handler.should_create_incident(&alert));
     }

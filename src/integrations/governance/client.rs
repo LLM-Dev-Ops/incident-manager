@@ -117,7 +117,7 @@ impl GovernanceClient {
             status => {
                 let error_text = response.text().await.unwrap_or_default();
                 Err(AppError::Integration {
-                    source: "governance".to_string(),
+                    integration_source: "governance".to_string(),
                     message: format!("Compliance check failed with status {}: {}", status, error_text),
                 })
             }
@@ -217,7 +217,7 @@ impl GovernanceClient {
             status => {
                 let error_text = response.text().await.unwrap_or_default();
                 Err(AppError::Integration {
-                    source: "governance".to_string(),
+                    integration_source: "governance".to_string(),
                     message: format!("Audit report generation failed with status {}: {}", status, error_text),
                 })
             }
@@ -272,7 +272,7 @@ impl GovernanceClient {
             status => {
                 let error_text = response.text().await.unwrap_or_default();
                 Err(AppError::Integration {
-                    source: "governance".to_string(),
+                    integration_source: "governance".to_string(),
                     message: format!("Metrics retrieval failed with status {}: {}", status, error_text),
                 })
             }

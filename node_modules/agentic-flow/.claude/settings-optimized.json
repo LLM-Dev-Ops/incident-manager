@@ -1,0 +1,116 @@
+{
+  "env": {
+    "CLAUDE_FLOW_AUTO_COMMIT": "false",
+    "CLAUDE_FLOW_AUTO_PUSH": "false",
+    "CLAUDE_FLOW_HOOKS_ENABLED": "true",
+    "CLAUDE_FLOW_TELEMETRY_ENABLED": "true",
+    "CLAUDE_FLOW_REMOTE_EXECUTION": "true",
+    "CLAUDE_FLOW_CHECKPOINTS_ENABLED": "true",
+    "CLAUDE_FLOW_TRUTH_THRESHOLD": "0.95",
+    "CLAUDE_FLOW_VERIFY_MODE": "strict",
+    "CLAUDE_FLOW_SECURITY_AUDIT": "true"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx claude-flow*)",
+      "Bash(npm run*)",
+      "Bash(npm test*)",
+      "Bash(git *)",
+      "Bash(jq *)",
+      "Bash(node *)",
+      "Bash(which *)",
+      "Bash(pwd)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(echo *)",
+      "Bash(bc *)",
+      "Bash(date *)",
+      "Bash(head *)",
+      "Bash(tail *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(eval *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(* > /dev/sda*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '🎯 PRE-IMPLEMENTATION VERIFICATION & SECURITY PROTOCOL' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '' && FILE=$(cat | jq -r '.tool_input.file_path // .tool_input.path // empty') && echo \"📁 Target: $FILE\" && echo '' && echo '🔍 MANDATORY VERIFICATION CHECKLIST:' && echo '┌─────────────────────────────────────────────────────┐' && echo '│ ✓ Implementation MUST be FULLY FUNCTIONAL           │' && echo '│ ✓ NO mocks/stubs/simulations (unless test file)    │' && echo '│ ✓ Real API connections (not placeholders)          │' && echo '│ ✓ Actual data persistence (not in-memory only)     │' && echo '│ ✓ Complete error handling (not just happy path)    │' && echo '│ ✓ Production-ready code (not proof-of-concept)     │' && echo '└─────────────────────────────────────────────────────┘' && echo '' && echo '🔐 SECURITY REQUIREMENTS:' && echo '┌─────────────────────────────────────────────────────┐' && echo '│ ⚠️  NEVER hardcode credentials or secrets           │' && echo '│ ⚠️  Use environment variables for sensitive data    │' && echo '│ ⚠️  No API keys, passwords, or tokens in code       │' && echo '│ ⚠️  Validate and sanitize ALL user inputs           │' && echo '│ ⚠️  Use secure connection protocols (HTTPS/TLS)     │' && echo '│ ⚠️  Implement proper authentication & authorization │' && echo '└─────────────────────────────────────────────────────┘' && echo '' && if echo \"$FILE\" | grep -qE '(test|spec|mock)\\.' ; then echo '📝 TEST FILE: Mocks/stubs acceptable'; else echo '⚡ PRODUCTION CODE: Must be REAL, SECURE & WORKING'; echo ''; echo '🚫 REJECT IF YOU SEE:'; echo '   • Hardcoded: API_KEY=\"sk-...\"'; echo '   • Direct secrets: password=\"admin123\"'; echo '   • TODO/FIXME without implementation'; echo '   • return mockData or simulatedResponse'; echo '   • console.log with sensitive data'; echo '   • Unvalidated user inputs (SQL injection risk)'; echo '   • HTTP instead of HTTPS for APIs'; fi && echo '' && echo '📊 Initializing quality metrics...' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+          },
+          {
+            "type": "command",
+            "command": "if command -v npx >/dev/null 2>&1; then npx claude-flow@alpha verify init strict --threshold 0.95 2>/dev/null && echo '✅ Claude Flow verification: ACTIVE (95% threshold)' || echo '⚠️  Claude Flow initialization pending'; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(cat | jq -r '.tool_input.command // empty') && if echo \"$CMD\" | grep -qE 'echo.*[>]{1,2}.*\\.env' || echo \"$CMD\" | grep -qE 'export.*(KEY|TOKEN|SECRET|PASSWORD)'; then echo '⚠️  SECURITY WARNING: Potential secret exposure detected!'; echo '   Use proper secret management (e.g., dotenv, vault)'; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(cat | jq -r '.tool_input.file_path // .tool_input.path // empty') && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '✅ POST-IMPLEMENTATION VERIFICATION & SECURITY REPORT' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '' && echo \"📁 Modified: $FILE\" && echo \"🕒 Timestamp: $(date '+%Y-%m-%d %H:%M:%S')\" && echo '' && if echo \"$FILE\" | grep -qE '\\.(ts|js|tsx|jsx|py|java|go|rs)$' && ! echo \"$FILE\" | grep -qE '(test|spec|mock)'; then echo '🔍 PRODUCTION CODE ANALYSIS:' && echo '' && SCORE=100 && ISSUES='' && echo '📋 Functionality Checks:' && if grep -q 'TODO\\|FIXME\\|XXX' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  ❌ TODO/FIXME comments found\\n\" && SCORE=$((SCORE - 15)); else echo '  ✓ No TODO/FIXME comments'; fi && if grep -q 'console\\.log' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  ⚠️  console.log statements detected\\n\" && SCORE=$((SCORE - 5)); else echo '  ✓ No console.log statements'; fi && if grep -qE 'mock|Mock|stub|Stub|fake|Fake|dummy|Dummy|placeholder|simulat' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  ❌ Possible mock/simulation detected\\n\" && SCORE=$((SCORE - 25)); else echo '  ✓ No mocks or simulations'; fi && echo '' && echo '🔐 Security Checks:' && if grep -qE '(api[_-]?key|apikey|api[_-]?secret|private[_-]?key|secret[_-]?key)[[:space:]]*=[[:space:]]*[\"'\\'''][^\"'\\''']+[\"'\\''']' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  🚨 CRITICAL: Hardcoded API key detected\\n\" && SCORE=$((SCORE - 30)); else echo '  ✓ No hardcoded API keys'; fi && if grep -qE '(password|passwd|pwd)[[:space:]]*=[[:space:]]*[\"'\\'''][^\"'\\''']+[\"'\\''']' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  🚨 CRITICAL: Hardcoded password detected\\n\" && SCORE=$((SCORE - 30)); else echo '  ✓ No hardcoded passwords'; fi && if grep -qE 'http://' \"$FILE\" 2>/dev/null && ! grep -qE 'http://localhost|http://127\\.0\\.0\\.1' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  ⚠️  Insecure HTTP protocol used\\n\" && SCORE=$((SCORE - 10)); else echo '  ✓ Secure protocols (HTTPS/TLS)'; fi && if grep -qE 'eval\\(|exec\\(' \"$FILE\" 2>/dev/null; then ISSUES=\"${ISSUES}  🚨 CRITICAL: eval/exec usage (injection risk)\\n\" && SCORE=$((SCORE - 25)); else echo '  ✓ No dangerous eval/exec'; fi && if grep -qE 'process\\.env\\.' \"$FILE\" 2>/dev/null || grep -qE 'import.*dotenv|require.*dotenv' \"$FILE\" 2>/dev/null; then echo '  ✓ Environment variables used properly'; else echo '  ℹ️  Consider using env vars for configuration'; fi && echo '' && if [ -n \"$ISSUES\" ]; then echo '⚠️  ISSUES DETECTED:' && echo -e \"$ISSUES\"; fi && echo \"📊 QUALITY SCORE: ${SCORE}/100\" && if [ $SCORE -lt 95 ]; then echo '🚫 BELOW THRESHOLD (95) - Review required!'; echo ''; echo '🔧 REQUIRED ACTIONS:'; echo '  1. Fix all security issues immediately'; echo '  2. Replace mocks with real implementations'; echo '  3. Use environment variables for secrets'; echo '  4. Remove debug statements'; else echo '✅ MEETS QUALITY & SECURITY THRESHOLD'; fi; fi && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+          },
+          {
+            "type": "command",
+            "command": "if command -v npx >/dev/null 2>&1; then FILE=$(cat | jq -r '.tool_input.file_path // .tool_input.path // empty') && echo '' && echo '🔬 Claude Flow Truth Verification:' && npx claude-flow@alpha truth --agent coder --threshold 0.95 2>/dev/null | head -5 || echo '  Analysis pending...'; npx claude-flow@alpha verify verify \"$FILE\" --threshold 0.95 --agent coder 2>/dev/null | grep -E 'Score:|Status:|Issues:' | head -5 || true; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(cat | jq -r '.tool_input.command // empty') && if echo \"$CMD\" | grep -qE '^(npm run test|npm test|jest|vitest|pytest)'; then echo '' && echo '🧪 TEST RESULTS VERIFICATION:' && if command -v npx >/dev/null 2>&1; then npx claude-flow@alpha truth --report --agent tester 2>/dev/null | grep -E 'Coverage:|Passed:|Failed:' | head -5 || echo '  Test metrics unavailable'; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '🔄 CONTEXT COMPACTION - MAINTAIN CRITICAL AWARENESS' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '' && echo '🎯 CORE PRINCIPLES (DO NOT FORGET):' && echo '  1. Real, verified, functional code only' && echo '  2. Truth threshold: 95% confidence' && echo '  3. NEVER hardcode secrets or credentials' && echo '  4. Complete implementations, no placeholders' && echo '  5. Security-first development approach' && echo '' && echo '🔐 SECURITY CHECKLIST TO MAINTAIN:' && echo '  • All secrets in environment variables' && echo '  • Input validation on all user data' && echo '  • HTTPS/TLS for all external connections' && echo '  • No eval/exec with user input' && echo '  • Proper authentication & authorization' && echo '' && if command -v npx >/dev/null 2>&1; then echo '📊 Current System Metrics:' && npx claude-flow@alpha truth --json 2>/dev/null | jq -r '\"  Truth Score: \\(.averageScore // \"N/A\")\\n  Files Verified: \\(.filesAnalyzed // 0)\\n  Security Issues: \\(.securityIssues // 0)\"' 2>/dev/null || echo '  Metrics unavailable'; fi && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '📊 SESSION SUMMARY - VERIFICATION & SECURITY REPORT' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && echo '' && if command -v npx >/dev/null 2>&1; then echo '📈 Session Metrics:' && npx claude-flow@alpha truth --report --json 2>/dev/null | jq -r '\"  Files Modified: \\(.filesAnalyzed // 0)\\n  Average Quality: \\(.averageScore // \"N/A\")\\n  Security Issues: \\(.securityIssues // 0)\\n  TODOs Remaining: \\(.todosFound // 0)\"' 2>/dev/null || echo '  Summary unavailable' && echo '' && npx claude-flow@alpha hooks session-end --generate-summary true --export-metrics true 2>/dev/null || true; else echo '  Claude Flow not available for metrics'; fi && echo '' && echo '🔐 Security Reminder:' && echo '  Review all modified files for:' && echo '  • Hardcoded credentials' && echo '  • Unvalidated inputs' && echo '  • Insecure protocols' && echo '  • Debug statements with sensitive data' && echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'"
+          }
+        ]
+      }
+    ]
+  },
+  "includeCoAuthoredBy": true,
+  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm", "flow-nexus"]
+}

@@ -33,7 +33,7 @@ pub struct EdgeAgentClient {
 
 impl EdgeAgentClient {
     /// Create a new Edge-Agent client
-    #[instrument(skip_all, fields(endpoint = %endpoint, agent_id = %agent_id))]
+    #[instrument(skip_all)]
     pub async fn new(endpoint: impl Into<String>, agent_id: impl Into<String>) -> Result<Self> {
         let endpoint_str = endpoint.into();
         let agent_id = agent_id.into();
@@ -45,13 +45,13 @@ impl EdgeAgentClient {
 
         let channel = Endpoint::from_shared(endpoint_str.clone())
             .map_err(|e| AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: format!("Invalid endpoint: {}", e),
             })?
             .connect()
             .await
             .map_err(|e| AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: format!("Connection failed: {}", e),
             })?;
 
@@ -83,13 +83,13 @@ impl EdgeAgentClient {
 
         let channel = Endpoint::from_shared(endpoint_str.clone())
             .map_err(|e| AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: format!("Invalid endpoint: {}", e),
             })?
             .connect()
             .await
             .map_err(|e| AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: format!("Connection failed: {}", e),
             })?;
 
@@ -152,7 +152,7 @@ impl EdgeAgentClient {
             .stream_inference(request_stream)
             .await
             .map_err(|e| AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: format!("Stream failed: {}", e),
             })?
             .into_inner();
@@ -163,7 +163,7 @@ impl EdgeAgentClient {
         // Process responses
         let mut stream = response_stream;
         while let Some(result) = stream.message().await.map_err(|e| AppError::Integration {
-            source: "EdgeAgent".to_string(),
+            integration_source: "EdgeAgent".to_string(),
             message: format!("Stream error: {}", e),
         })? {
             let status = match result.status.as_str() {
@@ -263,14 +263,18 @@ impl EdgeAgentClient {
             }),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("submit_batch", retry_policy, || async {
-            client
-                .submit_batch(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("submit_batch", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .submit_batch(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await;
 
@@ -323,14 +327,18 @@ impl EdgeAgentClient {
             }),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("sync_with_hub", retry_policy, || async {
-            client
-                .sync_with_hub(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("sync_with_hub", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .sync_with_hub(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await;
 
@@ -373,14 +381,18 @@ impl EdgeAgentClient {
             agent_id: self.agent_id.clone(),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("get_resource_usage", retry_policy, || async {
-            client
-                .get_resource_usage(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("get_resource_usage", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .get_resource_usage(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await;
 

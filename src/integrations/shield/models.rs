@@ -223,3 +223,9 @@ pub struct ReportSecurityPatternRequest {
     pub description: String,
     pub attributes: HashMap<String, String>,
 }
+
+
+// Type aliases for Shield responses
+pub type ValidationResult = ThreatAnalysis;
+pub type ThreatScanResult = ThreatAnalysis;
+

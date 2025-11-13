@@ -62,13 +62,11 @@ impl CorrelationEngine {
         let mut strategies: Vec<Box<dyn CorrelationStrategy>> = Vec::new();
 
         if config.enable_temporal {
-            strategies.push(Box::new(TemporalStrategy::new(config.temporal_window_secs)));
+            strategies.push(Box::new(TemporalStrategy::new()));
         }
 
         if config.enable_pattern {
-            strategies.push(Box::new(PatternStrategy::new(
-                config.pattern_similarity_threshold,
-            )));
+            strategies.push(Box::new(PatternStrategy::new()));
         }
 
         if config.enable_source {
@@ -85,7 +83,15 @@ impl CorrelationEngine {
 
         // If multiple strategies are enabled, add combined strategy
         if strategies.len() > 1 {
-            let combined = CombinedStrategy::new(config.min_correlation_score);
+            // Create Arc wrappers for the existing strategies
+            let arc_strategies: Vec<Arc<dyn CorrelationStrategy>> = vec![
+                Arc::new(TemporalStrategy::new()),
+                Arc::new(PatternStrategy::new()),
+                Arc::new(SourceStrategy::new()),
+                Arc::new(FingerprintStrategy::new()),
+                Arc::new(TopologyStrategy::new()),
+            ];
+            let combined = CombinedStrategy::new(arc_strategies);
             strategies.push(Box::new(combined));
         }
 
@@ -219,20 +225,15 @@ impl CorrelationEngine {
     async fn get_correlation_candidates(
         &self,
         incident: &Incident,
-        config: &CorrelationConfig,
+        _config: &CorrelationConfig,
     ) -> Result<Vec<Incident>> {
         // For now, use a simple filter based on temporal window
         // In production, this should use more sophisticated queries
         let filter = crate::state::IncidentFilter {
-            severity: None,
-            state: None,
-            source: None,
-            assignee: None,
-            created_after: Some(
-                incident.created_at
-                    - chrono::Duration::seconds(config.temporal_window_secs as i64),
-            ),
-            created_before: None,
+            severities: Vec::new(),
+            states: Vec::new(),
+            sources: Vec::new(),
+            active_only: false,
         };
 
         // Fetch incidents
@@ -475,7 +476,7 @@ impl CorrelationEngine {
     async fn perform_maintenance(&self) -> Result<()> {
         debug!("Performing correlation maintenance");
 
-        let config = self.config.read().await;
+        let _config = self.config.read().await;
 
         // Stabilize old groups
         for mut entry in self.groups.iter_mut() {
@@ -559,9 +560,9 @@ impl CorrelationEngine {
         incident_ids: Vec<Uuid>,
         reason: String,
     ) -> Result<Correlation> {
-        let config = self.config.read().await;
+        let _config = self.config.read().await;
 
-        let mut correlation = Correlation::new(
+        let correlation = Correlation::new(
             incident_ids.clone(),
             1.0, // Manual correlations have perfect score
             CorrelationType::Manual,

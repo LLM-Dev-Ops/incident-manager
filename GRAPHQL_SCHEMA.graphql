@@ -1,0 +1,1150 @@
+# ============================================================================
+# LLM Incident Manager - GraphQL Schema
+# ============================================================================
+# Enterprise-grade GraphQL API for incident management
+# Designed for scalability, type safety, and optimal query performance
+# ============================================================================
+
+# ============================================================================
+# CUSTOM SCALARS
+# ============================================================================
+
+"""
+RFC 3339 compliant DateTime scalar
+"""
+scalar DateTime
+
+"""
+JSON scalar for flexible metadata
+"""
+scalar JSON
+
+"""
+UUID scalar for unique identifiers
+"""
+scalar UUID
+
+# ============================================================================
+# ROOT TYPES
+# ============================================================================
+
+type Query {
+  # ===== Health & System =====
+  """
+  Get system health status
+  """
+  health: HealthStatus!
+
+  """
+  Get system version information
+  """
+  version: VersionInfo!
+
+  # ===== Incidents =====
+  """
+  Get a single incident by ID
+  """
+  incident(id: UUID!): Incident
+
+  """
+  List incidents with filtering, pagination, and sorting
+  """
+  incidents(
+    filter: IncidentFilter
+    pagination: PaginationInput
+    sort: SortInput
+  ): IncidentConnection!
+
+  """
+  Search incidents using full-text search
+  """
+  searchIncidents(
+    query: String!
+    filter: IncidentFilter
+    pagination: PaginationInput
+  ): IncidentConnection!
+
+  """
+  Get incident timeline
+  """
+  incidentTimeline(id: UUID!): [TimelineEvent!]!
+
+  """
+  Get incident comments
+  """
+  incidentComments(
+    incidentId: UUID!
+    pagination: PaginationInput
+  ): CommentConnection!
+
+  """
+  Get related incidents
+  """
+  relatedIncidents(
+    id: UUID!
+    limit: Int = 10
+  ): [Incident!]!
+
+  # ===== Events/Alerts =====
+  """
+  Get a single event by ID
+  """
+  event(id: UUID!): Event
+
+  """
+  List events with filtering and pagination
+  """
+  events(
+    filter: EventFilter
+    pagination: PaginationInput
+  ): EventConnection!
+
+  # ===== Analytics =====
+  """
+  Get incident metrics for a time range
+  """
+  incidentMetrics(
+    startDate: DateTime!
+    endDate: DateTime!
+    groupBy: [MetricGroupBy!]
+  ): IncidentMetrics!
+
+  """
+  Get incident trends over time
+  """
+  incidentTrends(
+    startDate: DateTime!
+    endDate: DateTime!
+    interval: TrendInterval!
+    metric: TrendMetric!
+  ): [TrendDataPoint!]!
+
+  """
+  Get MTTX metrics (MTTD, MTTA, MTTR)
+  """
+  mttxMetrics(
+    startDate: DateTime!
+    endDate: DateTime!
+    groupBy: [MetricGroupBy!]
+  ): MTTXMetrics!
+
+  """
+  Get SLA compliance report
+  """
+  slaCompliance(
+    startDate: DateTime!
+    endDate: DateTime!
+  ): SLAComplianceReport!
+
+  # ===== Policies =====
+  """
+  Get an escalation policy by ID
+  """
+  escalationPolicy(id: UUID!): EscalationPolicy
+
+  """
+  List all escalation policies
+  """
+  escalationPolicies(
+    enabled: Boolean
+  ): [EscalationPolicy!]!
+
+  # ===== Users & Teams =====
+  """
+  Get current user information
+  """
+  me: User!
+
+  """
+  Get user by ID
+  """
+  user(id: UUID!): User
+
+  """
+  Get team by ID
+  """
+  team(id: UUID!): Team
+
+  """
+  List all teams
+  """
+  teams: [Team!]!
+}
+
+type Mutation {
+  # ===== Event Ingestion =====
+  """
+  Submit a new event for processing
+  """
+  createEvent(input: CreateEventInput!): CreateEventPayload!
+
+  """
+  Submit event from Sentinel
+  """
+  createSentinelEvent(input: CreateSentinelEventInput!): CreateEventPayload!
+
+  """
+  Submit event from Shield
+  """
+  createShieldEvent(input: CreateShieldEventInput!): CreateEventPayload!
+
+  # ===== Incident Management =====
+  """
+  Create incident directly (bypassing event ingestion)
+  """
+  createIncident(input: CreateIncidentInput!): CreateIncidentPayload!
+
+  """
+  Update incident fields
+  """
+  updateIncident(
+    id: UUID!
+    input: UpdateIncidentInput!
+  ): UpdateIncidentPayload!
+
+  """
+  Acknowledge incident
+  """
+  acknowledgeIncident(
+    id: UUID!
+    notes: String
+  ): AcknowledgeIncidentPayload!
+
+  """
+  Resolve incident
+  """
+  resolveIncident(
+    id: UUID!
+    input: ResolveIncidentInput!
+  ): ResolveIncidentPayload!
+
+  """
+  Close incident
+  """
+  closeIncident(
+    id: UUID!
+    input: CloseIncidentInput!
+  ): CloseIncidentPayload!
+
+  """
+  Manually escalate incident
+  """
+  escalateIncident(
+    id: UUID!
+    input: EscalateIncidentInput!
+  ): EscalateIncidentPayload!
+
+  """
+  Assign incident to user or team
+  """
+  assignIncident(
+    id: UUID!
+    input: AssignIncidentInput!
+  ): AssignIncidentPayload!
+
+  """
+  Add comment to incident
+  """
+  addComment(
+    incidentId: UUID!
+    content: String!
+  ): AddCommentPayload!
+
+  """
+  Merge duplicate incidents
+  """
+  mergeIncidents(
+    sourceId: UUID!
+    targetId: UUID!
+    reason: String
+  ): MergeIncidentsPayload!
+
+  # ===== Policy Management =====
+  """
+  Create escalation policy
+  """
+  createEscalationPolicy(
+    input: CreateEscalationPolicyInput!
+  ): CreateEscalationPolicyPayload!
+
+  """
+  Update escalation policy
+  """
+  updateEscalationPolicy(
+    id: UUID!
+    input: UpdateEscalationPolicyInput!
+  ): UpdateEscalationPolicyPayload!
+
+  """
+  Delete escalation policy
+  """
+  deleteEscalationPolicy(id: UUID!): DeleteEscalationPolicyPayload!
+}
+
+type Subscription {
+  """
+  Subscribe to incident updates
+  """
+  incidentUpdated(
+    id: UUID
+    filter: IncidentFilter
+  ): IncidentUpdatedEvent!
+
+  """
+  Subscribe to new incidents
+  """
+  incidentCreated(filter: IncidentFilter): Incident!
+
+  """
+  Subscribe to incident state changes
+  """
+  incidentStateChanged(
+    id: UUID
+    states: [IncidentState!]
+  ): IncidentStateChangedEvent!
+
+  """
+  Subscribe to new events
+  """
+  eventReceived(filter: EventFilter): Event!
+
+  """
+  Subscribe to escalation events
+  """
+  escalationTriggered: EscalationEvent!
+
+  """
+  Subscribe to timeline events for an incident
+  """
+  timelineEvent(incidentId: UUID!): TimelineEvent!
+}
+
+# ============================================================================
+# CORE TYPES
+# ============================================================================
+
+# ===== Incident =====
+
+type Incident {
+  id: UUID!
+  externalId: String
+  fingerprint: String
+
+  # Status & Classification
+  severity: Severity!
+  state: IncidentState!
+  category: Category!
+
+  # Content
+  title: String!
+  description: String!
+  impact: String
+
+  # Source & Origin
+  source: String!
+  sourceEventId: UUID
+  environment: Environment
+
+  # Assignment
+  assignedTo: User
+  assignedTeam: Team
+  escalationLevel: Int!
+
+  # Timestamps
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  acknowledgedAt: DateTime
+  resolvedAt: DateTime
+  closedAt: DateTime
+
+  # SLA
+  sla: SLA!
+
+  # Relationships
+  relatedIncidents: [Incident!]!
+  events: [Event!]!
+  comments(pagination: PaginationInput): CommentConnection!
+  timeline: [TimelineEvent!]!
+
+  # Metadata
+  metrics: IncidentMetrics_Detail
+  resource: Resource
+  tags: JSON!
+
+  # Resolution
+  resolution: Resolution
+
+  # Enrichment
+  enrichments: [Enrichment!]!
+
+  # Playbook
+  activePlaybook: Playbook
+}
+
+type Event {
+  id: UUID!
+  externalId: String!
+  source: String!
+  sourceVersion: String
+  timestamp: DateTime!
+  receivedAt: DateTime!
+
+  eventType: String!
+  category: Category!
+  title: String!
+  description: String!
+  severity: String!
+
+  resource: Resource
+  metrics: JSON
+  tags: JSON!
+  payload: JSON
+
+  fingerprint: String!
+  incidentId: UUID
+
+  # Deduplication
+  deduplicated: Boolean!
+  parentEventId: UUID
+}
+
+type Resource {
+  type: String!
+  id: String!
+  name: String
+  metadata: JSON
+}
+
+type SLA {
+  acknowledgmentDeadline: DateTime
+  resolutionDeadline: DateTime
+  acknowledgmentBreached: Boolean!
+  resolutionBreached: Boolean!
+  acknowledgmentTimeRemaining: Int
+  resolutionTimeRemaining: Int
+}
+
+type Resolution {
+  rootCause: String
+  resolutionNotes: String!
+  resolvedBy: User!
+  playbookUsed: Playbook
+  actionsTaken: [Action!]!
+  resolvedAt: DateTime!
+}
+
+type Action {
+  id: UUID!
+  type: String!
+  description: String!
+  executedBy: Actor!
+  executedAt: DateTime!
+  result: String
+  success: Boolean!
+}
+
+type TimelineEvent {
+  id: UUID!
+  timestamp: DateTime!
+  eventType: EventType!
+  description: String!
+  actor: Actor!
+  metadata: JSON
+}
+
+type Comment {
+  id: UUID!
+  incidentId: UUID!
+  content: String!
+  author: Actor!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type Actor {
+  type: ActorType!
+  id: String!
+  name: String!
+}
+
+type Enrichment {
+  id: UUID!
+  enrichmentType: String!
+  source: String!
+  data: JSON!
+  confidence: Float
+  appliedAt: DateTime!
+}
+
+# ===== Analytics =====
+
+type IncidentMetrics {
+  timeRange: TimeRange!
+  totalIncidents: Int!
+  incidentsBySeverity: [MetricBreakdown!]!
+  incidentsByCategory: [MetricBreakdown!]!
+  incidentsByState: [MetricBreakdown!]!
+  averageMTTD: Float
+  averageMTTA: Float
+  averageMTTR: Float
+  slaCompliance: Float!
+}
+
+type IncidentMetrics_Detail {
+  mttd: Float
+  mtta: Float
+  mttr: Float
+}
+
+type MetricBreakdown {
+  key: String!
+  value: Int!
+  percentage: Float!
+}
+
+type TrendDataPoint {
+  timestamp: DateTime!
+  value: Float!
+  metadata: JSON
+}
+
+type MTTXMetrics {
+  timeRange: TimeRange!
+  mttd: MTTXDetail!
+  mtta: MTTXDetail!
+  mttr: MTTXDetail!
+}
+
+type MTTXDetail {
+  average: Float!
+  median: Float!
+  p50: Float!
+  p90: Float!
+  p95: Float!
+  p99: Float!
+  min: Float!
+  max: Float!
+}
+
+type SLAComplianceReport {
+  timeRange: TimeRange!
+  overallCompliance: Float!
+  acknowledgmentCompliance: Float!
+  resolutionCompliance: Float!
+  breachesBySeverity: [MetricBreakdown!]!
+  breachesByTeam: [MetricBreakdown!]!
+}
+
+type TimeRange {
+  start: DateTime!
+  end: DateTime!
+}
+
+# ===== Policies =====
+
+type EscalationPolicy {
+  id: UUID!
+  name: String!
+  description: String
+  conditions: EscalationConditions!
+  levels: [EscalationLevel!]!
+  timers: EscalationTimers!
+  enabled: Boolean!
+  priority: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type EscalationConditions {
+  severities: [Severity!]
+  categories: [Category!]
+  sources: [String!]
+  tags: JSON
+}
+
+type EscalationLevel {
+  level: Int!
+  name: String!
+  targets: [EscalationTarget!]!
+  escalateAfter: Int!
+  notificationChannels: [String!]!
+}
+
+type EscalationTarget {
+  type: EscalationTargetType!
+  id: String!
+  user: User
+  team: Team
+}
+
+type EscalationTimers {
+  acknowledgmentTimeout: Int!
+  resolutionTimeout: Int!
+  escalationInterval: Int!
+}
+
+# ===== Users & Teams =====
+
+type User {
+  id: UUID!
+  email: String!
+  name: String!
+  role: UserRole!
+  teams: [Team!]!
+  createdAt: DateTime!
+
+  # Stats
+  assignedIncidents(filter: IncidentFilter): [Incident!]!
+  incidentStats: UserIncidentStats!
+}
+
+type UserIncidentStats {
+  totalAssigned: Int!
+  activeIncidents: Int!
+  resolvedIncidents: Int!
+  averageMTTR: Float
+}
+
+type Team {
+  id: UUID!
+  name: String!
+  description: String
+  members: [User!]!
+  escalationPolicy: EscalationPolicy
+  createdAt: DateTime!
+
+  # Stats
+  assignedIncidents(filter: IncidentFilter): [Incident!]!
+  incidentStats: TeamIncidentStats!
+}
+
+type TeamIncidentStats {
+  totalAssigned: Int!
+  activeIncidents: Int!
+  resolvedIncidents: Int!
+  averageMTTR: Float
+}
+
+type Playbook {
+  id: UUID!
+  name: String!
+  description: String
+  steps: [PlaybookStep!]!
+}
+
+type PlaybookStep {
+  id: UUID!
+  name: String!
+  description: String
+  order: Int!
+}
+
+# ===== System =====
+
+type HealthStatus {
+  status: HealthState!
+  timestamp: DateTime!
+  version: String!
+  uptime: Int!
+  components: [ComponentHealth!]!
+}
+
+type ComponentHealth {
+  name: String!
+  status: ComponentStatus!
+  message: String
+}
+
+type VersionInfo {
+  version: String!
+  commitHash: String
+  buildDate: DateTime
+  rustVersion: String
+}
+
+# ============================================================================
+# ENUMS
+# ============================================================================
+
+enum Severity {
+  P0  # Critical - immediate action
+  P1  # High - < 1 hour
+  P2  # Medium - < 24 hours
+  P3  # Low - < 1 week
+  P4  # Informational
+}
+
+enum IncidentState {
+  NEW
+  ACKNOWLEDGED
+  IN_PROGRESS
+  ESCALATED
+  RESOLVED
+  CLOSED
+}
+
+enum Category {
+  PERFORMANCE
+  SECURITY
+  AVAILABILITY
+  COMPLIANCE
+  COST
+  OTHER
+}
+
+enum Environment {
+  PRODUCTION
+  STAGING
+  DEVELOPMENT
+  QA
+}
+
+enum EventType {
+  CREATED
+  STATE_CHANGED
+  ACTION_EXECUTED
+  NOTIFICATION_SENT
+  ASSIGNMENT_CHANGED
+  COMMENT_ADDED
+  PLAYBOOK_STARTED
+  PLAYBOOK_COMPLETED
+  ESCALATED
+  RESOLVED
+  ENRICHMENT_ADDED
+}
+
+enum ActorType {
+  USER
+  SYSTEM
+  INTEGRATION
+}
+
+enum HealthState {
+  HEALTHY
+  DEGRADED
+  UNHEALTHY
+}
+
+enum ComponentStatus {
+  UP
+  DOWN
+  DEGRADED
+}
+
+enum MetricGroupBy {
+  SEVERITY
+  CATEGORY
+  STATUS
+  TEAM
+  SOURCE
+  ENVIRONMENT
+}
+
+enum TrendInterval {
+  HOUR
+  DAY
+  WEEK
+  MONTH
+}
+
+enum TrendMetric {
+  INCIDENT_COUNT
+  MTTD
+  MTTA
+  MTTR
+  SLA_COMPLIANCE
+}
+
+enum SortField {
+  CREATED_AT
+  UPDATED_AT
+  SEVERITY
+  STATE
+  TITLE
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+enum EscalationTargetType {
+  USER
+  TEAM
+  ON_CALL
+  EXTERNAL
+}
+
+enum UserRole {
+  ADMIN
+  RESPONDER
+  VIEWER
+}
+
+# ============================================================================
+# INPUT TYPES
+# ============================================================================
+
+# ===== Event Creation =====
+
+input CreateEventInput {
+  eventId: String
+  source: String!
+  sourceVersion: String
+  timestamp: DateTime!
+  eventType: String!
+  category: Category!
+  title: String!
+  description: String!
+  severity: String!
+  resource: ResourceInput
+  metrics: JSON
+  tags: JSON
+  payload: JSON
+}
+
+input CreateSentinelEventInput {
+  eventId: String
+  sourceVersion: String
+  timestamp: DateTime!
+  eventType: String!
+  category: Category!
+  title: String!
+  description: String!
+  severity: String!
+  resource: ResourceInput
+  metrics: JSON
+  tags: JSON
+  payload: JSON
+}
+
+input CreateShieldEventInput {
+  eventId: String
+  sourceVersion: String
+  timestamp: DateTime!
+  eventType: String!
+  category: Category!
+  title: String!
+  description: String!
+  severity: String!
+  resource: ResourceInput
+  metrics: JSON
+  tags: JSON
+  payload: JSON
+}
+
+input ResourceInput {
+  type: String!
+  id: String!
+  name: String
+  metadata: JSON
+}
+
+# ===== Incident Management =====
+
+input CreateIncidentInput {
+  title: String!
+  description: String!
+  severity: Severity!
+  category: Category!
+  impact: String
+  resource: ResourceInput
+  environment: Environment
+  tags: JSON
+}
+
+input UpdateIncidentInput {
+  title: String
+  description: String
+  severity: Severity
+  state: IncidentState
+  assignedTo: UUID
+  assignedTeam: UUID
+  tags: JSON
+}
+
+input ResolveIncidentInput {
+  resolvedBy: String!
+  rootCause: String
+  resolutionNotes: String!
+  playbookUsed: UUID
+}
+
+input CloseIncidentInput {
+  postMortemUrl: String
+  notes: String
+}
+
+input EscalateIncidentInput {
+  reason: String!
+  escalateTo: String
+}
+
+input AssignIncidentInput {
+  userId: UUID
+  teamId: UUID
+}
+
+# ===== Filtering & Pagination =====
+
+input IncidentFilter {
+  severities: [Severity!]
+  states: [IncidentState!]
+  categories: [Category!]
+  environments: [Environment!]
+  sources: [String!]
+  startDate: DateTime
+  endDate: DateTime
+  assignedToMe: Boolean
+  assignedToTeam: UUID
+  hasPlaybook: Boolean
+  slaBreached: Boolean
+  tags: JSON
+}
+
+input EventFilter {
+  sources: [String!]
+  categories: [Category!]
+  startDate: DateTime
+  endDate: DateTime
+  incidentId: UUID
+  deduplicated: Boolean
+}
+
+input PaginationInput {
+  page: Int = 1
+  pageSize: Int = 50
+  cursor: String
+}
+
+input SortInput {
+  field: SortField!
+  order: SortOrder = DESC
+}
+
+# ===== Policy Management =====
+
+input CreateEscalationPolicyInput {
+  name: String!
+  description: String
+  conditions: EscalationConditionsInput!
+  levels: [EscalationLevelInput!]!
+  timers: EscalationTimersInput
+  priority: Int
+}
+
+input UpdateEscalationPolicyInput {
+  name: String
+  description: String
+  conditions: EscalationConditionsInput
+  levels: [EscalationLevelInput!]
+  timers: EscalationTimersInput
+  enabled: Boolean
+  priority: Int
+}
+
+input EscalationConditionsInput {
+  severities: [Severity!]
+  categories: [Category!]
+  sources: [String!]
+  tags: JSON
+}
+
+input EscalationLevelInput {
+  level: Int!
+  name: String!
+  targets: [EscalationTargetInput!]!
+  escalateAfter: Int!
+  notificationChannels: [String!]!
+}
+
+input EscalationTargetInput {
+  type: EscalationTargetType!
+  id: String!
+}
+
+input EscalationTimersInput {
+  acknowledgmentTimeout: Int!
+  resolutionTimeout: Int!
+  escalationInterval: Int!
+}
+
+# ============================================================================
+# PAYLOAD TYPES (for mutations)
+# ============================================================================
+
+type CreateEventPayload {
+  status: EventStatus!
+  event: Event
+  incident: Incident
+  duplicateOf: UUID
+  message: String!
+}
+
+enum EventStatus {
+  ACCEPTED
+  DUPLICATE
+  RATE_LIMITED
+  REJECTED
+}
+
+type CreateIncidentPayload {
+  incident: Incident!
+}
+
+type UpdateIncidentPayload {
+  incident: Incident!
+}
+
+type AcknowledgeIncidentPayload {
+  incident: Incident!
+}
+
+type ResolveIncidentPayload {
+  incident: Incident!
+}
+
+type CloseIncidentPayload {
+  incident: Incident!
+}
+
+type EscalateIncidentPayload {
+  incident: Incident!
+}
+
+type AssignIncidentPayload {
+  incident: Incident!
+}
+
+type AddCommentPayload {
+  comment: Comment!
+}
+
+type MergeIncidentsPayload {
+  incident: Incident!
+  mergedIncident: Incident!
+}
+
+type CreateEscalationPolicyPayload {
+  policy: EscalationPolicy!
+}
+
+type UpdateEscalationPolicyPayload {
+  policy: EscalationPolicy!
+}
+
+type DeleteEscalationPolicyPayload {
+  success: Boolean!
+  message: String
+}
+
+# ============================================================================
+# CONNECTION TYPES (for pagination)
+# ============================================================================
+
+type IncidentConnection {
+  edges: [IncidentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type IncidentEdge {
+  node: Incident!
+  cursor: String!
+}
+
+type EventConnection {
+  edges: [EventEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type EventEdge {
+  node: Event!
+  cursor: String!
+}
+
+type CommentConnection {
+  edges: [CommentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CommentEdge {
+  node: Comment!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+# ============================================================================
+# SUBSCRIPTION EVENT TYPES
+# ============================================================================
+
+type IncidentUpdatedEvent {
+  incident: Incident!
+  updatedFields: [String!]!
+  actor: Actor!
+}
+
+type IncidentStateChangedEvent {
+  incident: Incident!
+  previousState: IncidentState!
+  newState: IncidentState!
+  actor: Actor!
+}
+
+type EscalationEvent {
+  incident: Incident!
+  policy: EscalationPolicy!
+  level: Int!
+  reason: String!
+}
+
+# ============================================================================
+# DIRECTIVES
+# ============================================================================
+
+"""
+Requires authentication to access this field or object
+"""
+directive @auth on FIELD_DEFINITION | OBJECT
+
+"""
+Requires specific role to access this field or object
+"""
+directive @hasRole(role: UserRole!) on FIELD_DEFINITION | OBJECT
+
+"""
+Rate limit this field or mutation
+"""
+directive @rateLimit(
+  limit: Int!
+  duration: Int!
+) on FIELD_DEFINITION
+
+"""
+Add cost to query complexity calculation
+"""
+directive @cost(
+  complexity: Int!
+  multipliers: [String!]
+) on FIELD_DEFINITION
+
+"""
+Cache this field result
+"""
+directive @cacheControl(
+  maxAge: Int!
+  scope: CacheControlScope = PUBLIC
+) on FIELD_DEFINITION | OBJECT
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}

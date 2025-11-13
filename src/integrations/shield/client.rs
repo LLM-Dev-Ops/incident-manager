@@ -30,20 +30,20 @@ pub struct ShieldClient {
 
 impl ShieldClient {
     /// Create a new Shield client
-    #[instrument(skip_all, fields(endpoint = %endpoint))]
+    #[instrument(skip_all)]
     pub async fn new(endpoint: impl Into<String>) -> Result<Self> {
         let endpoint_str = endpoint.into();
         info!(endpoint = %endpoint_str, "Connecting to Shield service");
 
         let channel = Endpoint::from_shared(endpoint_str.clone())
             .map_err(|e| AppError::Integration {
-                source: "Shield".to_string(),
+                integration_source: "Shield".to_string(),
                 message: format!("Invalid endpoint: {}", e),
             })?
             .connect()
             .await
             .map_err(|e| AppError::Integration {
-                source: "Shield".to_string(),
+                integration_source: "Shield".to_string(),
                 message: format!("Connection failed: {}", e),
             })?;
 
@@ -66,13 +66,13 @@ impl ShieldClient {
 
         let channel = Endpoint::from_shared(endpoint_str.clone())
             .map_err(|e| AppError::Integration {
-                source: "Shield".to_string(),
+                integration_source: "Shield".to_string(),
                 message: format!("Invalid endpoint: {}", e),
             })?
             .connect()
             .await
             .map_err(|e| AppError::Integration {
-                source: "Shield".to_string(),
+                integration_source: "Shield".to_string(),
                 message: format!("Connection failed: {}", e),
             })?;
 
@@ -107,14 +107,18 @@ impl ShieldClient {
             severity: event.severity.to_string(),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("analyze_security_event", retry_policy, || async {
-            client
-                .analyze_security_event(request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("analyze_security_event", retry_policy, || {
+            let mut client = client.clone();
+            let request = request.clone();
+            async move {
+                client
+                    .analyze_security_event(request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await
         .map_err(|e: crate::integrations::common::IntegrationError| -> AppError { e.into() });
@@ -192,14 +196,18 @@ impl ShieldClient {
             parameters: request.parameters.clone(),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("assess_risk", retry_policy, || async {
-            client
-                .assess_risk(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("assess_risk", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .assess_risk(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await
         .map_err(|e: crate::integrations::common::IntegrationError| -> AppError { e.into() });
@@ -271,14 +279,18 @@ impl ShieldClient {
             context: request.context.clone(),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("generate_mitigation_plan", retry_policy, || async {
-            client
-                .generate_mitigation_plan(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("generate_mitigation_plan", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .generate_mitigation_plan(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await
         .map_err(|e: crate::integrations::common::IntegrationError| -> AppError { e.into() });
@@ -350,14 +362,18 @@ impl ShieldClient {
             attributes: request.attributes.clone(),
         };
 
-        let mut client = self.client.clone();
+        let client = self.client.clone();
         let retry_policy = &self.retry_policy;
 
-        let result = retry_with_backoff("report_security_pattern", retry_policy, || async {
-            client
-                .report_security_pattern(grpc_request.clone())
-                .await
-                .map_err(|e| e.into())
+        let result = retry_with_backoff("report_security_pattern", retry_policy, || {
+            let mut client = client.clone();
+            let grpc_request = grpc_request.clone();
+            async move {
+                client
+                    .report_security_pattern(grpc_request)
+                    .await
+                    .map_err(|e| e.into())
+            }
         })
         .await
         .map_err(|e: crate::integrations::common::IntegrationError| -> AppError { e.into() });

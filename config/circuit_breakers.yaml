@@ -1,0 +1,274 @@
+# Circuit Breaker Configuration
+# LLM Incident Manager - Production Configuration
+# Version: 1.0.0
+# Last Updated: 2025-11-13
+
+# Global circuit breaker defaults
+defaults:
+  enabled: true
+  emit_metrics: true
+  log_state_changes: true
+  log_level: "warn"
+  fail_fast_on_open: true
+  reset_on_success: true
+
+# Circuit breakers for LLM integrations
+llm_integrations:
+  # Sentinel LLM API - Monitoring and Anomaly Detection
+  sentinel:
+    name: "sentinel-llm-api"
+    enabled: true
+    description: "Circuit breaker for Sentinel monitoring API"
+
+    # Failure thresholds
+    failure_threshold: 5              # Open after 5 failures
+    success_threshold: 2              # Close after 2 successes in half-open
+    volume_threshold: 10              # Minimum requests before evaluation
+    error_threshold_percentage: 50.0  # Open if 50%+ error rate
+
+    # Timeouts
+    timeout_secs: 60                  # Wait 60s before half-open
+    half_open_timeout_secs: 30        # Max 30s in half-open state
+    half_open_max_requests: 3         # Allow 3 test requests
+
+    # Recovery strategy
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 60
+      max_timeout_secs: 300
+      multiplier: 2.0
+
+    # Observability
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "sentinel"
+      category: "llm"
+      criticality: "high"
+
+  # Shield LLM API - Security Analysis
+  shield:
+    name: "shield-llm-api"
+    enabled: true
+    description: "Circuit breaker for Shield security API"
+
+    failure_threshold: 3
+    success_threshold: 2
+    volume_threshold: 5
+    error_threshold_percentage: 60.0
+
+    timeout_secs: 120
+    half_open_timeout_secs: 30
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "linear_backoff"
+      initial_timeout_secs: 120
+      max_timeout_secs: 300
+      increment_secs: 60
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "shield"
+      category: "llm"
+      criticality: "high"
+
+  # Edge-Agent LLM API - Distributed Processing
+  edge_agent:
+    name: "edge-agent-llm-api"
+    enabled: true
+    description: "Circuit breaker for Edge-Agent distributed API"
+
+    failure_threshold: 10
+    success_threshold: 3
+    volume_threshold: 20
+    error_threshold_percentage: 40.0
+
+    timeout_secs: 30
+    half_open_timeout_secs: 15
+    half_open_max_requests: 5
+
+    recovery_strategy:
+      type: "adaptive"
+      min_timeout_secs: 30
+      max_timeout_secs: 300
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "edge-agent"
+      category: "llm"
+      criticality: "medium"
+
+  # Governance LLM API - Compliance Validation
+  governance:
+    name: "governance-llm-api"
+    enabled: true
+    description: "Circuit breaker for Governance compliance API"
+
+    failure_threshold: 5
+    success_threshold: 2
+    volume_threshold: 10
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 60
+    half_open_timeout_secs: 30
+    half_open_max_requests: 3
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "governance"
+      category: "llm"
+      criticality: "medium"
+
+# Circuit breakers for infrastructure services
+infrastructure:
+  # PostgreSQL Database
+  postgresql:
+    name: "postgresql-database"
+    enabled: true
+    description: "Circuit breaker for PostgreSQL database connections"
+
+    failure_threshold: 10
+    success_threshold: 2
+    volume_threshold: 20
+    error_threshold_percentage: 60.0
+
+    timeout_secs: 30
+    half_open_timeout_secs: 15
+    half_open_max_requests: 5
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "postgresql"
+      category: "database"
+      criticality: "critical"
+
+  # Redis Cache
+  redis:
+    name: "redis-cache"
+    enabled: true
+    description: "Circuit breaker for Redis cache operations"
+
+    failure_threshold: 3
+    success_threshold: 1
+    volume_threshold: 5
+    error_threshold_percentage: 40.0
+
+    timeout_secs: 10
+    half_open_timeout_secs: 5
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "redis"
+      category: "cache"
+      criticality: "medium"
+
+  # Elasticsearch
+  elasticsearch:
+    name: "elasticsearch-logging"
+    enabled: true
+    description: "Circuit breaker for Elasticsearch logging"
+
+    failure_threshold: 5
+    success_threshold: 2
+    volume_threshold: 10
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 60
+    half_open_timeout_secs: 30
+    half_open_max_requests: 3
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "elasticsearch"
+      category: "logging"
+      criticality: "low"
+
+# Circuit breakers for external services
+external_services:
+  # Prometheus Metrics
+  prometheus:
+    name: "prometheus-metrics"
+    enabled: true
+    description: "Circuit breaker for Prometheus metrics export"
+
+    failure_threshold: 5
+    success_threshold: 2
+    volume_threshold: 10
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 30
+    half_open_timeout_secs: 15
+    half_open_max_requests: 3
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "prometheus"
+      category: "metrics"
+      criticality: "low"
+
+  # PagerDuty Notifications
+  pagerduty:
+    name: "pagerduty-notifications"
+    enabled: true
+    description: "Circuit breaker for PagerDuty notification API"
+
+    failure_threshold: 3
+    success_threshold: 2
+    volume_threshold: 5
+    error_threshold_percentage: 60.0
+
+    timeout_secs: 30
+    half_open_timeout_secs: 15
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 30
+      max_timeout_secs: 300
+      multiplier: 2.0
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "pagerduty"
+      category: "notifications"
+      criticality: "high"
+
+  # Slack Notifications
+  slack:
+    name: "slack-notifications"
+    enabled: true
+    description: "Circuit breaker for Slack webhook notifications"
+
+    failure_threshold: 3
+    success_threshold: 2
+    volume_threshold: 5
+    error_threshold_percentage: 60.0
+
+    timeout_secs: 20
+    half_open_timeout_secs: 10
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      service: "slack"
+      category: "notifications"
+      criticality: "medium"

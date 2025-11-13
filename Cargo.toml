@@ -5,10 +5,26 @@ edition = "2021"
 rust-version = "1.75"
 authors = ["LLM DevOps Team"]
 description = "Enterprise-grade incident management system for LLM operations"
-license = "MIT"
-repository = "https://github.com/llm-devops/llm-incident-manager"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/globalbusinessadvisors/llm-incident-manager"
+documentation = "https://docs.rs/llm-incident-manager"
+homepage = "https://github.com/globalbusinessadvisors/llm-incident-manager"
 keywords = ["incident", "management", "llm", "devops", "observability"]
 categories = ["development-tools", "web-programming"]
+readme = "README.md"
+exclude = [
+    "docs/",
+    ".claude-flow/",
+    "examples/websocket/",
+    "benches/",
+    "tests/",
+    "node_modules/",
+    "config/circuit_breakers.yaml",
+    "config/circuit_breakers_production.yaml",
+    ".vscode/",
+    ".idea/",
+    "*.log",
+]
 
 [workspace]
 members = ["."]
@@ -37,8 +53,12 @@ tower-http = { version = "0.5", features = ["fs", "trace", "cors"] }
 hyper = { version = "1.0", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "stream", "rustls-tls"], default-features = false }
 
+# GraphQL
+async-graphql = { version = "7.0", features = ["chrono", "uuid", "dataloader"] }
+async-graphql-axum = "7.0"
+
 # Email Support
-lettre = { version = "0.11", features = ["tokio1-rustls-tls", "smtp-transport", "builder"] }
+lettre = { version = "0.11", features = ["tokio1", "tokio1-native-tls", "smtp-transport", "builder"], default-features = false }
 
 # gRPC Support
 tonic = { version = "0.11", features = ["tls", "tls-roots"] }
@@ -65,6 +85,9 @@ toml = "0.8"
 # Observability & Metrics
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "registry"] }
+prometheus = "0.13"
+lazy_static = "1.4"
+parking_lot = "0.12"
 
 # CLI & Configuration
 clap = { version = "4.4", features = ["derive", "env", "cargo"] }
@@ -97,12 +120,32 @@ ndarray = { version = "0.15", features = ["serde"] }
 ndarray-stats = "0.5"
 smartcore = "0.3"
 
+# Scheduler & Cron
+tokio-cron-scheduler = "0.10"
+
+# Full-Text Search
+tantivy = "0.22"
+
+# Message Queues
+async-nats = "0.33"
+rdkafka = { version = "0.36", features = ["cmake-build", "ssl", "libz", "zstd"] }
+
 [dev-dependencies]
 tokio-test = "0.4"
 tempfile = "3.8"
+criterion = { version = "0.5", features = ["html_reports", "async_tokio"] }
+mockito = "1.2"
 
 [build-dependencies]
 tonic-build = "0.11"
+
+[[bench]]
+name = "metrics_benchmark"
+harness = false
+
+[[bench]]
+name = "circuit_breaker_benchmark"
+harness = false
 
 [profile.dev]
 opt-level = 0

@@ -85,11 +85,11 @@ impl From<IntegrationError> for crate::error::AppError {
         match err {
             IntegrationError::Connection(msg) => crate::error::AppError::Network(msg),
             IntegrationError::RequestFailed(msg) => crate::error::AppError::Integration {
-                source: "LLM".to_string(),
+                integration_source: "LLM".to_string(),
                 message: msg,
             },
             IntegrationError::InvalidResponse(msg) => crate::error::AppError::Integration {
-                source: "LLM".to_string(),
+                integration_source: "LLM".to_string(),
                 message: msg,
             },
             IntegrationError::Timeout { timeout_secs } => {
@@ -97,14 +97,14 @@ impl From<IntegrationError> for crate::error::AppError {
             }
             IntegrationError::RetryExhausted { operation, attempts } => {
                 crate::error::AppError::Integration {
-                    source: "LLM".to_string(),
+                    integration_source: "LLM".to_string(),
                     message: format!("Retry exhausted for {} after {} attempts", operation, attempts),
                 }
             }
             IntegrationError::Configuration(msg) => crate::error::AppError::Configuration(msg),
             IntegrationError::Authentication(msg) => crate::error::AppError::Authentication(msg),
             IntegrationError::RateLimit(msg) => crate::error::AppError::Integration {
-                source: "LLM".to_string(),
+                integration_source: "LLM".to_string(),
                 message: format!("Rate limit: {}", msg),
             },
             IntegrationError::Network(msg) => crate::error::AppError::Network(msg),

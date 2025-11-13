@@ -1,0 +1,11 @@
+{
+  "safla": [
+    {
+      "key": "safla/init",
+      "value": "SAFLA model initialization started",
+      "namespace": "safla",
+      "timestamp": 1760496527626,
+      "redacted": false
+    }
+  ]
+}

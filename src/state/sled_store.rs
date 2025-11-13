@@ -18,7 +18,8 @@ pub struct SledStore {
 impl SledStore {
     /// Create a new Sled store at the specified path
     pub fn new<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let db = sled::open(path).map_err(|e| {
+        let path_str = path.as_ref();
+        let db = sled::open(&path).map_err(|e| {
             AppError::Internal(format!("Failed to open Sled database: {}", e))
         })?;
 
@@ -30,7 +31,7 @@ impl SledStore {
             AppError::Internal(format!("Failed to open fingerprints tree: {}", e))
         })?;
 
-        tracing::info!("Initialized Sled store at {:?}", path.as_ref());
+        tracing::info!("Initialized Sled store at {:?}", path_str);
 
         Ok(Self {
             db: Arc::new(db),

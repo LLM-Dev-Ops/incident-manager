@@ -7,11 +7,12 @@ use std::time::Duration;
 use tracing::{error, info, warn};
 
 /// Slack notification sender
+#[derive(Clone)]
 pub struct SlackSender {
-    webhook_url: Option<String>,
-    bot_token: Option<String>,
-    client: Client,
-    default_channel: Option<String>,
+    pub(crate) webhook_url: Option<String>,
+    pub(crate) bot_token: Option<String>,
+    pub(crate) client: Client,
+    pub(crate) default_channel: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -271,7 +272,7 @@ impl SlackSender {
             .json(payload)
             .send()
             .await
-            .map_err(|e| AppError::External(format!("Failed to send Slack webhook: {}", e)))?;
+            .map_err(|e| AppError::Internal(format!("Failed to send Slack webhook: {}", e)))?;
 
         if !response.status().is_success() {
             let status = response.status();
@@ -279,7 +280,7 @@ impl SlackSender {
                 .text()
                 .await
                 .unwrap_or_else(|_| "Unknown error".to_string());
-            return Err(AppError::External(format!(
+            return Err(AppError::Internal(format!(
                 "Slack webhook failed with status {}: {}",
                 status, body
             )));
@@ -297,15 +298,15 @@ impl SlackSender {
             .json(payload)
             .send()
             .await
-            .map_err(|e| AppError::External(format!("Failed to call Slack API: {}", e)))?;
+            .map_err(|e| AppError::Internal(format!("Failed to call Slack API: {}", e)))?;
 
         let slack_response: SlackResponse = response
             .json()
             .await
-            .map_err(|e| AppError::External(format!("Failed to parse Slack response: {}", e)))?;
+            .map_err(|e| AppError::Internal(format!("Failed to parse Slack response: {}", e)))?;
 
         if !slack_response.ok {
-            return Err(AppError::External(format!(
+            return Err(AppError::Internal(format!(
                 "Slack API error: {}",
                 slack_response.error.unwrap_or_else(|| "Unknown".to_string())
             )));

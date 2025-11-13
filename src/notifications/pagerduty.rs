@@ -8,10 +8,11 @@ use std::time::Duration;
 use tracing::{error, info};
 
 /// PagerDuty notification sender
+#[derive(Clone)]
 pub struct PagerDutySender {
-    integration_key: String,
-    api_url: String,
-    client: Client,
+    pub(crate) integration_key: String,
+    pub(crate) api_url: String,
+    pub(crate) client: Client,
 }
 
 #[derive(Debug, Serialize)]
@@ -200,7 +201,7 @@ impl PagerDutySender {
         if let Some(resolution) = &incident.resolution {
             custom_details.insert(
                 "resolution_method".to_string(),
-                serde_json::json!(format!("{:?}", resolution.method)),
+                serde_json::json!(format!("{:?}", resolution.resolution_method)),
             );
             custom_details.insert(
                 "resolved_by".to_string(),
@@ -251,12 +252,12 @@ impl PagerDutySender {
             .json(event)
             .send()
             .await
-            .map_err(|e| AppError::External(format!("Failed to send PagerDuty event: {}", e)))?;
+            .map_err(|e| AppError::Internal(format!("Failed to send PagerDuty event: {}", e)))?;
 
         let status = response.status();
 
         let pd_response: PagerDutyResponse = response.json().await.map_err(|e| {
-            AppError::External(format!("Failed to parse PagerDuty response: {}", e))
+            AppError::Internal(format!("Failed to parse PagerDuty response: {}", e))
         })?;
 
         if !status.is_success() {
@@ -266,7 +267,7 @@ impl PagerDutySender {
                 pd_response.message.clone()
             };
 
-            return Err(AppError::External(format!(
+            return Err(AppError::Internal(format!(
                 "PagerDuty API error ({}): {}",
                 status, error_msg
             )));
@@ -275,7 +276,7 @@ impl PagerDutySender {
         // Check response status
         match pd_response.status.as_str() {
             "success" => Ok(pd_response.dedup_key),
-            _ => Err(AppError::External(format!(
+            _ => Err(AppError::Internal(format!(
                 "PagerDuty returned non-success status: {} - {}",
                 pd_response.status, pd_response.message
             ))),

@@ -273,3 +273,9 @@ mod tests {
         assert!(queue.enqueue(req.clone()).is_err());
     }
 }
+
+
+// Type aliases for Edge Agent responses
+pub type InferenceResponse = InferenceResult;
+pub type ResourceMetrics = ResourceUsage;
+

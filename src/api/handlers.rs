@@ -136,11 +136,11 @@ pub async fn list_incidents(
 
     let incidents = state
         .processor
-        .store
+        .store()
         .list_incidents(&filter, page, page_size)
         .await?;
 
-    let total = state.processor.store.count_incidents(&filter).await?;
+    let total = state.processor.store().count_incidents(&filter).await?;
 
     Ok(Json(ListIncidentsResponse {
         incidents: incidents.into_iter().map(IncidentResponse::from).collect(),
@@ -176,7 +176,7 @@ pub async fn update_incident(
         incident.assignees = assignees;
     }
 
-    state.processor.store.update_incident(&incident).await?;
+    state.processor.store().update_incident(&incident).await?;
 
     Ok(Json(IncidentResponse::from(incident)))
 }
@@ -263,4 +263,12 @@ pub struct ListIncidentsResponse {
     pub total: u64,
     pub page: u32,
     pub page_size: u32,
+}
+
+/// Prometheus metrics endpoint
+///
+/// Returns metrics in Prometheus text exposition format
+pub async fn metrics() -> (StatusCode, String) {
+    let metrics = crate::metrics::gather_metrics();
+    (StatusCode::OK, metrics)
 }

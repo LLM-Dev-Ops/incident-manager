@@ -1,8 +1,14 @@
+pub mod circuit_breaker_wrappers;
 pub mod common;
 pub mod edge_agent;
 pub mod governance;
 pub mod sentinel;
 pub mod shield;
+
+pub use circuit_breaker_wrappers::{
+    EdgeAgentClientWithBreaker, GovernanceClientWithBreaker, SentinelClientWithBreaker,
+    ShieldClientWithBreaker,
+};
 
 pub use common::{
     ConnectionConfig, ConnectionState, Credentials, HealthCheck, HealthStatus,

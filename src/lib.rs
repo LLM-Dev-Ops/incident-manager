@@ -1,17 +1,25 @@
+pub mod analytics;
 pub mod api;
+pub mod circuit_breaker;
 pub mod config;
 pub mod correlation;
 pub mod enrichment;
 pub mod error;
 pub mod escalation;
+pub mod graphql;
 pub mod grpc;
 pub mod integrations;
+pub mod metrics;
 pub mod ml;
 pub mod models;
 pub mod notifications;
 pub mod playbooks;
 pub mod processing;
+pub mod scheduler;
+pub mod search;
 pub mod state;
+pub mod messaging;
+pub mod websocket;
 
 pub use config::Config;
 pub use error::{AppError, Result};

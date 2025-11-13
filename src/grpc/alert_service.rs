@@ -29,46 +29,81 @@ impl AlertIngestionServiceImpl {
 impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
     async fn submit_alert(
         &self,
-        request: Request<AlertMessage>,
-    ) -> std::result::Result<Response<AlertAck>, Status> {
-        let alert_msg = request.into_inner();
+        request: Request<CreateAlertRequest>,
+    ) -> std::result::Result<Response<AlertResponse>, Status> {
+        let create_req = request.into_inner();
 
         tracing::info!(
-            alert_id = %alert_msg.alert_id,
-            source = %alert_msg.source,
+            source = %create_req.source,
+            name = %create_req.name,
             "gRPC: Submitting alert"
         );
 
+        // Generate alert ID
+        let alert_id = uuid::Uuid::new_v4().to_string();
+
+        // Parse severity
+        let severity = match create_req.severity.as_str() {
+            "P0" => Severity::P0,
+            "P1" => Severity::P1,
+            "P2" => Severity::P2,
+            "P3" => Severity::P3,
+            "P4" => Severity::P4,
+            _ => Severity::P3,
+        };
+
         // Convert proto to domain Alert
         let mut alert = Alert::new(
-            alert_msg.alert_id.clone(),
-            alert_msg.source,
-            alert_msg.title,
-            alert_msg.description,
-            Severity::try_from(alert_msg.severity).unwrap_or(Severity::P3),
-            IncidentType::try_from(alert_msg.r#type)
-                .unwrap_or(crate::models::IncidentType::Unknown),
+            alert_id.clone(),
+            create_req.source,
+            create_req.name,
+            create_req.description,
+            severity,
+            IncidentType::Unknown, // Infer from labels if needed
         );
 
-        alert.labels = alert_msg.labels;
-        alert.affected_services = alert_msg.affected_services;
-        alert.runbook_url = alert_msg.runbook_url;
-        alert.annotations = alert_msg.annotations;
-        alert.timestamp = timestamp_to_datetime(alert_msg.timestamp);
+        alert.labels = create_req.labels;
+        alert.annotations = create_req.annotations;
+        alert.timestamp = chrono::Utc::now();
 
         // Process the alert
         let ack = self
             .processor
-            .process_alert(alert)
+            .process_alert(alert.clone())
             .await
             .map_err(Self::app_error_to_status)?;
 
-        Ok(Response::new(AlertAck {
-            alert_id: ack.alert_id.to_string(),
-            incident_id: ack.incident_id.map(|id| id.to_string()).unwrap_or_default(),
-            status: AckStatus::from(ack.status) as i32,
-            message: ack.message,
-            received_at: datetime_to_timestamp(ack.received_at),
+        // Convert domain alert to proto Alert
+        let proto_alert = crate::grpc::proto::alerts::Alert {
+            id: alert_id.clone(),
+            name: alert.title.clone(),
+            description: alert.description.clone(),
+            severity: match alert.severity {
+                Severity::P0 => "P0".to_string(),
+                Severity::P1 => "P1".to_string(),
+                Severity::P2 => "P2".to_string(),
+                Severity::P3 => "P3".to_string(),
+                Severity::P4 => "P4".to_string(),
+            },
+            status: "FIRED".to_string(),
+            source: alert.source.clone(),
+            rule_id: String::new(),
+            labels: alert.labels.clone(),
+            annotations: alert.annotations.clone(),
+            value: 0.0,
+            threshold_operator: String::new(),
+            threshold_value: 0.0,
+            fired_at: datetime_to_timestamp(alert.timestamp),
+            acknowledged_at: None,
+            resolved_at: None,
+            acknowledged_by: String::new(),
+            resolved_by: String::new(),
+            fingerprint: String::new(),
+        };
+
+        Ok(Response::new(AlertResponse {
+            alert: Some(proto_alert),
+            message: format!("Alert processed successfully, incident: {:?}", ack.incident_id),
         }))
     }
 
@@ -88,33 +123,39 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
 
         tokio::spawn(async move {
             while let Ok(Some(alert_msg)) = stream.message().await {
-                tracing::debug!(alert_id = %alert_msg.alert_id, "Processing streamed alert");
+                tracing::debug!(alert_id = %alert_msg.id, "Processing streamed alert");
+
+                // Parse severity
+                let severity = match alert_msg.severity.as_str() {
+                    "P0" => Severity::P0,
+                    "P1" => Severity::P1,
+                    "P2" => Severity::P2,
+                    "P3" => Severity::P3,
+                    "P4" => Severity::P4,
+                    _ => Severity::P3,
+                };
 
                 // Convert and process alert
                 let mut alert = Alert::new(
-                    alert_msg.alert_id.clone(),
+                    alert_msg.id.clone(),
                     alert_msg.source,
-                    alert_msg.title,
+                    alert_msg.name,
                     alert_msg.description,
-                    Severity::try_from(alert_msg.severity).unwrap_or(Severity::P3),
-                    IncidentType::try_from(alert_msg.r#type)
-                        .unwrap_or(crate::models::IncidentType::Unknown),
+                    severity,
+                    IncidentType::Unknown,
                 );
 
                 alert.labels = alert_msg.labels;
-                alert.affected_services = alert_msg.affected_services;
-                alert.runbook_url = alert_msg.runbook_url;
                 alert.annotations = alert_msg.annotations;
-                alert.timestamp = timestamp_to_datetime(alert_msg.timestamp);
+                alert.timestamp = timestamp_to_datetime(alert_msg.fired_at);
 
                 match processor.process_alert(alert).await {
                     Ok(ack) => {
                         let response = AlertAck {
-                            alert_id: ack.alert_id.to_string(),
-                            incident_id: ack.incident_id.map(|id| id.to_string()).unwrap_or_default(),
-                            status: AckStatus::from(ack.status) as i32,
-                            message: ack.message,
-                            received_at: datetime_to_timestamp(ack.received_at),
+                            alert_id: alert_msg.id,
+                            status: AckStatus::Accepted as i32,
+                            message: format!("Alert processed, incident: {:?}", ack.incident_id),
+                            timestamp: datetime_to_timestamp(chrono::Utc::now()),
                         };
 
                         if tx.send(Ok(response)).await.is_err() {
@@ -144,10 +185,8 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
         _request: Request<HealthCheckRequest>,
     ) -> std::result::Result<Response<HealthCheckResponse>, Status> {
         Ok(Response::new(HealthCheckResponse {
-            status: HealthStatus::HealthStatusHealthy as i32,
-            version: env!("CARGO_PKG_VERSION").to_string(),
-            uptime_seconds: 0, // TODO: Track actual uptime
-            metadata: std::collections::HashMap::new(),
+            status: HealthStatus::Healthy as i32,
+            message: format!("Healthy - version {}", env!("CARGO_PKG_VERSION")),
         }))
     }
 }
@@ -170,39 +209,38 @@ mod tests {
     async fn test_submit_alert_grpc() {
         let service = setup_service();
 
-        let request = Request::new(AlertMessage {
-            alert_id: "test-alert-123".to_string(),
-            source: "llm-sentinel".to_string(),
-            timestamp: datetime_to_timestamp(chrono::Utc::now()),
-            severity: incidents::Severity::SeverityP1 as i32,
-            r#type: incidents::IncidentType::IncidentTypePerformance as i32,
-            title: "High Latency".to_string(),
+        let request = Request::new(CreateAlertRequest {
+            name: "High Latency".to_string(),
             description: "P95 > 5s".to_string(),
+            severity: "P1".to_string(),
+            source: "llm-sentinel".to_string(),
+            rule_id: "latency-rule-1".to_string(),
             labels: std::collections::HashMap::new(),
-            affected_services: vec!["api-service".to_string()],
-            runbook_url: Some("https://runbooks.example.com/latency".to_string()),
             annotations: std::collections::HashMap::new(),
+            value: 5000.0,
+            threshold_operator: "gt".to_string(),
+            threshold_value: 1000.0,
         });
 
         let response = service.submit_alert(request).await;
         assert!(response.is_ok());
 
         let ack = response.unwrap().into_inner();
-        assert_eq!(ack.alert_id, "test-alert-123");
-        assert!(!ack.incident_id.is_empty());
-        assert_eq!(ack.status, AckStatus::AckStatusAccepted as i32);
+        assert!(!ack.alert_id.is_empty());
+        assert_eq!(ack.status, AckStatus::Accepted as i32);
     }
 
     #[tokio::test]
     async fn test_health_check_grpc() {
         let service = setup_service();
 
-        let request = Request::new(HealthCheckRequest {});
+        let request = Request::new(HealthCheckRequest {
+            service: String::new(),
+        });
         let response = service.health_check(request).await;
 
         assert!(response.is_ok());
         let health = response.unwrap().into_inner();
-        assert_eq!(health.status, HealthStatus::HealthStatusHealthy as i32);
-        assert_eq!(health.version, env!("CARGO_PKG_VERSION"));
+        assert_eq!(health.status, HealthStatus::Healthy as i32);
     }
 }

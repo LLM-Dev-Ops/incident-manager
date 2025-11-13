@@ -8,6 +8,7 @@ use llm_incident_manager::{
     playbooks::PlaybookService,
     processing::{DeduplicationEngine, IncidentProcessor},
     state::create_store,
+    websocket::{WebSocketConfig, WebSocketState},
 };
 use std::sync::Arc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -30,8 +31,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         default_config()
     });
 
-    tracing::info!("Starting LLM Incident Manager v{}", env!(\"CARGO_PKG_VERSION"));
+    tracing::info!("Starting LLM Incident Manager v{}", env!("CARGO_PKG_VERSION"));
     tracing::info!("Deployment mode: {:?}", config.deployment.mode);
+
+    // Initialize Prometheus metrics
+    if config.observability.prometheus_enabled {
+        if let Err(e) = llm_incident_manager::metrics::init_metrics() {
+            tracing::warn!("Failed to initialize metrics: {}", e);
+            tracing::warn!("Continuing without metrics");
+        } else {
+            tracing::info!("✅ Prometheus metrics initialized");
+        }
+    } else {
+        tracing::info!("⚠️  Prometheus metrics disabled in configuration");
+    }
 
     // Initialize storage backend
     tracing::info!("Storage backend: {:?}", config.state.backend);
@@ -130,13 +143,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tracing::info!("✅ Correlation engine integrated with processor");
     }
 
+    // Initialize WebSocket state
+    let ws_config = WebSocketConfig::default();
+    let ws_state = Arc::new(WebSocketState::new(ws_config));
+    tracing::info!("✅ WebSocket server initialized");
+
+    // Integrate WebSocket handlers with processor (before Arc::new)
+    processor.set_websocket_handlers(Arc::new(ws_state.handlers.clone()));
+    tracing::info!("✅ WebSocket event handlers integrated with processor");
+
+    // Spawn WebSocket cleanup task
+    let cleanup_state = ws_state.clone();
+    tokio::spawn(async move {
+        llm_incident_manager::websocket::cleanup_task(cleanup_state).await;
+    });
+    tracing::info!("✅ WebSocket cleanup task started");
+
     let processor = Arc::new(processor);
 
-    // Create application state for HTTP API
-    let app_state = AppState::new(processor.clone());
+    // Create application state for HTTP API with WebSocket
+    let app_state = AppState::new(processor.clone()).with_websocket(ws_state.clone());
 
-    // Build HTTP router
-    let app = build_router(app_state);
+    // Build HTTP router with REST API
+    let app = build_router(app_state.clone());
+
+    // Note: GraphQL routes are now served separately or integrated directly into build_router
+    // For now, we'll just use the REST router as the main app
 
     // Start HTTP server
     let http_addr = format!("{}:{}", config.server.host, config.server.http_port);
@@ -145,6 +177,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::info!("🚀 HTTP API server listening on http://{}", http_addr);
     tracing::info!("   Health check: http://{}/health", http_addr);
     tracing::info!("   REST API: http://{}/v1/incidents", http_addr);
+    tracing::info!("   GraphQL API: http://{}/graphql", http_addr);
+    tracing::info!("   GraphQL Playground: http://{}/graphql/playground", http_addr);
+    tracing::info!("   GraphQL WebSocket: ws://{}/graphql/ws", http_addr);
+    tracing::info!("   WebSocket Streaming: ws://{}/ws", http_addr);
 
     // Clone config for gRPC server
     let grpc_config = config.clone();

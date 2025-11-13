@@ -103,10 +103,12 @@ impl PatternStrategy {
 
     /// Calculate Jaccard similarity between two strings
     fn jaccard_similarity(s1: &str, s2: &str) -> f64 {
+        let s1_lower = s1.to_lowercase();
+        let s2_lower = s2.to_lowercase();
         let words1: std::collections::HashSet<_> =
-            s1.to_lowercase().split_whitespace().collect();
+            s1_lower.split_whitespace().collect();
         let words2: std::collections::HashSet<_> =
-            s2.to_lowercase().split_whitespace().collect();
+            s2_lower.split_whitespace().collect();
 
         if words1.is_empty() && words2.is_empty() {
             return 1.0;

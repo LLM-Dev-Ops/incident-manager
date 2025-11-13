@@ -12,7 +12,7 @@ use tracing::{debug, warn};
 
 /// Trait for context enrichers
 #[async_trait]
-pub trait Enricher: Send + Sync {
+pub trait Enricher: Send + Sync + 'static {
     /// Get enricher name
     fn name(&self) -> &str;
 
@@ -74,10 +74,12 @@ impl HistoricalEnricher {
     }
 
     fn jaccard_similarity(s1: &str, s2: &str) -> f64 {
+        let s1_lower = s1.to_lowercase();
+        let s2_lower = s2.to_lowercase();
         let words1: std::collections::HashSet<_> =
-            s1.to_lowercase().split_whitespace().collect();
+            s1_lower.split_whitespace().collect();
         let words2: std::collections::HashSet<_> =
-            s2.to_lowercase().split_whitespace().collect();
+            s2_lower.split_whitespace().collect();
 
         if words1.is_empty() && words2.is_empty() {
             return 1.0;
@@ -112,10 +114,8 @@ impl Enricher for HistoricalEnricher {
         let lookback = chrono::Duration::seconds(config.historical_lookback_secs as i64);
         let cutoff = chrono::Utc::now() - lookback;
 
-        let filter = IncidentFilter {
-            created_after: Some(cutoff),
-            ..Default::default()
-        };
+        // IncidentFilter only has: states, severities, sources, active_only
+        let filter = IncidentFilter::default();
 
         let historical_incidents = match self.incident_store.list_incidents(&filter, 0, 1000).await
         {
@@ -132,7 +132,7 @@ impl Enricher for HistoricalEnricher {
         // Calculate similarities
         let mut similar: Vec<(Incident, f64)> = historical_incidents
             .into_iter()
-            .filter(|hist| hist.id != incident.id) // Exclude self
+            .filter(|hist| hist.id != incident.id && hist.created_at >= cutoff) // Exclude self and filter by cutoff
             .map(|hist| {
                 let similarity = Self::calculate_similarity(incident, &hist);
                 (hist, similarity)
@@ -150,9 +150,8 @@ impl Enricher for HistoricalEnricher {
         let similar_incidents: Vec<SimilarIncident> = similar
             .into_iter()
             .map(|(inc, score)| {
-                let resolution_time = inc
-                    .resolved_at
-                    .map(|r| (r - inc.created_at).num_seconds() as u64);
+                let resolution_time = inc.resolution.as_ref()
+                    .map(|r| (r.resolved_at - inc.created_at).num_seconds() as u64);
 
                 SimilarIncident {
                     incident_id: inc.id,
@@ -362,7 +361,10 @@ impl TeamEnricher {
             crate::models::IncidentType::Application => "app-team".to_string(),
             crate::models::IncidentType::Security => "security-team".to_string(),
             crate::models::IncidentType::Performance => "sre-team".to_string(),
-            crate::models::IncidentType::Other => "ops-team".to_string(),
+            crate::models::IncidentType::Data => "data-team".to_string(),
+            crate::models::IncidentType::Availability => "sre-team".to_string(),
+            crate::models::IncidentType::Compliance => "compliance-team".to_string(),
+            crate::models::IncidentType::Unknown => "ops-team".to_string(),
         }
     }
 }

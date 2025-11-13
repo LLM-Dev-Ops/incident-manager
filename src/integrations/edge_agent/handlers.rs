@@ -151,7 +151,7 @@ impl EdgeInferenceHandler {
             .offline_queue()
             .enqueue(request)
             .map_err(|e| crate::error::AppError::Integration {
-                source: "EdgeAgent".to_string(),
+                integration_source: "EdgeAgent".to_string(),
                 message: e,
             })
     }

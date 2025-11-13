@@ -1,0 +1,325 @@
+# Circuit Breaker Configuration - PRODUCTION
+# LLM Incident Manager - Production-Ready Configuration
+# Version: 1.0.0
+# Last Updated: 2025-11-13
+#
+# IMPORTANT: This configuration is optimized for production environments
+# with high availability, fault tolerance, and conservative thresholds.
+
+# Global settings for production
+defaults:
+  enabled: true
+  emit_metrics: true
+  log_state_changes: true
+  log_level: "warn"                    # Reduce log noise in production
+  fail_fast_on_open: true              # Immediate failure when circuit open
+  reset_on_success: true               # Reset failure counter on success
+
+# Production LLM Integration Circuit Breakers
+llm_integrations:
+  sentinel:
+    name: "sentinel-llm-api-prod"
+    enabled: true
+
+    # Conservative thresholds for production
+    failure_threshold: 3                # Lower threshold - fail fast
+    success_threshold: 3                # Higher threshold - confirm recovery
+    volume_threshold: 5                 # Lower volume - react quickly
+    error_threshold_percentage: 40.0    # Open at 40% error rate
+
+    # Production timeouts
+    timeout_secs: 90                    # Longer timeout for LLM processing
+    half_open_timeout_secs: 45          # Give service time to stabilize
+    half_open_max_requests: 2           # Fewer test requests
+
+    # Exponential backoff for gradual recovery
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 90
+      max_timeout_secs: 600            # Up to 10 minutes
+      multiplier: 2.0
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "sentinel"
+      category: "llm"
+      criticality: "critical"
+      team: "platform"
+
+  shield:
+    name: "shield-llm-api-prod"
+    enabled: true
+
+    failure_threshold: 2
+    success_threshold: 3
+    volume_threshold: 5
+    error_threshold_percentage: 30.0
+
+    timeout_secs: 120
+    half_open_timeout_secs: 60
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 120
+      max_timeout_secs: 600
+      multiplier: 2.0
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "shield"
+      category: "llm"
+      criticality: "critical"
+      team: "security"
+
+  edge_agent:
+    name: "edge-agent-llm-api-prod"
+    enabled: true
+
+    failure_threshold: 5
+    success_threshold: 3
+    volume_threshold: 10
+    error_threshold_percentage: 40.0
+
+    timeout_secs: 45
+    half_open_timeout_secs: 20
+    half_open_max_requests: 3
+
+    recovery_strategy:
+      type: "adaptive"
+      min_timeout_secs: 45
+      max_timeout_secs: 300
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "edge-agent"
+      category: "llm"
+      criticality: "high"
+      team: "platform"
+
+  governance:
+    name: "governance-llm-api-prod"
+    enabled: true
+
+    failure_threshold: 3
+    success_threshold: 3
+    volume_threshold: 5
+    error_threshold_percentage: 40.0
+
+    timeout_secs: 90
+    half_open_timeout_secs: 45
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 90
+      max_timeout_secs: 600
+      multiplier: 2.0
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "governance"
+      category: "llm"
+      criticality: "high"
+      team: "compliance"
+
+# Production Infrastructure Circuit Breakers
+infrastructure:
+  postgresql:
+    name: "postgresql-database-prod"
+    enabled: true
+
+    # Critical service - aggressive protection
+    failure_threshold: 8
+    success_threshold: 3
+    volume_threshold: 15
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 20                   # Short timeout for database
+    half_open_timeout_secs: 10
+    half_open_max_requests: 3
+
+    recovery_strategy:
+      type: "linear_backoff"
+      initial_timeout_secs: 20
+      max_timeout_secs: 120
+      increment_secs: 20
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "postgresql"
+      category: "database"
+      criticality: "critical"
+      team: "platform"
+
+  redis:
+    name: "redis-cache-prod"
+    enabled: true
+
+    # Cache failures should open quickly
+    failure_threshold: 2
+    success_threshold: 2
+    volume_threshold: 5
+    error_threshold_percentage: 30.0
+
+    timeout_secs: 5                    # Very short timeout for cache
+    half_open_timeout_secs: 3
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "redis"
+      category: "cache"
+      criticality: "high"
+      team: "platform"
+
+  elasticsearch:
+    name: "elasticsearch-logging-prod"
+    enabled: true
+
+    # Logging is non-critical, can tolerate failures
+    failure_threshold: 10
+    success_threshold: 2
+    volume_threshold: 20
+    error_threshold_percentage: 70.0
+
+    timeout_secs: 60
+    half_open_timeout_secs: 30
+    half_open_max_requests: 5
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "elasticsearch"
+      category: "logging"
+      criticality: "medium"
+      team: "platform"
+
+# Production External Service Circuit Breakers
+external_services:
+  prometheus:
+    name: "prometheus-metrics-prod"
+    enabled: true
+
+    # Metrics export is important but not critical
+    failure_threshold: 5
+    success_threshold: 2
+    volume_threshold: 10
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 15
+    half_open_timeout_secs: 10
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "prometheus"
+      category: "metrics"
+      criticality: "medium"
+      team: "sre"
+
+  pagerduty:
+    name: "pagerduty-notifications-prod"
+    enabled: true
+
+    # Critical alerting path - conservative thresholds
+    failure_threshold: 2
+    success_threshold: 3
+    volume_threshold: 3
+    error_threshold_percentage: 30.0
+
+    timeout_secs: 30
+    half_open_timeout_secs: 15
+    half_open_max_requests: 1          # Single test request
+
+    recovery_strategy:
+      type: "exponential_backoff"
+      initial_timeout_secs: 30
+      max_timeout_secs: 300
+      multiplier: 2.0
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "pagerduty"
+      category: "alerting"
+      criticality: "critical"
+      team: "sre"
+
+  slack:
+    name: "slack-notifications-prod"
+    enabled: true
+
+    failure_threshold: 3
+    success_threshold: 2
+    volume_threshold: 5
+    error_threshold_percentage: 50.0
+
+    timeout_secs: 15
+    half_open_timeout_secs: 10
+    half_open_max_requests: 2
+
+    recovery_strategy:
+      type: "fixed_timeout"
+
+    metrics_prefix: "circuit_breaker"
+    tags:
+      environment: "production"
+      service: "slack"
+      category: "notifications"
+      criticality: "high"
+      team: "sre"
+
+# Production monitoring and alerting configuration
+monitoring:
+  # Enable health check endpoint
+  health_check_enabled: true
+  health_check_interval_secs: 30
+
+  # Prometheus metrics
+  prometheus:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+
+  # Alert thresholds for production
+  alerts:
+    circuit_open_duration_secs: 300     # Alert if open > 5 min
+    circuit_flapping_count: 3           # Alert if opens 3+ times/hour
+    high_error_rate_threshold: 0.3      # Alert at 30% error rate
+    high_rejection_rate_threshold: 10   # Alert at 10 rejections/sec
+
+# Production environment variables (override defaults)
+# Set these in your deployment:
+#
+# SENTINEL_CB_ENABLED=true
+# SENTINEL_CB_FAILURE_THRESHOLD=3
+# SENTINEL_CB_TIMEOUT_SECS=90
+#
+# SHIELD_CB_ENABLED=true
+# SHIELD_CB_FAILURE_THRESHOLD=2
+# SHIELD_CB_TIMEOUT_SECS=120
+#
+# DB_CB_ENABLED=true
+# DB_CB_FAILURE_THRESHOLD=8
+# DB_CB_TIMEOUT_SECS=20
+#
+# REDIS_CB_ENABLED=true
+# REDIS_CB_FAILURE_THRESHOLD=2
+# REDIS_CB_TIMEOUT_SECS=5

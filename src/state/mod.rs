@@ -1,14 +1,16 @@
-pub mod store;
 pub mod cache;
-pub mod sled_store;
-pub mod redis_store;
+pub mod circuit_breaker_store;
 pub mod factory;
+pub mod redis_store;
+pub mod sled_store;
+pub mod store;
 
-pub use store::*;
 pub use cache::*;
-pub use sled_store::SledStore;
+pub use circuit_breaker_store::{CircuitBreakerRedis, CircuitBreakerStore};
+pub use factory::{create_in_memory_store, create_store};
 pub use redis_store::RedisStore;
-pub use factory::{create_store, create_in_memory_store};
+pub use sled_store::SledStore;
+pub use store::*;
 
 use crate::error::{AppError, Result};
 use crate::models::Incident;

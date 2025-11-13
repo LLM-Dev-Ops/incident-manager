@@ -16,6 +16,7 @@ use crate::integrations::common::{
 };
 
 /// Sentinel client for LLM monitoring and alerting
+#[derive(Clone)]
 pub struct SentinelClient {
     /// HTTP client
     client: Client,
@@ -85,7 +86,7 @@ impl SentinelClient {
 
         let response = request.send().await.map_err(|e| {
             error!(error = %e, "Failed to fetch alerts from Sentinel");
-            IntegrationError::from(e)
+            IntegrationError::RequestFailed(e.to_string())
         })?;
 
         if !response.status().is_success() {
@@ -134,7 +135,7 @@ impl SentinelClient {
 
         let response = request.send().await.map_err(|e| {
             error!(error = %e, "Failed to request anomaly analysis");
-            IntegrationError::from(e)
+            IntegrationError::RequestFailed(e.to_string())
         })?;
 
         if !response.status().is_success() {
@@ -185,7 +186,7 @@ impl SentinelClient {
 
         let response = http_request.send().await.map_err(|e| {
             error!(error = %e, "Failed to request severity prediction");
-            IntegrationError::from(e)
+            IntegrationError::RequestFailed(e.to_string())
         })?;
 
         if !response.status().is_success() {
@@ -283,7 +284,7 @@ impl LLMClient for SentinelClient {
         let response = request
             .send()
             .await
-            .map_err(|e| IntegrationError::from(e))?;
+            .map_err(|e| IntegrationError::RequestFailed(e.to_string()))?;
 
         let response_time_ms = start.elapsed().as_millis() as u64;
 

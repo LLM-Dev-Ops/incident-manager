@@ -16,6 +16,48 @@ pub struct Notification {
     pub error: Option<String>,
 }
 
+impl Notification {
+    /// Create a new notification
+    pub fn new(
+        incident_id: Uuid,
+        channel: NotificationChannel,
+        recipient: String,
+        subject: String,
+        body: String,
+    ) -> Self {
+        let channel = match channel {
+            NotificationChannel::Email { .. } => NotificationChannel::Email {
+                to: vec![recipient],
+                subject,
+                body,
+            },
+            NotificationChannel::Webhook { .. } => NotificationChannel::Webhook {
+                url: recipient,
+                payload: serde_json::json!({
+                    "subject": subject,
+                    "body": body,
+                }),
+            },
+            NotificationChannel::Slack { .. } => NotificationChannel::Slack {
+                channel: recipient,
+                message: format!("{}\n\n{}", subject, body),
+            },
+            _ => channel,
+        };
+
+        Self {
+            id: Uuid::new_v4(),
+            incident_id,
+            channel,
+            created_at: Utc::now(),
+            sent_at: None,
+            status: NotificationStatus::Pending,
+            retry_count: 0,
+            error: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum NotificationChannel {

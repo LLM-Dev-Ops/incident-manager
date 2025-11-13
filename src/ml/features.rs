@@ -1,6 +1,7 @@
 use crate::error::{AppError, Result};
 use crate::ml::models::{FeatureConfig, TrainingSample};
 use crate::models::Incident;
+use chrono::{Datelike, Timelike};
 use ndarray::Array1;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -274,10 +275,13 @@ impl FeatureExtractor {
         use crate::models::IncidentType;
         match incident_type {
             IncidentType::Infrastructure => 0.0,
-            IncidentType::Application => 0.25,
-            IncidentType::Security => 0.5,
-            IncidentType::Performance => 0.75,
-            IncidentType::Other => 1.0,
+            IncidentType::Application => 0.14,
+            IncidentType::Security => 0.29,
+            IncidentType::Data => 0.43,
+            IncidentType::Performance => 0.57,
+            IncidentType::Availability => 0.71,
+            IncidentType::Compliance => 0.86,
+            IncidentType::Unknown => 1.0,
         }
     }
 
@@ -300,16 +304,22 @@ impl FeatureExtractor {
     /// Convert numeric to type
     pub fn numeric_to_type(value: f64) -> crate::models::IncidentType {
         use crate::models::IncidentType;
-        if value < 0.125 {
+        if value < 0.07 {
             IncidentType::Infrastructure
-        } else if value < 0.375 {
+        } else if value < 0.215 {
             IncidentType::Application
-        } else if value < 0.625 {
+        } else if value < 0.36 {
             IncidentType::Security
-        } else if value < 0.875 {
+        } else if value < 0.5 {
+            IncidentType::Data
+        } else if value < 0.64 {
             IncidentType::Performance
+        } else if value < 0.785 {
+            IncidentType::Availability
+        } else if value < 0.93 {
+            IncidentType::Compliance
         } else {
-            IncidentType::Other
+            IncidentType::Unknown
         }
     }
 
@@ -483,7 +493,7 @@ mod tests {
             extractor.type_to_numeric(&IncidentType::Infrastructure),
             0.0
         );
-        assert_eq!(extractor.type_to_numeric(&IncidentType::Other), 1.0);
+        assert_eq!(extractor.type_to_numeric(&IncidentType::Unknown), 1.0);
 
         assert_eq!(
             FeatureExtractor::numeric_to_type(0.0),
@@ -491,7 +501,7 @@ mod tests {
         );
         assert_eq!(
             FeatureExtractor::numeric_to_type(1.0),
-            IncidentType::Other
+            IncidentType::Unknown
         );
     }
 

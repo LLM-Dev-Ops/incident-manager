@@ -45,12 +45,22 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
             "gRPC: Creating incident"
         );
 
+        // Parse severity from string
+        let severity = match req.severity.as_str() {
+            "P0" => Severity::P0,
+            "P1" => Severity::P1,
+            "P2" => Severity::P2,
+            "P3" => Severity::P3,
+            "P4" => Severity::P4,
+            _ => Severity::P3,
+        };
+
         let incident = Incident::new(
             req.source,
             req.title,
             req.description,
-            Severity::from(Severity::try_from(req.severity).unwrap_or(Severity::P3 as i32)),
-            req.r#type.try_into().unwrap_or(crate::models::IncidentType::Unknown),
+            severity,
+            crate::models::IncidentType::Unknown,
         );
 
         let created = self
@@ -61,6 +71,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         Ok(Response::new(IncidentResponse {
             incident: Some(created.into()),
+            message: "Incident created successfully".to_string(),
         }))
     }
 
@@ -70,7 +81,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
     ) -> std::result::Result<Response<IncidentResponse>, Status> {
         let req = request.into_inner();
 
-        let id = Uuid::parse_str(&req.id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
+        let id = Uuid::parse_str(&req.incident_id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
 
         tracing::debug!(incident_id = %id, "gRPC: Getting incident");
 
@@ -82,6 +93,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         Ok(Response::new(IncidentResponse {
             incident: Some(incident.into()),
+            message: String::new(),
         }))
     }
 
@@ -91,22 +103,37 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
     ) -> std::result::Result<Response<ListIncidentsResponse>, Status> {
         let req = request.into_inner();
 
+        // Parse status and severity from strings
+        let states = if let Some(status_str) = req.status {
+            vec![match status_str.as_str() {
+                "Open" => IncidentState::Detected,
+                "Acknowledged" => IncidentState::Triaged,
+                "Investigating" => IncidentState::Investigating,
+                "Resolved" => IncidentState::Resolved,
+                "Closed" => IncidentState::Closed,
+                _ => IncidentState::Detected,
+            }]
+        } else {
+            vec![]
+        };
+
+        let severities = if let Some(severity_str) = req.severity {
+            vec![match severity_str.as_str() {
+                "P0" => Severity::P0,
+                "P1" => Severity::P1,
+                "P2" => Severity::P2,
+                "P3" => Severity::P3,
+                "P4" => Severity::P4,
+                _ => Severity::P3,
+            }]
+        } else {
+            vec![]
+        };
+
         let filter = IncidentFilter {
-            states: req
-                .states
-                .into_iter()
-                .map(|s| IncidentState::try_from(s).unwrap_or(IncidentState::Detected))
-                .collect(),
-            severities: req
-                .severities
-                .into_iter()
-                .map(|s| Severity::try_from(s).unwrap_or(Severity::P3))
-                .collect(),
-            sources: if req.source_filter.is_empty() {
-                vec![]
-            } else {
-                vec![req.source_filter]
-            },
+            states,
+            severities,
+            sources: vec![],
             active_only: false,
         };
 
@@ -117,21 +144,21 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         let incidents = self
             .processor
-            .store
+            .store()
             .list_incidents(&filter, page as u32, page_size as u32)
             .await
             .map_err(Self::app_error_to_status)?;
 
         let total = self
             .processor
-            .store
+            .store()
             .count_incidents(&filter)
             .await
             .map_err(Self::app_error_to_status)?;
 
         Ok(Response::new(ListIncidentsResponse {
             incidents: incidents.into_iter().map(|i| i.into()).collect(),
-            total: total as i32,
+            total_count: total as i32,
             page,
             page_size,
         }))
@@ -143,7 +170,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
     ) -> std::result::Result<Response<IncidentResponse>, Status> {
         let req = request.into_inner();
 
-        let id = Uuid::parse_str(&req.id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
+        let id = Uuid::parse_str(&req.incident_id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
 
         tracing::info!(incident_id = %id, "gRPC: Updating incident");
 
@@ -153,32 +180,55 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
             .await
             .map_err(Self::app_error_to_status)?;
 
+        // Update title if provided
+        if let Some(title) = req.title {
+            incident.title = title;
+        }
+
+        // Update description if provided
+        if let Some(description) = req.description {
+            incident.description = description;
+        }
+
         // Update state if provided
-        if let Some(new_state) = req.state {
-            let state: IncidentState = IncidentState::try_from(new_state)
-                .map_err(|_| Status::invalid_argument("Invalid state"))?;
+        if let Some(status_str) = req.status {
+            let state = match status_str.as_str() {
+                "Open" => IncidentState::Detected,
+                "Acknowledged" => IncidentState::Triaged,
+                "Investigating" => IncidentState::Investigating,
+                "Resolved" => IncidentState::Resolved,
+                "Closed" => IncidentState::Closed,
+                _ => return Err(Status::invalid_argument("Invalid status")),
+            };
             incident.update_state(state, "grpc-api".to_string());
         }
 
         // Update severity if provided
-        if let Some(new_severity) = req.severity {
-            incident.severity = Severity::try_from(new_severity)
-                .map_err(|_| Status::invalid_argument("Invalid severity"))?;
+        if let Some(severity_str) = req.severity {
+            incident.severity = match severity_str.as_str() {
+                "P0" => Severity::P0,
+                "P1" => Severity::P1,
+                "P2" => Severity::P2,
+                "P3" => Severity::P3,
+                "P4" => Severity::P4,
+                _ => return Err(Status::invalid_argument("Invalid severity")),
+            };
         }
 
-        // Update assignees
-        if !req.assignees.is_empty() {
-            incident.assignees = req.assignees;
+        // Update assigned_to if provided
+        if let Some(assigned_to) = req.assigned_to {
+            incident.assignees = vec![assigned_to];
         }
 
         self.processor
-            .store
+            .store()
             .update_incident(&incident)
             .await
             .map_err(Self::app_error_to_status)?;
 
         Ok(Response::new(IncidentResponse {
             incident: Some(incident.into()),
+            message: "Incident updated successfully".to_string(),
         }))
     }
 
@@ -188,26 +238,56 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
     ) -> std::result::Result<Response<IncidentResponse>, Status> {
         let req = request.into_inner();
 
-        let id = Uuid::parse_str(&req.id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
+        let id = Uuid::parse_str(&req.incident_id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
 
         tracing::info!(incident_id = %id, "gRPC: Resolving incident");
 
-        let method = crate::models::ResolutionMethod::try_from(req.method)
-            .map_err(|_| Status::invalid_argument("Invalid resolution method"))?;
-
         let incident = self
             .processor
-            .resolve_incident(&id, req.resolved_by, method, req.notes, req.root_cause)
+            .resolve_incident(&id, req.resolved_by, crate::models::ResolutionMethod::Manual, req.resolution_note, None)
             .await
             .map_err(Self::app_error_to_status)?;
 
         Ok(Response::new(IncidentResponse {
             incident: Some(incident.into()),
+            message: "Incident resolved successfully".to_string(),
+        }))
+    }
+
+    async fn add_note(
+        &self,
+        request: Request<AddNoteRequest>,
+    ) -> std::result::Result<Response<IncidentResponse>, Status> {
+        let req = request.into_inner();
+
+        let id = Uuid::parse_str(&req.incident_id)
+            .map_err(|_| Status::invalid_argument("Invalid UUID"))?;
+
+        tracing::info!(incident_id = %id, "gRPC: Adding note to incident");
+
+        let mut incident = self
+            .processor
+            .get_incident(&id)
+            .await
+            .map_err(Self::app_error_to_status)?;
+
+        // Add note to incident
+        incident.add_note(req.author, req.note);
+
+        self.processor
+            .store()
+            .update_incident(&incident)
+            .await
+            .map_err(Self::app_error_to_status)?;
+
+        Ok(Response::new(IncidentResponse {
+            incident: Some(incident.into()),
+            message: "Note added successfully".to_string(),
         }))
     }
 
     type StreamIncidentsStream =
-        tokio_stream::wrappers::ReceiverStream<std::result::Result<IncidentEvent, Status>>;
+        tokio_stream::wrappers::ReceiverStream<std::result::Result<IncidentUpdate, Status>>;
 
     async fn stream_incidents(
         &self,
@@ -217,17 +297,36 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         tracing::info!("gRPC: Starting incident stream");
 
+        // Parse statuses and severities from strings
+        let states: Vec<IncidentState> = req
+            .statuses
+            .into_iter()
+            .map(|s| match s.as_str() {
+                "Open" => IncidentState::Detected,
+                "Acknowledged" => IncidentState::Triaged,
+                "Investigating" => IncidentState::Investigating,
+                "Resolved" => IncidentState::Resolved,
+                "Closed" => IncidentState::Closed,
+                _ => IncidentState::Detected,
+            })
+            .collect();
+
+        let severities: Vec<Severity> = req
+            .severities
+            .into_iter()
+            .map(|s| match s.as_str() {
+                "P0" => Severity::P0,
+                "P1" => Severity::P1,
+                "P2" => Severity::P2,
+                "P3" => Severity::P3,
+                "P4" => Severity::P4,
+                _ => Severity::P3,
+            })
+            .collect();
+
         let filter = IncidentFilter {
-            states: req
-                .states
-                .into_iter()
-                .map(|s| IncidentState::try_from(s).unwrap_or(IncidentState::Detected))
-                .collect(),
-            severities: req
-                .min_severity
-                .into_iter()
-                .map(|s| Severity::try_from(s).unwrap_or(Severity::P3))
-                .collect(),
+            states,
+            severities,
             sources: vec![],
             active_only: true,
         };
@@ -240,17 +339,17 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
         // Spawn background task to send incidents
         tokio::spawn(async move {
             // Get initial incidents
-            match processor.store.list_incidents(&filter, 0, 100).await {
+            match processor.store().list_incidents(&filter, 0, 100).await {
                 Ok(incidents) => {
                     for incident in incidents {
-                        let event = IncidentEvent {
+                        let update = IncidentUpdate {
                             incident_id: incident.id.to_string(),
-                            event_type: EventType::EventTypeCreated as i32,
+                            update_type: "created".to_string(),
                             incident: Some(incident.into()),
                             timestamp: datetime_to_timestamp(chrono::Utc::now()),
                         };
 
-                        if tx.send(Ok(event)).await.is_err() {
+                        if tx.send(Ok(update)).await.is_err() {
                             break;
                         }
                     }
@@ -290,14 +389,13 @@ mod tests {
         let service = setup_service();
 
         let request = Request::new(CreateIncidentRequest {
-            source: "test-source".to_string(),
             title: "Test Incident".to_string(),
             description: "Test description".to_string(),
-            severity: Severity::P1 as i32,
-            r#type: IncidentType::IncidentTypeApplication as i32,
-            affected_resources: vec!["service-a".to_string()],
-            labels: std::collections::HashMap::new(),
+            severity: "P1".to_string(),
+            source: "test-source".to_string(),
             metadata: std::collections::HashMap::new(),
+            tags: vec![],
+            assigned_to: String::new(),
         });
 
         let response = service.create_incident(request).await;
@@ -314,21 +412,20 @@ mod tests {
 
         // First create an incident
         let create_req = Request::new(CreateIncidentRequest {
-            source: "test".to_string(),
             title: "Test".to_string(),
             description: "Desc".to_string(),
-            severity: Severity::P2 as i32,
-            r#type: IncidentType::IncidentTypeInfrastructure as i32,
-            affected_resources: vec![],
-            labels: std::collections::HashMap::new(),
+            severity: "P2".to_string(),
+            source: "test".to_string(),
             metadata: std::collections::HashMap::new(),
+            tags: vec![],
+            assigned_to: String::new(),
         });
 
         let create_response = service.create_incident(create_req).await.unwrap();
         let incident_id = create_response.into_inner().incident.unwrap().id;
 
         // Now get it
-        let get_req = Request::new(GetIncidentRequest { id: incident_id });
+        let get_req = Request::new(GetIncidentRequest { incident_id });
         let response = service.get_incident(get_req).await;
         assert!(response.is_ok());
     }
@@ -339,14 +436,13 @@ mod tests {
 
         // Create incident
         let create_req = Request::new(CreateIncidentRequest {
-            source: "test".to_string(),
             title: "Test".to_string(),
             description: "Desc".to_string(),
-            severity: Severity::P1 as i32,
-            r#type: IncidentType::IncidentTypeSecurity as i32,
-            affected_resources: vec![],
-            labels: std::collections::HashMap::new(),
+            severity: "P1".to_string(),
+            source: "test".to_string(),
             metadata: std::collections::HashMap::new(),
+            tags: vec![],
+            assigned_to: String::new(),
         });
 
         let create_response = service.create_incident(create_req).await.unwrap();
@@ -354,11 +450,9 @@ mod tests {
 
         // Resolve it
         let resolve_req = Request::new(ResolveIncidentRequest {
-            id: incident_id.clone(),
+            incident_id: incident_id.clone(),
+            resolution_note: "Test resolution".to_string(),
             resolved_by: "tester@example.com".to_string(),
-            method: ResolutionMethod::ResolutionMethodManual as i32,
-            notes: "Test resolution".to_string(),
-            root_cause: Some("Test root cause".to_string()),
         });
 
         let response = service.resolve_incident(resolve_req).await;

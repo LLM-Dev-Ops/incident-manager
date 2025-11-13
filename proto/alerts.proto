@@ -1,0 +1,192 @@
+syntax = "proto3";
+
+package alerts;
+
+import "google/protobuf/timestamp.proto";
+
+// Alert Ingestion Service (for gRPC)
+service AlertIngestion {
+    // Submit a new alert
+    rpc SubmitAlert(CreateAlertRequest) returns (AlertResponse);
+
+    // Bidirectional streaming for alerts
+    rpc StreamAlerts(stream AlertMessage) returns (stream AlertAck);
+
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Alert Management Service
+service AlertService {
+    // Create a new alert
+    rpc CreateAlert(CreateAlertRequest) returns (AlertResponse);
+
+    // Get alert by ID
+    rpc GetAlert(GetAlertRequest) returns (AlertResponse);
+
+    // List alerts with filters
+    rpc ListAlerts(ListAlertsRequest) returns (ListAlertsResponse);
+
+    // Acknowledge alert
+    rpc AcknowledgeAlert(AcknowledgeAlertRequest) returns (AlertResponse);
+
+    // Resolve alert
+    rpc ResolveAlert(ResolveAlertRequest) returns (AlertResponse);
+
+    // Stream real-time alerts
+    rpc StreamAlerts(StreamAlertsRequest) returns (stream AlertUpdate);
+
+    // Evaluate alert rules
+    rpc EvaluateRules(EvaluateRulesRequest) returns (EvaluateRulesResponse);
+}
+
+message CreateAlertRequest {
+    string name = 1;
+    string description = 2;
+    string severity = 3;
+    string source = 4;
+    string rule_id = 5;
+    map<string, string> labels = 6;
+    map<string, string> annotations = 7;
+    double value = 8;
+    string threshold_operator = 9;
+    double threshold_value = 10;
+}
+
+message GetAlertRequest {
+    string alert_id = 1;
+}
+
+message ListAlertsRequest {
+    optional string status = 1;
+    optional string severity = 2;
+    optional string source = 3;
+    repeated string labels = 4;
+    int32 page = 5;
+    int32 page_size = 6;
+    google.protobuf.Timestamp from_time = 7;
+    google.protobuf.Timestamp to_time = 8;
+}
+
+message ListAlertsResponse {
+    repeated Alert alerts = 1;
+    int32 total_count = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+}
+
+message AcknowledgeAlertRequest {
+    string alert_id = 1;
+    string acknowledged_by = 2;
+    string note = 3;
+}
+
+message ResolveAlertRequest {
+    string alert_id = 1;
+    string resolved_by = 2;
+    string resolution_note = 3;
+}
+
+message StreamAlertsRequest {
+    repeated string severities = 1;
+    repeated string sources = 2;
+    map<string, string> label_filters = 3;
+}
+
+message EvaluateRulesRequest {
+    repeated string rule_ids = 1;
+    map<string, double> metrics = 2;
+}
+
+message EvaluateRulesResponse {
+    repeated RuleEvaluation evaluations = 1;
+    int32 alerts_triggered = 2;
+}
+
+message RuleEvaluation {
+    string rule_id = 1;
+    bool triggered = 2;
+    string reason = 3;
+    double value = 4;
+    double threshold = 5;
+}
+
+message AlertResponse {
+    Alert alert = 1;
+    string message = 2;
+}
+
+message Alert {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string severity = 4;
+    string status = 5;
+    string source = 6;
+    string rule_id = 7;
+    map<string, string> labels = 8;
+    map<string, string> annotations = 9;
+    double value = 10;
+    string threshold_operator = 11;
+    double threshold_value = 12;
+    google.protobuf.Timestamp fired_at = 13;
+    optional google.protobuf.Timestamp acknowledged_at = 14;
+    optional google.protobuf.Timestamp resolved_at = 15;
+    string acknowledged_by = 16;
+    string resolved_by = 17;
+    string fingerprint = 18;
+}
+
+message AlertUpdate {
+    string alert_id = 1;
+    string update_type = 2;
+    Alert alert = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+// AlertMessage for bidirectional streaming
+message AlertMessage {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string severity = 4;
+    string source = 5;
+    map<string, string> labels = 6;
+    map<string, string> annotations = 7;
+    google.protobuf.Timestamp fired_at = 8;
+}
+
+// AlertAck for acknowledgment
+message AlertAck {
+    string alert_id = 1;
+    AckStatus status = 2;
+    string message = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+// Acknowledgment status
+enum AckStatus {
+    ACK_STATUS_UNSPECIFIED = 0;
+    ACK_STATUS_ACCEPTED = 1;
+    ACK_STATUS_DUPLICATE = 2;
+    ACK_STATUS_RATE_LIMITED = 3;
+    ACK_STATUS_ERROR = 4;
+}
+
+// Health check messages
+message HealthCheckRequest {
+    string service = 1;
+}
+
+message HealthCheckResponse {
+    HealthStatus status = 1;
+    string message = 2;
+}
+
+// Health status enum
+enum HealthStatus {
+    HEALTH_STATUS_UNSPECIFIED = 0;
+    HEALTH_STATUS_HEALTHY = 1;
+    HEALTH_STATUS_DEGRADED = 2;
+    HEALTH_STATUS_UNHEALTHY = 3;
+}

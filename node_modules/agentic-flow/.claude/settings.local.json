@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ruv-swarm",
+      "mcp__claude-flow",
+      "Write",
+      "Edit",
+      "Bash",
+      "Read"
+    ],
+    "deny": [],
+    "defaultMode": "bypassPermissions"
+  }
+}

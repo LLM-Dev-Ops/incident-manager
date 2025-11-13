@@ -7,14 +7,15 @@ use lettre::{Message, SmtpTransport, Transport};
 use tracing::{error, info};
 
 /// Email notification sender
+#[derive(Clone)]
 pub struct EmailSender {
-    smtp_server: String,
-    smtp_port: u16,
-    smtp_username: Option<String>,
-    smtp_password: Option<String>,
-    from_email: String,
-    from_name: Option<String>,
-    use_tls: bool,
+    pub(crate) smtp_server: String,
+    pub(crate) smtp_port: u16,
+    pub(crate) smtp_username: Option<String>,
+    pub(crate) smtp_password: Option<String>,
+    pub(crate) from_email: String,
+    pub(crate) from_name: Option<String>,
+    pub(crate) use_tls: bool,
 }
 
 impl EmailSender {
@@ -101,7 +102,7 @@ impl EmailSender {
                 // Send the email
                 mailer
                     .send(&message)
-                    .map_err(|e| AppError::External(format!("Failed to send email: {}", e)))?;
+                    .map_err(|e| AppError::Internal(format!("Failed to send email: {}", e)))?;
 
                 Ok::<(), AppError>(())
             }

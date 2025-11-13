@@ -291,7 +291,7 @@ impl EscalationEngine {
         );
 
         // Execute level
-        let result = {
+        let _result = {
             let mut state = self
                 .escalations
                 .get_mut(incident_id)
@@ -303,7 +303,7 @@ impl EscalationEngine {
         };
 
         // Move to next level or complete
-        self.advance_escalation(incident_id, &policy, &result).await?;
+        self.advance_escalation(incident_id, &policy, &_result).await?;
 
         Ok(())
     }
@@ -313,7 +313,7 @@ impl EscalationEngine {
         &self,
         incident_id: &Uuid,
         policy: &EscalationPolicy,
-        result: &EscalationLevelResult,
+        _result: &EscalationLevelResult,
     ) -> Result<()> {
         let mut state = self
             .escalations

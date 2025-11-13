@@ -71,13 +71,13 @@ pub enum AlertCategory {
 impl From<AlertCategory> for IncidentType {
     fn from(category: AlertCategory) -> Self {
         match category {
-            AlertCategory::ModelDrift => IncidentType::ModelIssue,
-            AlertCategory::DataQuality => IncidentType::DataIssue,
+            AlertCategory::ModelDrift => IncidentType::Application,
+            AlertCategory::DataQuality => IncidentType::Data,
             AlertCategory::PerformanceDegradation => IncidentType::Performance,
             AlertCategory::SecurityThreat => IncidentType::Security,
             AlertCategory::ResourceExhaustion => IncidentType::Infrastructure,
-            AlertCategory::ComplianceViolation => IncidentType::Security,
-            AlertCategory::Other => IncidentType::Other,
+            AlertCategory::ComplianceViolation => IncidentType::Compliance,
+            AlertCategory::Other => IncidentType::Unknown,
         }
     }
 }
@@ -229,8 +229,8 @@ mod tests {
 
     #[test]
     fn test_category_conversion() {
-        assert_eq!(IncidentType::from(AlertCategory::ModelDrift), IncidentType::ModelIssue);
-        assert_eq!(IncidentType::from(AlertCategory::DataQuality), IncidentType::DataIssue);
+        assert_eq!(IncidentType::from(AlertCategory::ModelDrift), IncidentType::Application);
+        assert_eq!(IncidentType::from(AlertCategory::DataQuality), IncidentType::Data);
         assert_eq!(
             IncidentType::from(AlertCategory::PerformanceDegradation),
             IncidentType::Performance

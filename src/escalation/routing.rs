@@ -149,7 +149,7 @@ impl RoutingRuleEvaluator {
             "severity" => JsonValue::String(format!("{:?}", incident.severity)),
             "state" => JsonValue::String(format!("{:?}", incident.state)),
             "incident_type" => JsonValue::String(format!("{:?}", incident.incident_type)),
-            "priority_score" => JsonValue::Number(incident.priority_score.into()),
+            "priority_score" => JsonValue::Number(serde_json::Number::from(incident.severity.priority())),
             "assignees" => JsonValue::Array(
                 incident
                     .assignees

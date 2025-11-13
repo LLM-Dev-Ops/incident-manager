@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package incidents;
+
+import "google/protobuf/timestamp.proto";
+
+// Incident Management Service
+service IncidentService {
+    // Create a new incident
+    rpc CreateIncident(CreateIncidentRequest) returns (IncidentResponse);
+
+    // Get incident by ID
+    rpc GetIncident(GetIncidentRequest) returns (IncidentResponse);
+
+    // Update incident status
+    rpc UpdateIncident(UpdateIncidentRequest) returns (IncidentResponse);
+
+    // List incidents with filters
+    rpc ListIncidents(ListIncidentsRequest) returns (ListIncidentsResponse);
+
+    // Resolve incident
+    rpc ResolveIncident(ResolveIncidentRequest) returns (IncidentResponse);
+
+    // Add note to incident
+    rpc AddNote(AddNoteRequest) returns (IncidentResponse);
+
+    // Stream incident updates
+    rpc StreamIncidents(StreamIncidentsRequest) returns (stream IncidentUpdate);
+}
+
+message CreateIncidentRequest {
+    string title = 1;
+    string description = 2;
+    string severity = 3;
+    string source = 4;
+    map<string, string> metadata = 5;
+    repeated string tags = 6;
+    string assigned_to = 7;
+}
+
+message GetIncidentRequest {
+    string incident_id = 1;
+}
+
+message UpdateIncidentRequest {
+    string incident_id = 1;
+    optional string title = 2;
+    optional string description = 3;
+    optional string severity = 4;
+    optional string status = 5;
+    optional string assigned_to = 6;
+    map<string, string> metadata = 7;
+}
+
+message ListIncidentsRequest {
+    optional string status = 1;
+    optional string severity = 2;
+    optional string assigned_to = 3;
+    int32 page = 4;
+    int32 page_size = 5;
+    string sort_by = 6;
+    string sort_order = 7;
+}
+
+message ListIncidentsResponse {
+    repeated Incident incidents = 1;
+    int32 total_count = 2;
+    int32 page = 3;
+    int32 page_size = 4;
+}
+
+message ResolveIncidentRequest {
+    string incident_id = 1;
+    string resolution_note = 2;
+    string resolved_by = 3;
+}
+
+message AddNoteRequest {
+    string incident_id = 1;
+    string note = 2;
+    string author = 3;
+}
+
+message StreamIncidentsRequest {
+    repeated string statuses = 1;
+    repeated string severities = 2;
+}
+
+message IncidentResponse {
+    Incident incident = 1;
+    string message = 2;
+}
+
+message Incident {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    string severity = 4;
+    string status = 5;
+    string source = 6;
+    string assigned_to = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp updated_at = 9;
+    optional google.protobuf.Timestamp resolved_at = 10;
+    map<string, string> metadata = 11;
+    repeated string tags = 12;
+    repeated Note notes = 13;
+    string fingerprint = 14;
+    optional Resolution resolution = 15;
+    repeated TimelineEvent timeline = 16;
+    IncidentType incident_type = 17;
+    IncidentState incident_state = 18;
+}
+
+message Note {
+    string id = 1;
+    string content = 2;
+    string author = 3;
+    google.protobuf.Timestamp created_at = 4;
+}
+
+message IncidentUpdate {
+    string incident_id = 1;
+    string update_type = 2;
+    Incident incident = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+// Enums for incident classification
+enum Severity {
+    SEVERITY_UNSPECIFIED = 0;
+    SEVERITY_P0 = 1;  // Critical
+    SEVERITY_P1 = 2;  // High
+    SEVERITY_P2 = 3;  // Medium
+    SEVERITY_P3 = 4;  // Low
+    SEVERITY_P4 = 5;  // Informational
+}
+
+enum IncidentType {
+    INCIDENT_TYPE_UNSPECIFIED = 0;
+    INCIDENT_TYPE_INFRASTRUCTURE = 1;
+    INCIDENT_TYPE_APPLICATION = 2;
+    INCIDENT_TYPE_SECURITY = 3;
+    INCIDENT_TYPE_DATA = 4;
+    INCIDENT_TYPE_PERFORMANCE = 5;
+    INCIDENT_TYPE_AVAILABILITY = 6;
+    INCIDENT_TYPE_COMPLIANCE = 7;
+}
+
+enum IncidentState {
+    INCIDENT_STATE_UNSPECIFIED = 0;
+    INCIDENT_STATE_OPEN = 1;
+    INCIDENT_STATE_ACKNOWLEDGED = 2;
+    INCIDENT_STATE_INVESTIGATING = 3;
+    INCIDENT_STATE_RESOLVED = 4;
+    INCIDENT_STATE_CLOSED = 5;
+}
+
+enum ResolutionMethod {
+    RESOLUTION_METHOD_UNSPECIFIED = 0;
+    RESOLUTION_METHOD_AUTOMATED = 1;
+    RESOLUTION_METHOD_MANUAL = 2;
+    RESOLUTION_METHOD_AUTO_ASSISTED_MANUAL = 3;
+}
+
+enum EventType {
+    EVENT_TYPE_UNSPECIFIED = 0;
+    EVENT_TYPE_CREATED = 1;
+    EVENT_TYPE_STATE_CHANGED = 2;
+    EVENT_TYPE_ACTION_EXECUTED = 3;
+    EVENT_TYPE_NOTIFICATION_SENT = 4;
+    EVENT_TYPE_ASSIGNMENT_CHANGED = 5;
+    EVENT_TYPE_COMMENT_ADDED = 6;
+    EVENT_TYPE_PLAYBOOK_STARTED = 7;
+    EVENT_TYPE_PLAYBOOK_COMPLETED = 8;
+    EVENT_TYPE_ESCALATED = 9;
+    EVENT_TYPE_RESOLVED = 10;
+}
+
+message Resolution {
+    ResolutionMethod method = 1;
+    string summary = 2;
+    string resolved_by = 3;
+    google.protobuf.Timestamp resolved_at = 4;
+    int32 time_to_resolve_seconds = 5;
+}
+
+message TimelineEvent {
+    string id = 1;
+    EventType event_type = 2;
+    string description = 3;
+    string actor = 4;
+    google.protobuf.Timestamp timestamp = 5;
+    map<string, string> metadata = 6;
+}
+
+// IncidentEvent for streaming
+message IncidentEvent {
+    string event_id = 1;
+    string incident_id = 2;
+    EventType event_type = 3;
+    Incident incident = 4;
+    google.protobuf.Timestamp timestamp = 5;
+}

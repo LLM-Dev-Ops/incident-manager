@@ -1,0 +1,78 @@
+{
+  "env": {
+    "CLAUDE_FLOW_AUTO_COMMIT": "false",
+    "CLAUDE_FLOW_AUTO_PUSH": "false",
+    "CLAUDE_FLOW_HOOKS_ENABLED": "true",
+    "CLAUDE_FLOW_TELEMETRY_ENABLED": "true",
+    "CLAUDE_FLOW_REMOTE_EXECUTION": "true",
+    "CLAUDE_FLOW_CHECKPOINTS_ENABLED": "true",
+    "CLAUDE_FLOW_TRUTH_THRESHOLD": "0.95",
+    "CLAUDE_FLOW_VERIFY_MODE": "strict",
+    "CLAUDE_FLOW_SECURITY_AUDIT": "true"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx claude-flow:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(git:*)",
+      "Bash(jq:*)",
+      "Bash(node:*)",
+      "Bash(which:*)",
+      "Bash(pwd)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(echo:*)",
+      "Bash(bc:*)",
+      "Bash(date:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(eval:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod 777:*)",
+      "Bash(dd:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🎯 PRE-EDIT VERIFICATION' && FILE=$(cat | jq -r '.tool_input.file_path // .tool_input.path // empty') && echo \"Target: $FILE\" && echo '⚠️  REQUIREMENTS:' && echo '  • Real implementations only (no mocks in production)' && echo '  • No hardcoded secrets - use environment variables' && echo '  • Complete error handling' && echo '  • Secure protocols (HTTPS)'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✅ POST-EDIT ANALYSIS' && FILE=$(cat | jq -r '.tool_input.file_path // .tool_input.path // empty') && echo \"Modified: $FILE\" && echo 'Checking for issues...' && grep -q 'TODO' \"$FILE\" 2>/dev/null && echo '  ⚠️  TODO comments found' || echo '  ✓ No TODOs' && grep -q 'console.log' \"$FILE\" 2>/dev/null && echo '  ⚠️  console.log detected' || echo '  ✓ No console.log' && grep -qE 'password.*=.*[\"\\x27]' \"$FILE\" 2>/dev/null && echo '  🚨 Hardcoded password!' || echo '  ✓ No hardcoded passwords'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(cat | jq -r '.tool_input.command // empty') && echo \"Command executed: $CMD\""
+          }
+        ]
+      }
+    ]
+  },
+  "includeCoAuthoredBy": true,
+  "enabledMcpjsonServers": ["claude-flow", "ruv-swarm", "flow-nexus"]
+}

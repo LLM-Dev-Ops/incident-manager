@@ -9,11 +9,11 @@ use uuid::Uuid;
 impl From<incidents::Severity> for Severity {
     fn from(severity: incidents::Severity) -> Self {
         match severity {
-            incidents::Severity::SeverityP0 => Severity::P0,
-            incidents::Severity::SeverityP1 => Severity::P1,
-            incidents::Severity::SeverityP2 => Severity::P2,
-            incidents::Severity::SeverityP3 => Severity::P3,
-            incidents::Severity::SeverityP4 => Severity::P4,
+            incidents::Severity::P0 => Severity::P0,
+            incidents::Severity::P1 => Severity::P1,
+            incidents::Severity::P2 => Severity::P2,
+            incidents::Severity::P3 => Severity::P3,
+            incidents::Severity::P4 => Severity::P4,
             _ => Severity::P3, // Default
         }
     }
@@ -23,11 +23,11 @@ impl From<incidents::Severity> for Severity {
 impl From<Severity> for incidents::Severity {
     fn from(severity: Severity) -> Self {
         match severity {
-            Severity::P0 => incidents::Severity::SeverityP0,
-            Severity::P1 => incidents::Severity::SeverityP1,
-            Severity::P2 => incidents::Severity::SeverityP2,
-            Severity::P3 => incidents::Severity::SeverityP3,
-            Severity::P4 => incidents::Severity::SeverityP4,
+            Severity::P0 => incidents::Severity::P0,
+            Severity::P1 => incidents::Severity::P1,
+            Severity::P2 => incidents::Severity::P2,
+            Severity::P3 => incidents::Severity::P3,
+            Severity::P4 => incidents::Severity::P4,
         }
     }
 }
@@ -36,13 +36,13 @@ impl From<Severity> for incidents::Severity {
 impl From<incidents::IncidentType> for IncidentType {
     fn from(incident_type: incidents::IncidentType) -> Self {
         match incident_type {
-            incidents::IncidentType::IncidentTypeInfrastructure => IncidentType::Infrastructure,
-            incidents::IncidentType::IncidentTypeApplication => IncidentType::Application,
-            incidents::IncidentType::IncidentTypeSecurity => IncidentType::Security,
-            incidents::IncidentType::IncidentTypeData => IncidentType::Data,
-            incidents::IncidentType::IncidentTypePerformance => IncidentType::Performance,
-            incidents::IncidentType::IncidentTypeAvailability => IncidentType::Availability,
-            incidents::IncidentType::IncidentTypeCompliance => IncidentType::Compliance,
+            incidents::IncidentType::Infrastructure => IncidentType::Infrastructure,
+            incidents::IncidentType::Application => IncidentType::Application,
+            incidents::IncidentType::Security => IncidentType::Security,
+            incidents::IncidentType::Data => IncidentType::Data,
+            incidents::IncidentType::Performance => IncidentType::Performance,
+            incidents::IncidentType::Availability => IncidentType::Availability,
+            incidents::IncidentType::Compliance => IncidentType::Compliance,
             _ => IncidentType::Unknown,
         }
     }
@@ -52,14 +52,14 @@ impl From<incidents::IncidentType> for IncidentType {
 impl From<IncidentType> for incidents::IncidentType {
     fn from(incident_type: IncidentType) -> Self {
         match incident_type {
-            IncidentType::Infrastructure => incidents::IncidentType::IncidentTypeInfrastructure,
-            IncidentType::Application => incidents::IncidentType::IncidentTypeApplication,
-            IncidentType::Security => incidents::IncidentType::IncidentTypeSecurity,
-            IncidentType::Data => incidents::IncidentType::IncidentTypeData,
-            IncidentType::Performance => incidents::IncidentType::IncidentTypePerformance,
-            IncidentType::Availability => incidents::IncidentType::IncidentTypeAvailability,
-            IncidentType::Compliance => incidents::IncidentType::IncidentTypeCompliance,
-            IncidentType::Unknown => incidents::IncidentType::IncidentTypeUnspecified,
+            IncidentType::Infrastructure => incidents::IncidentType::Infrastructure,
+            IncidentType::Application => incidents::IncidentType::Application,
+            IncidentType::Security => incidents::IncidentType::Security,
+            IncidentType::Data => incidents::IncidentType::Data,
+            IncidentType::Performance => incidents::IncidentType::Performance,
+            IncidentType::Availability => incidents::IncidentType::Availability,
+            IncidentType::Compliance => incidents::IncidentType::Compliance,
+            IncidentType::Unknown => incidents::IncidentType::Unspecified,
         }
     }
 }
@@ -68,12 +68,11 @@ impl From<IncidentType> for incidents::IncidentType {
 impl From<incidents::IncidentState> for IncidentState {
     fn from(state: incidents::IncidentState) -> Self {
         match state {
-            incidents::IncidentState::IncidentStateDetected => IncidentState::Detected,
-            incidents::IncidentState::IncidentStateTriaged => IncidentState::Triaged,
-            incidents::IncidentState::IncidentStateInvestigating => IncidentState::Investigating,
-            incidents::IncidentState::IncidentStateRemediating => IncidentState::Remediating,
-            incidents::IncidentState::IncidentStateResolved => IncidentState::Resolved,
-            incidents::IncidentState::IncidentStateClosed => IncidentState::Closed,
+            incidents::IncidentState::Open => IncidentState::Detected,
+            incidents::IncidentState::Acknowledged => IncidentState::Triaged,
+            incidents::IncidentState::Investigating => IncidentState::Investigating,
+            incidents::IncidentState::Resolved => IncidentState::Resolved,
+            incidents::IncidentState::Closed => IncidentState::Closed,
             _ => IncidentState::Detected,
         }
     }
@@ -83,12 +82,12 @@ impl From<incidents::IncidentState> for IncidentState {
 impl From<IncidentState> for incidents::IncidentState {
     fn from(state: IncidentState) -> Self {
         match state {
-            IncidentState::Detected => incidents::IncidentState::IncidentStateDetected,
-            IncidentState::Triaged => incidents::IncidentState::IncidentStateTriaged,
-            IncidentState::Investigating => incidents::IncidentState::IncidentStateInvestigating,
-            IncidentState::Remediating => incidents::IncidentState::IncidentStateRemediating,
-            IncidentState::Resolved => incidents::IncidentState::IncidentStateResolved,
-            IncidentState::Closed => incidents::IncidentState::IncidentStateClosed,
+            IncidentState::Detected => incidents::IncidentState::Open,
+            IncidentState::Triaged => incidents::IncidentState::Acknowledged,
+            IncidentState::Investigating => incidents::IncidentState::Investigating,
+            IncidentState::Remediating => incidents::IncidentState::Investigating,
+            IncidentState::Resolved => incidents::IncidentState::Resolved,
+            IncidentState::Closed => incidents::IncidentState::Closed,
         }
     }
 }
@@ -97,9 +96,9 @@ impl From<IncidentState> for incidents::IncidentState {
 impl From<incidents::ResolutionMethod> for ResolutionMethod {
     fn from(method: incidents::ResolutionMethod) -> Self {
         match method {
-            incidents::ResolutionMethod::ResolutionMethodAutomated => ResolutionMethod::Automated,
-            incidents::ResolutionMethod::ResolutionMethodManual => ResolutionMethod::Manual,
-            incidents::ResolutionMethod::ResolutionMethodAutoAssistedManual => {
+            incidents::ResolutionMethod::Automated => ResolutionMethod::Automated,
+            incidents::ResolutionMethod::Manual => ResolutionMethod::Manual,
+            incidents::ResolutionMethod::AutoAssistedManual => {
                 ResolutionMethod::AutoAssistedManual
             }
             _ => ResolutionMethod::Manual,
@@ -111,10 +110,10 @@ impl From<incidents::ResolutionMethod> for ResolutionMethod {
 impl From<ResolutionMethod> for incidents::ResolutionMethod {
     fn from(method: ResolutionMethod) -> Self {
         match method {
-            ResolutionMethod::Automated => incidents::ResolutionMethod::ResolutionMethodAutomated,
-            ResolutionMethod::Manual => incidents::ResolutionMethod::ResolutionMethodManual,
+            ResolutionMethod::Automated => incidents::ResolutionMethod::Automated,
+            ResolutionMethod::Manual => incidents::ResolutionMethod::Manual,
             ResolutionMethod::AutoAssistedManual => {
-                incidents::ResolutionMethod::ResolutionMethodAutoAssistedManual
+                incidents::ResolutionMethod::AutoAssistedManual
             }
         }
     }
@@ -124,16 +123,16 @@ impl From<ResolutionMethod> for incidents::ResolutionMethod {
 impl From<incidents::EventType> for EventType {
     fn from(event_type: incidents::EventType) -> Self {
         match event_type {
-            incidents::EventType::EventTypeCreated => EventType::Created,
-            incidents::EventType::EventTypeStateChanged => EventType::StateChanged,
-            incidents::EventType::EventTypeActionExecuted => EventType::ActionExecuted,
-            incidents::EventType::EventTypeNotificationSent => EventType::NotificationSent,
-            incidents::EventType::EventTypeAssignmentChanged => EventType::AssignmentChanged,
-            incidents::EventType::EventTypeCommentAdded => EventType::CommentAdded,
-            incidents::EventType::EventTypePlaybookStarted => EventType::PlaybookStarted,
-            incidents::EventType::EventTypePlaybookCompleted => EventType::PlaybookCompleted,
-            incidents::EventType::EventTypeEscalated => EventType::Escalated,
-            incidents::EventType::EventTypeResolved => EventType::Resolved,
+            incidents::EventType::Created => EventType::Created,
+            incidents::EventType::StateChanged => EventType::StateChanged,
+            incidents::EventType::ActionExecuted => EventType::ActionExecuted,
+            incidents::EventType::NotificationSent => EventType::NotificationSent,
+            incidents::EventType::AssignmentChanged => EventType::AssignmentChanged,
+            incidents::EventType::CommentAdded => EventType::CommentAdded,
+            incidents::EventType::PlaybookStarted => EventType::PlaybookStarted,
+            incidents::EventType::PlaybookCompleted => EventType::PlaybookCompleted,
+            incidents::EventType::Escalated => EventType::Escalated,
+            incidents::EventType::Resolved => EventType::Resolved,
             _ => EventType::Created,
         }
     }
@@ -143,16 +142,18 @@ impl From<incidents::EventType> for EventType {
 impl From<EventType> for incidents::EventType {
     fn from(event_type: EventType) -> Self {
         match event_type {
-            EventType::Created => incidents::EventType::EventTypeCreated,
-            EventType::StateChanged => incidents::EventType::EventTypeStateChanged,
-            EventType::ActionExecuted => incidents::EventType::EventTypeActionExecuted,
-            EventType::NotificationSent => incidents::EventType::EventTypeNotificationSent,
-            EventType::AssignmentChanged => incidents::EventType::EventTypeAssignmentChanged,
-            EventType::CommentAdded => incidents::EventType::EventTypeCommentAdded,
-            EventType::PlaybookStarted => incidents::EventType::EventTypePlaybookStarted,
-            EventType::PlaybookCompleted => incidents::EventType::EventTypePlaybookCompleted,
-            EventType::Escalated => incidents::EventType::EventTypeEscalated,
-            EventType::Resolved => incidents::EventType::EventTypeResolved,
+            EventType::Created => incidents::EventType::Created,
+            EventType::StateChanged => incidents::EventType::StateChanged,
+            EventType::ActionExecuted => incidents::EventType::ActionExecuted,
+            EventType::NotificationSent => incidents::EventType::NotificationSent,
+            EventType::AssignmentChanged => incidents::EventType::AssignmentChanged,
+            EventType::CommentAdded => incidents::EventType::CommentAdded,
+            EventType::PlaybookStarted => incidents::EventType::PlaybookStarted,
+            EventType::PlaybookCompleted => incidents::EventType::PlaybookCompleted,
+            EventType::Escalated => incidents::EventType::Escalated,
+            EventType::Resolved => incidents::EventType::Resolved,
+            EventType::AlertReceived => incidents::EventType::Created, // Map to closest equivalent
+            EventType::SeverityChanged => incidents::EventType::StateChanged, // Map to closest equivalent
         }
     }
 }
@@ -176,43 +177,73 @@ pub fn timestamp_to_datetime(ts: Option<Timestamp>) -> DateTime<Utc> {
 /// Convert domain Incident to proto Incident
 impl From<Incident> for incidents::Incident {
     fn from(incident: Incident) -> Self {
+        // Calculate time to resolve if resolved
+        let time_to_resolve_seconds = incident.resolution.as_ref().map(|r| {
+            (r.resolved_at.timestamp() - incident.created_at.timestamp()) as i32
+        }).unwrap_or(0);
+
+        let severity_str = match incident.severity {
+            Severity::P0 => "P0",
+            Severity::P1 => "P1",
+            Severity::P2 => "P2",
+            Severity::P3 => "P3",
+            Severity::P4 => "P4",
+        };
+
+        let status_str = match incident.state {
+            IncidentState::Detected => "Open",
+            IncidentState::Triaged => "Acknowledged",
+            IncidentState::Investigating => "Investigating",
+            IncidentState::Remediating => "Investigating",
+            IncidentState::Resolved => "Resolved",
+            IncidentState::Closed => "Closed",
+        };
+
         incidents::Incident {
             id: incident.id.to_string(),
-            created_at: datetime_to_timestamp(incident.created_at),
-            updated_at: datetime_to_timestamp(incident.updated_at),
-            state: incidents::IncidentState::from(incident.state) as i32,
-            severity: incidents::Severity::from(incident.severity) as i32,
-            r#type: incidents::IncidentType::from(incident.incident_type) as i32,
-            source: incident.source,
             title: incident.title,
             description: incident.description,
-            affected_resources: incident.affected_resources,
-            labels: incident.labels,
-            related_incidents: incident
-                .related_incidents
-                .iter()
-                .map(|id| id.to_string())
+            severity: severity_str.to_string(),
+            status: status_str.to_string(),
+            source: incident.source,
+            assigned_to: incident.assignees.first().cloned().unwrap_or_default(),
+            created_at: datetime_to_timestamp(incident.created_at),
+            updated_at: datetime_to_timestamp(incident.updated_at),
+            resolved_at: incident.resolution.as_ref().and_then(|r| datetime_to_timestamp(r.resolved_at)),
+            metadata: incident.labels,
+            tags: incident.affected_resources,
+            notes: incident
+                .notes
+                .into_iter()
+                .map(|n| incidents::Note {
+                    id: n.id.to_string(),
+                    content: n.content,
+                    author: n.author,
+                    created_at: datetime_to_timestamp(n.created_at),
+                })
                 .collect(),
-            active_playbook: incident.active_playbook.map(|id| id.to_string()),
+            fingerprint: incident.fingerprint.unwrap_or_default(),
             resolution: incident.resolution.map(|r| incidents::Resolution {
-                resolved_at: datetime_to_timestamp(r.resolved_at),
-                resolved_by: r.resolved_by,
                 method: incidents::ResolutionMethod::from(r.resolution_method) as i32,
-                root_cause: r.root_cause,
-                notes: r.notes,
+                summary: r.notes,
+                resolved_by: r.resolved_by,
+                resolved_at: datetime_to_timestamp(r.resolved_at),
+                time_to_resolve_seconds,
             }),
             timeline: incident
                 .timeline
                 .into_iter()
                 .map(|te| incidents::TimelineEvent {
-                    timestamp: datetime_to_timestamp(te.timestamp),
+                    id: Uuid::new_v4().to_string(),
                     event_type: incidents::EventType::from(te.event_type) as i32,
-                    actor: te.actor,
                     description: te.description,
+                    actor: te.actor,
+                    timestamp: datetime_to_timestamp(te.timestamp),
                     metadata: te.metadata,
                 })
                 .collect(),
-            assignees: incident.assignees,
+            incident_type: incidents::IncidentType::from(incident.incident_type) as i32,
+            incident_state: incidents::IncidentState::from(incident.state) as i32,
         }
     }
 }
@@ -220,18 +251,23 @@ impl From<Incident> for incidents::Incident {
 /// Convert domain Alert to proto AlertMessage
 impl From<Alert> for alerts::AlertMessage {
     fn from(alert: Alert) -> Self {
+        let severity_str = match alert.severity {
+            Severity::P0 => "P0",
+            Severity::P1 => "P1",
+            Severity::P2 => "P2",
+            Severity::P3 => "P3",
+            Severity::P4 => "P4",
+        };
+
         alerts::AlertMessage {
-            alert_id: alert.id.to_string(),
-            source: alert.source,
-            timestamp: datetime_to_timestamp(alert.timestamp),
-            severity: incidents::Severity::from(alert.severity) as i32,
-            r#type: incidents::IncidentType::from(alert.alert_type) as i32,
-            title: alert.title,
+            id: alert.id.to_string(),
+            name: alert.title,
             description: alert.description,
+            severity: severity_str.to_string(),
+            source: alert.source,
             labels: alert.labels,
-            affected_services: alert.affected_services,
-            runbook_url: alert.runbook_url,
             annotations: alert.annotations,
+            fired_at: datetime_to_timestamp(alert.timestamp),
         }
     }
 }
@@ -240,10 +276,23 @@ impl From<Alert> for alerts::AlertMessage {
 impl From<AckStatus> for alerts::AckStatus {
     fn from(status: AckStatus) -> Self {
         match status {
-            AckStatus::Accepted => alerts::AckStatus::AckStatusAccepted,
-            AckStatus::Duplicate => alerts::AckStatus::AckStatusDuplicate,
-            AckStatus::RateLimited => alerts::AckStatus::AckStatusRateLimited,
-            AckStatus::Rejected => alerts::AckStatus::AckStatusRejected,
+            AckStatus::Accepted => alerts::AckStatus::Accepted,
+            AckStatus::Duplicate => alerts::AckStatus::Duplicate,
+            AckStatus::RateLimited => alerts::AckStatus::RateLimited,
+            AckStatus::Rejected => alerts::AckStatus::Error,
+        }
+    }
+}
+
+/// Convert proto AckStatus to domain AckStatus
+impl From<alerts::AckStatus> for AckStatus {
+    fn from(status: alerts::AckStatus) -> Self {
+        match status {
+            alerts::AckStatus::Accepted => AckStatus::Accepted,
+            alerts::AckStatus::Duplicate => AckStatus::Duplicate,
+            alerts::AckStatus::RateLimited => AckStatus::RateLimited,
+            alerts::AckStatus::Error => AckStatus::Rejected,
+            _ => AckStatus::Rejected,
         }
     }
 }
@@ -256,7 +305,7 @@ mod tests {
     fn test_severity_conversion() {
         let domain_severity = Severity::P0;
         let proto_severity: incidents::Severity = domain_severity.into();
-        assert_eq!(proto_severity, incidents::Severity::SeverityP0);
+        assert_eq!(proto_severity, incidents::Severity::P0);
 
         let back_to_domain: Severity = proto_severity.into();
         assert_eq!(back_to_domain, Severity::P0);
@@ -268,11 +317,29 @@ mod tests {
         let proto_state: incidents::IncidentState = domain_state.clone().into();
         assert_eq!(
             proto_state,
-            incidents::IncidentState::IncidentStateInvestigating
+            incidents::IncidentState::Investigating
         );
 
         let back_to_domain: IncidentState = proto_state.into();
         assert_eq!(back_to_domain, domain_state);
+    }
+
+    #[test]
+    fn test_incident_conversion() {
+        use crate::models::IncidentType;
+
+        let incident = Incident::new(
+            "test-source".to_string(),
+            "Test Incident".to_string(),
+            "Test description".to_string(),
+            Severity::P1,
+            IncidentType::Application,
+        );
+
+        let proto_incident: incidents::Incident = incident.clone().into();
+        assert_eq!(proto_incident.source, "test-source");
+        assert_eq!(proto_incident.title, "Test Incident");
+        assert_eq!(proto_incident.severity, "P1");
     }
 
     #[test]

@@ -105,18 +105,17 @@ impl NotificationService {
 
         let service = Self {
             config: config.clone(),
-            slack_sender,
-            email_sender,
-            pagerduty_sender,
-            webhook_sender,
-            store,
+            slack_sender: slack_sender.clone(),
+            email_sender: email_sender.clone(),
+            pagerduty_sender: pagerduty_sender.clone(),
+            webhook_sender: webhook_sender.clone(),
+            store: store.clone(),
             notification_tx,
         };
 
-        // Spawn worker threads
-        for worker_id in 0..config.worker_threads {
-            service.spawn_worker(worker_id, notification_rx.clone());
-        }
+        // Spawn a single worker thread (mpsc::Receiver is not Clone)
+        // For multiple workers, we would need to use Arc<Mutex<Receiver>> or other patterns
+        service.spawn_worker(0, notification_rx);
 
         info!(
             slack_enabled = service.slack_sender.is_some(),
@@ -393,50 +392,7 @@ pub struct NotificationStats {
     pub worker_count: usize,
 }
 
-// Make senders cloneable for worker threads
-impl Clone for SlackSender {
-    fn clone(&self) -> Self {
-        Self {
-            webhook_url: self.webhook_url.clone(),
-            bot_token: self.bot_token.clone(),
-            client: self.client.clone(),
-            default_channel: self.default_channel.clone(),
-        }
-    }
-}
-
-impl Clone for EmailSender {
-    fn clone(&self) -> Self {
-        Self {
-            smtp_server: self.smtp_server.clone(),
-            smtp_port: self.smtp_port,
-            smtp_username: self.smtp_username.clone(),
-            smtp_password: self.smtp_password.clone(),
-            from_email: self.from_email.clone(),
-            from_name: self.from_name.clone(),
-            use_tls: self.use_tls,
-        }
-    }
-}
-
-impl Clone for PagerDutySender {
-    fn clone(&self) -> Self {
-        Self {
-            integration_key: self.integration_key.clone(),
-            api_url: self.api_url.clone(),
-            client: self.client.clone(),
-        }
-    }
-}
-
-impl Clone for WebhookSender {
-    fn clone(&self) -> Self {
-        Self {
-            client: self.client.clone(),
-            timeout_secs: self.timeout_secs,
-        }
-    }
-}
+// Senders are cloneable via #[derive(Clone)] on their struct definitions
 
 #[cfg(test)]
 mod tests {

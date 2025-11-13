@@ -33,8 +33,8 @@ impl EnrichmentPipeline {
 
     /// Register an enricher
     pub fn register_enricher(&mut self, enricher: Arc<dyn Enricher>) {
-        self.enrichers.push(enricher);
         debug!("Registered enricher: {}", enricher.name());
+        self.enrichers.push(enricher);
     }
 
     /// Sort enrichers by priority
@@ -165,8 +165,9 @@ impl EnrichmentPipeline {
         let config = Arc::clone(&self.config);
         let incident = incident.clone();
 
-        // Create a concurrent stream
-        let results: Vec<_> = stream::iter(enrichers.iter())
+        // Create futures for each enricher (avoiding HRTB issues by using join_all)
+        let futures: Vec<_> = enrichers
+            .iter()
             .map(|enricher| {
                 let enricher = Arc::clone(enricher);
                 let incident = incident.clone();
@@ -196,6 +197,10 @@ impl EnrichmentPipeline {
                     }
                 }
             })
+            .collect();
+
+        // Run with concurrency limit using buffer_unordered
+        let results: Vec<_> = stream::iter(futures)
             .buffer_unordered(self.config.max_concurrent)
             .collect()
             .await;
@@ -236,7 +241,7 @@ impl EnrichmentPipeline {
     }
 
     /// Get cached context if available and not expired
-    fn get_cached_context(&self, incident_id: &Uuid) -> Option<EnrichedContext> {
+    pub fn get_cached_context(&self, incident_id: &Uuid) -> Option<EnrichedContext> {
         if let Some(entry) = self.cache.get(incident_id) {
             let (context, cached_at) = entry.value();
 

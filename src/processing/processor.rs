@@ -8,6 +8,7 @@ use crate::notifications::NotificationService;
 use crate::playbooks::PlaybookService;
 use crate::processing::DeduplicationEngine;
 use crate::state::IncidentStore;
+use crate::websocket::EventHandlers;
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -22,6 +23,7 @@ pub struct IncidentProcessor {
     correlation_engine: Option<Arc<CorrelationEngine>>,
     ml_service: Option<Arc<MLService>>,
     enrichment_service: Option<Arc<EnrichmentService>>,
+    websocket_handlers: Option<Arc<EventHandlers>>,
 }
 
 impl IncidentProcessor {
@@ -36,7 +38,13 @@ impl IncidentProcessor {
             correlation_engine: None,
             ml_service: None,
             enrichment_service: None,
+            websocket_handlers: None,
         }
+    }
+
+    /// Get a reference to the incident store
+    pub fn store(&self) -> &Arc<dyn IncidentStore> {
+        &self.store
     }
 
     /// Set the notification service (for optional notification integration)
@@ -78,6 +86,11 @@ impl IncidentProcessor {
     /// Set enrichment service after construction
     pub fn set_enrichment_service(&mut self, enrichment_service: Arc<EnrichmentService>) {
         self.enrichment_service = Some(enrichment_service);
+    }
+
+    /// Set WebSocket event handlers after construction
+    pub fn set_websocket_handlers(&mut self, handlers: Arc<EventHandlers>) {
+        self.websocket_handlers = Some(handlers);
     }
 
     /// Process an incoming alert
@@ -126,6 +139,13 @@ impl IncidentProcessor {
             incident_id = %incident.id,
             "Created new incident from alert"
         );
+
+        // Publish WebSocket events
+        if let Some(ref ws_handlers) = self.websocket_handlers {
+            ws_handlers.alerts.on_alert_received(alert.clone()).await;
+            ws_handlers.alerts.on_alert_converted(alert.clone(), incident.id).await;
+            ws_handlers.incidents.on_incident_created(incident.clone()).await;
+        }
 
         // Enrich incident with additional context if enrichment service is configured
         if let Some(ref enrichment_service) = self.enrichment_service {

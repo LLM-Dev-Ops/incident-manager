@@ -1,0 +1,11 @@
+{
+  "default": [
+    {
+      "key": "test-api",
+      "value": "REST with JWT",
+      "namespace": "default",
+      "timestamp": 1761424106926,
+      "redacted": false
+    }
+  ]
+}

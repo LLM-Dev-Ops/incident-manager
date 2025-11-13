@@ -7,9 +7,10 @@ use std::time::Duration;
 use tracing::{error, info, warn};
 
 /// Webhook notification sender
+#[derive(Clone)]
 pub struct WebhookSender {
-    client: Client,
-    timeout_secs: u64,
+    pub(crate) client: Client,
+    pub(crate) timeout_secs: u64,
 }
 
 #[derive(Debug, Serialize)]
@@ -136,7 +137,7 @@ impl WebhookSender {
         let resolution_data = incident.resolution.as_ref().map(|res| ResolutionWebhookData {
             resolved_by: res.resolved_by.clone(),
             resolved_at: res.resolved_at.to_rfc3339(),
-            method: format!("{:?}", res.method),
+            method: format!("{:?}", res.resolution_method),
             notes: res.notes.clone(),
             root_cause: res.root_cause.clone(),
         });
@@ -180,9 +181,9 @@ impl WebhookSender {
                         self.timeout_secs
                     ))
                 } else if e.is_connect() {
-                    AppError::External(format!("Failed to connect to webhook URL: {}", e))
+                    AppError::Internal(format!("Failed to connect to webhook URL: {}", e))
                 } else {
-                    AppError::External(format!("Webhook request failed: {}", e))
+                    AppError::Internal(format!("Webhook request failed: {}", e))
                 }
             })?;
 
@@ -196,7 +197,7 @@ impl WebhookSender {
 
         // Check for success status codes (2xx)
         if !status.is_success() {
-            return Err(AppError::External(format!(
+            return Err(AppError::Internal(format!(
                 "Webhook returned non-success status {}: {}",
                 status,
                 if body.is_empty() {
@@ -234,7 +235,7 @@ impl WebhookSender {
             .json(payload)
             .send()
             .await
-            .map_err(|e| AppError::External(format!("Custom webhook failed: {}", e)))?;
+            .map_err(|e| AppError::Internal(format!("Custom webhook failed: {}", e)))?;
 
         let status = response.status();
         let body = response
@@ -243,7 +244,7 @@ impl WebhookSender {
             .unwrap_or_else(|_| String::new());
 
         if !status.is_success() {
-            return Err(AppError::External(format!(
+            return Err(AppError::Internal(format!(
                 "Custom webhook returned status {}: {}",
                 status, body
             )));

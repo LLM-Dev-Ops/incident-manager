@@ -166,7 +166,7 @@ impl EscalationLevelExecutor {
                 EscalationTarget::Schedule { schedule_id } => {
                     match self.resolve_schedule(schedule_id) {
                         Ok(oncall_users) => {
-                            for user in oncall_users {
+                            for user in &oncall_users {
                                 recipients.push(NotificationRecipient {
                                     email: user.email.clone(),
                                     channel: "email".to_string(),
@@ -251,13 +251,20 @@ impl EscalationLevelExecutor {
         level: u32,
     ) -> Result<()> {
         if let Some(ref notif_service) = self.notification_service {
-            let mut notification = crate::models::Notification::new(
-                incident.id,
-                crate::models::NotificationChannel::Email,
-                recipient.email.clone(),
-                format!("Escalation Level {} - {}", level, incident.title),
-                self.build_notification_message(incident, level),
-            );
+            let notification = crate::models::Notification {
+                id: uuid::Uuid::new_v4(),
+                incident_id: incident.id,
+                channel: crate::models::NotificationChannel::Email {
+                    to: vec![recipient.email.clone()],
+                    subject: format!("Escalation Level {} - {}", level, incident.title),
+                    body: self.build_notification_message(incident, level),
+                },
+                status: crate::models::NotificationStatus::Pending,
+                created_at: chrono::Utc::now(),
+                sent_at: None,
+                retry_count: 0,
+                error: None,
+            };
 
             notif_service.queue_notification(notification).await?;
             Ok(())
@@ -279,13 +286,24 @@ impl EscalationLevelExecutor {
         level: u32,
     ) -> Result<()> {
         if let Some(ref notif_service) = self.notification_service {
-            let mut notification = crate::models::Notification::new(
-                incident.id,
-                crate::models::NotificationChannel::Webhook,
-                recipient.email.clone(), // URL in this case
-                format!("Escalation Level {}", level),
-                self.build_notification_message(incident, level),
-            );
+            let notification = crate::models::Notification {
+                id: uuid::Uuid::new_v4(),
+                incident_id: incident.id,
+                channel: crate::models::NotificationChannel::Webhook {
+                    url: recipient.email.clone(), // URL in this case
+                    payload: serde_json::json!({
+                        "level": level,
+                        "title": format!("Escalation Level {}", level),
+                        "message": self.build_notification_message(incident, level),
+                        "incident_id": incident.id,
+                    }),
+                },
+                status: crate::models::NotificationStatus::Pending,
+                created_at: chrono::Utc::now(),
+                sent_at: None,
+                retry_count: 0,
+                error: None,
+            };
 
             notif_service.queue_notification(notification).await?;
             Ok(())
