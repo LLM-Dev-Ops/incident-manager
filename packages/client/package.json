@@ -1,0 +1,66 @@
+{
+  "name": "@llm-dev-ops/incident-manager-client",
+  "version": "1.0.1",
+  "description": "TypeScript/JavaScript client SDK for LLM Incident Manager - WebSocket streaming and GraphQL API client",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "tsc --noEmit"
+  },
+  "keywords": [
+    "incident-management",
+    "llm",
+    "devops",
+    "client",
+    "sdk",
+    "websocket",
+    "graphql",
+    "streaming",
+    "observability",
+    "monitoring"
+  ],
+  "author": "LLM DevOps Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globalbusinessadvisors/llm-incident-manager.git",
+    "directory": "packages/client"
+  },
+  "bugs": {
+    "url": "https://github.com/globalbusinessadvisors/llm-incident-manager/issues"
+  },
+  "homepage": "https://github.com/globalbusinessadvisors/llm-incident-manager#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@llm-dev-ops/incident-manager-types": "^1.0.1",
+    "graphql-ws": "^5.16.2"
+  },
+  "peerDependencies": {
+    "ws": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.3.0"
+  }
+}

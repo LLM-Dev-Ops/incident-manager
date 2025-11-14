@@ -1,5 +1,82 @@
 {
+  "name": "@llm-dev-ops/llm-incident-manager",
+  "version": "1.0.1",
+  "description": "Enterprise-grade incident management system for LLM operations - Rust backend with npm CLI tooling",
+  "main": "index.js",
+  "bin": {
+    "llm-im": "./bin/llm-im.js",
+    "llm-incident-manager": "./bin/llm-incident-manager.js"
+  },
+  "scripts": {
+    "install": "node scripts/install.js",
+    "postinstall": "node scripts/postinstall.js",
+    "build": "cargo build --release",
+    "build:debug": "cargo build",
+    "test": "cargo test --all-features",
+    "test:integration": "cargo test --test '*'",
+    "start": "cargo run --release",
+    "start:dev": "cargo run",
+    "check": "cargo check --all-features",
+    "clippy": "cargo clippy --all-features",
+    "fmt": "cargo fmt",
+    "clean": "cargo clean",
+    "setup:postgres": "node scripts/setup-postgres.js",
+    "setup:redis": "node scripts/setup-redis.js",
+    "migrate": "node scripts/migrate.js",
+    "metrics": "curl http://localhost:9090/metrics",
+    "health": "curl http://localhost:8080/health",
+    "graphql": "open http://localhost:8080/graphql/playground"
+  },
+  "keywords": [
+    "incident-management",
+    "llm",
+    "devops",
+    "observability",
+    "monitoring",
+    "alerting",
+    "escalation",
+    "rust",
+    "graphql",
+    "grpc",
+    "ml",
+    "correlation",
+    "enrichment"
+  ],
+  "author": "LLM DevOps Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globalbusinessadvisors/llm-incident-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/globalbusinessadvisors/llm-incident-manager/issues"
+  },
+  "homepage": "https://github.com/globalbusinessadvisors/llm-incident-manager#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "index.js",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "dependencies": {
     "claude-flow": "^2.7.31"
-  }
+  },
+  "devDependencies": {},
+  "peerDependencies": {},
+  "optionalDependencies": {}
 }

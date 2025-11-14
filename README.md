@@ -1,8 +1,21 @@
 # LLM Incident Manager
 
+[![Crates.io](https://img.shields.io/crates/v/llm-incident-manager.svg)](https://crates.io/crates/llm-incident-manager)
+[![npm](https://img.shields.io/npm/v/@llm-dev-ops/llm-incident-manager.svg)](https://www.npmjs.com/package/@llm-dev-ops/llm-incident-manager)
+[![npm types](https://img.shields.io/npm/v/@llm-dev-ops/incident-manager-types.svg?label=types)](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-types)
+[![npm client](https://img.shields.io/npm/v/@llm-dev-ops/incident-manager-client.svg?label=client)](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-client)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
+
 ## Overview
 
 LLM Incident Manager is an enterprise-grade, production-ready incident management system built in Rust, designed specifically for LLM DevOps ecosystems. It provides intelligent incident detection, classification, enrichment, correlation, routing, escalation, and automated resolution capabilities for modern LLM infrastructure.
+
+**Available on:**
+- 🦀 [**crates.io**](https://crates.io/crates/llm-incident-manager) - Rust library and binaries
+- 📦 [**npm**](https://www.npmjs.com/package/@llm-dev-ops/llm-incident-manager) - Server with npm CLI tooling
+- 📘 [**npm types**](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-types) - TypeScript type definitions
+- 🔌 [**npm client**](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-client) - JavaScript/TypeScript client SDK
 
 ## Key Features
 
@@ -188,25 +201,139 @@ Alert → Deduplication → ML Classification → Context Enrichment
 
 ### Prerequisites
 
-- Rust 1.70+ (2021 edition)
+**For Rust/Cargo:**
+- Rust 1.75+ (2021 edition)
 - PostgreSQL 14+ (optional, for persistent storage)
 - Redis (optional, for distributed caching)
 
-### Installation
+**For npm:**
+- Node.js 16.0+
+- npm 7.0+
+
+### Installation Options
+
+#### Option 1: Install via Cargo (Rust)
+
+```bash
+# Install from crates.io
+cargo install llm-incident-manager
+
+# Or add as dependency in Cargo.toml
+[dependencies]
+llm-incident-manager = "1.0.1"
+```
+
+#### Option 2: Install via npm (Global CLI)
+
+```bash
+# Install the server globally
+npm install -g @llm-dev-ops/llm-incident-manager
+
+# Build the Rust binaries
+npm run build
+
+# Start the server
+npm start
+
+# Or run directly
+llm-incident-manager
+```
+
+#### Option 3: Install Client SDK (TypeScript/JavaScript)
+
+```bash
+# Install the WebSocket/GraphQL client
+npm install @llm-dev-ops/incident-manager-client
+
+# Install type definitions (TypeScript)
+npm install @llm-dev-ops/incident-manager-types
+```
+
+#### Option 4: Install from Source
 
 ```bash
 # Clone repository
 git clone https://github.com/globalbusinessadvisors/llm-incident-manager.git
 cd llm-incident-manager
 
-# Build
+# Build with Cargo
 cargo build --release
+
+# Or build with npm
+npm install
+npm run build
 
 # Run tests
 cargo test --all-features
 
 # Run with default configuration (in-memory storage)
 cargo run --release
+```
+
+### Quick Start Examples
+
+#### Running the Server
+
+```bash
+# From cargo installation
+llm-incident-manager
+
+# From npm installation
+npm start
+
+# Or with environment variables
+DATABASE_URL=postgresql://localhost/incident_manager \
+API_PORT=8080 \
+GRPC_PORT=50051 \
+  llm-incident-manager
+```
+
+#### Using the Client SDK (JavaScript/TypeScript)
+
+```typescript
+import { IncidentManagerClient } from '@llm-dev-ops/incident-manager-client';
+
+const client = new IncidentManagerClient({
+  wsUrl: 'ws://localhost:8080/graphql/ws',
+  authToken: 'your-jwt-token'
+});
+
+// Subscribe to critical incidents (P0 and P1)
+client.subscribeToCriticalIncidents((incident) => {
+  console.log('🚨 Critical incident:', incident.title);
+  console.log('   Severity:', incident.severity);
+
+  // Trigger alerts, send to PagerDuty, etc.
+  if (incident.severity === 'P0') {
+    sendPagerDutyAlert(incident);
+  }
+});
+
+// Subscribe to all incident updates
+client.subscribeToIncidentUpdates(['P0', 'P1', 'P2'], (update) => {
+  console.log('📊 Incident update:', update.updateType);
+  updateDashboard(update);
+});
+```
+
+#### Using Type Definitions (TypeScript)
+
+```typescript
+import type {
+  Incident,
+  Severity,
+  IncidentStatus,
+  CreateIncidentRequest,
+  EscalationPolicy
+} from '@llm-dev-ops/incident-manager-types';
+
+const incident: Incident = {
+  id: 'inc-123',
+  severity: 'P1',
+  status: 'NEW',
+  title: 'High Latency Detected',
+  // ... rest of incident fields
+};
 ```
 
 ### Basic Usage
@@ -925,13 +1052,35 @@ cargo run --features "postgresql,redis"
 ### Docker
 
 ```dockerfile
-FROM rust:1.70 as builder
+FROM rust:1.75 as builder
 WORKDIR /app
 COPY . .
 RUN cargo build --release
 
 FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/target/release/llm-incident-manager /usr/local/bin/
+EXPOSE 8080 50051 9090
+CMD ["llm-incident-manager"]
+```
+
+Or use the pre-built image with npm:
+
+```dockerfile
+FROM node:20-slim
+
+# Install Rust for building
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install the server
+RUN npm install -g @llm-dev-ops/llm-incident-manager
+
+# Build Rust binaries
+WORKDIR /app
+RUN npm run build
+
+EXPOSE 8080 50051 9090
 CMD ["llm-incident-manager"]
 ```
 
@@ -1054,11 +1203,194 @@ Designed and implemented for enterprise-grade LLM infrastructure management with
 
 ---
 
-**Status**: Production Ready | **Version**: 1.0.0 | **Language**: Rust | **Last Updated**: 2025-11-12
+**Status**: Production Ready | **Version**: 1.0.1 | **Language**: Rust | **Last Updated**: 2025-11-14
+
+**Published Packages:**
+- 🦀 **Cargo**: `llm-incident-manager` v1.0.1 ([crates.io](https://crates.io/crates/llm-incident-manager))
+- 📦 **npm Server**: `@llm-dev-ops/llm-incident-manager` v1.0.1 ([npmjs](https://www.npmjs.com/package/@llm-dev-ops/llm-incident-manager))
+- 📘 **npm Types**: `@llm-dev-ops/incident-manager-types` v1.0.1 ([npmjs](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-types))
+- 🔌 **npm Client**: `@llm-dev-ops/incident-manager-client` v1.0.1 ([npmjs](https://www.npmjs.com/package/@llm-dev-ops/incident-manager-client))
+
+---
+
+## npm Packages Ecosystem
+
+### 1. Main Server Package: `@llm-dev-ops/llm-incident-manager`
+
+The complete incident management server with npm CLI tooling for easy installation and operation.
+
+```bash
+# Install globally
+npm install -g @llm-dev-ops/llm-incident-manager
+
+# Available commands
+llm-im                    # CLI tool
+llm-incident-manager      # Start the server
+npm run build             # Build Rust binaries
+npm run health            # Check health status
+npm run metrics           # View Prometheus metrics
+npm run graphql           # Open GraphQL Playground
+```
+
+**Features:**
+- Rust-based high-performance server
+- npm wrapper for easy installation
+- Automated build scripts
+- Health check and metrics endpoints
+- Full REST, gRPC, and GraphQL APIs
+
+### 2. Type Definitions: `@llm-dev-ops/incident-manager-types`
+
+Comprehensive TypeScript type definitions (2,400+ lines) for the entire incident management system.
+
+```bash
+npm install @llm-dev-ops/incident-manager-types
+```
+
+```typescript
+import type {
+  // Core incident types
+  Incident,
+  RawEvent,
+  IncidentEvent,
+  Severity,
+  IncidentStatus,
+
+  // LLM integration types
+  LLMRequest,
+  LLMResponse,
+  SentinelLLMConfig,
+  ShieldLLMConfig,
+  EdgeAgentLLMConfig,
+  GovernanceLLMConfig,
+
+  // Policy & workflow types
+  EscalationPolicy,
+  NotificationTemplate,
+  RoutingRule,
+  Playbook,
+
+  // Analytics types
+  IncidentAnalytics,
+  TeamMetrics,
+  PostMortem
+} from '@llm-dev-ops/incident-manager-types';
+```
+
+**Includes:**
+- Complete incident management data models
+- LLM client integration types (Sentinel, Shield, Edge-Agent, Governance)
+- Escalation, notification, and routing types
+- API request/response types
+- Analytics and metrics types
+- Zero dependencies, pure TypeScript
+
+### 3. Client SDK: `@llm-dev-ops/incident-manager-client`
+
+WebSocket/GraphQL client SDK for real-time incident streaming.
+
+```bash
+npm install @llm-dev-ops/incident-manager-client
+
+# Node.js also requires ws
+npm install ws
+```
+
+```typescript
+import { IncidentManagerClient } from '@llm-dev-ops/incident-manager-client';
+
+const client = new IncidentManagerClient({
+  wsUrl: 'ws://localhost:8080/graphql/ws',
+  authToken: 'your-jwt-token',
+  retryAttempts: 10
+});
+
+// Subscribe to critical incidents
+client.subscribeToCriticalIncidents((incident) => {
+  console.log('Critical incident:', incident);
+});
+
+// Subscribe to updates
+client.subscribeToIncidentUpdates(['P0', 'P1'], (update) => {
+  console.log('Update:', update);
+});
+
+// Subscribe to new incidents
+client.subscribeToNewIncidents((incident) => {
+  console.log('New incident:', incident);
+});
+
+// Subscribe to state changes
+client.subscribeToStateChanges((change) => {
+  console.log('State change:', change);
+});
+
+// Subscribe to all alerts
+client.subscribeToAlerts((alert) => {
+  console.log('Alert:', alert);
+});
+```
+
+**Features:**
+- Real-time WebSocket streaming
+- Auto-reconnection with exponential backoff
+- Full TypeScript support
+- GraphQL subscriptions
+- Works in browser and Node.js
+- Multiple subscription helpers
+
+### Example: Building a React Dashboard
+
+```bash
+npm install @llm-dev-ops/incident-manager-client @llm-dev-ops/incident-manager-types
+```
+
+```tsx
+import { useEffect, useState } from 'react';
+import { IncidentManagerClient } from '@llm-dev-ops/incident-manager-client';
+import type { Incident } from '@llm-dev-ops/incident-manager-types';
+
+function IncidentDashboard() {
+  const [criticalIncidents, setCriticalIncidents] = useState<Incident[]>([]);
+
+  useEffect(() => {
+    const client = new IncidentManagerClient({
+      wsUrl: 'ws://your-server.com/graphql/ws',
+      authToken: getAuthToken()
+    });
+
+    client.subscribeToCriticalIncidents((incident) => {
+      setCriticalIncidents(prev => [...prev, incident]);
+      showNotification(incident);
+    });
+
+    return () => client.close();
+  }, []);
+
+  return (
+    <div>
+      <h1>Critical Incidents</h1>
+      {criticalIncidents.map(incident => (
+        <IncidentCard key={incident.id} incident={incident} />
+      ))}
+    </div>
+  );
+}
+```
 
 ---
 
 ## Recent Updates
+
+### 2025-11-14: Multi-Platform Package Distribution ✅
+- **Published to crates.io**: Rust library and binaries available via `cargo install llm-incident-manager`
+- **Published to npm (3 packages)**:
+  - `@llm-dev-ops/llm-incident-manager` - Server with npm CLI tooling
+  - `@llm-dev-ops/incident-manager-types` - TypeScript type definitions (2,400+ lines)
+  - `@llm-dev-ops/incident-manager-client` - WebSocket/GraphQL client SDK
+- **All warnings resolved**: Fixed 83 compiler warnings for clean crates.io publication
+- **Version sync**: All packages aligned at v1.0.1
+- **Complete documentation**: Updated README with installation options, examples, and ecosystem guide
 
 ### 2025-11-12: LLM Integrations Module ✅
 - Implemented enterprise-grade LLM client integrations for Sentinel, Shield, Edge-Agent, and Governance
