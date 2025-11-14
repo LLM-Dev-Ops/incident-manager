@@ -1,4 +1,4 @@
-use crate::error::{AppError, Result};
+use crate::error::Result;
 use crate::models::Incident;
 use super::models::*;
 use super::policy::PolicyEngine;

@@ -2,7 +2,6 @@ use crate::grpc::proto::{alerts, incidents};
 use crate::models::*;
 use chrono::{DateTime, Utc};
 use prost_types::Timestamp;
-use std::collections::HashMap;
 use uuid::Uuid;
 
 /// Convert from proto Severity to domain Severity

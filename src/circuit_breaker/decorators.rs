@@ -110,6 +110,7 @@ where
 ///     ).await
 /// }
 /// ```
+#[allow(dead_code)]
 pub async fn with_circuit_breaker_and_fallback<F, FB, T, E>(
     name: &str,
     config: CircuitBreakerConfig,
@@ -126,11 +127,13 @@ where
 }
 
 /// Wrapper for reqwest HTTP clients with circuit breaker
+#[allow(dead_code)]
 pub struct CircuitBreakerHttpClient {
     client: reqwest::Client,
     breaker: Arc<CircuitBreaker>,
 }
 
+#[allow(dead_code)]
 impl CircuitBreakerHttpClient {
     /// Create a new HTTP client with circuit breaker
     pub fn new(name: impl Into<String>, config: CircuitBreakerConfig) -> Self {
@@ -193,10 +196,12 @@ impl CircuitBreakerHttpClient {
 }
 
 /// Wrapper for database operations with circuit breaker
+#[allow(dead_code)]
 pub struct CircuitBreakerDbWrapper {
     breaker: Arc<CircuitBreaker>,
 }
 
+#[allow(dead_code)]
 impl CircuitBreakerDbWrapper {
     /// Create a new database wrapper with circuit breaker
     pub fn new(name: impl Into<String>) -> Self {

@@ -3,7 +3,6 @@ use axum::{
     routing::{get, post, put},
     Router,
 };
-use std::sync::Arc;
 use tower_http::{
     cors::CorsLayer,
     trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},

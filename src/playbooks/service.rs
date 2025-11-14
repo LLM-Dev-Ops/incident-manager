@@ -2,13 +2,12 @@ use crate::error::{AppError, Result};
 use crate::models::{Incident, Playbook, PlaybookExecution};
 use crate::notifications::NotificationService;
 use crate::playbooks::{
-    create_default_registry, ActionExecutorRegistry, ExecutionContext, PlaybookExecutor,
+    create_default_registry, ExecutionContext, PlaybookExecutor,
 };
 use crate::state::IncidentStore;
 use dashmap::DashMap;
 use std::sync::Arc;
-use tokio::sync::RwLock;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 use uuid::Uuid;
 
 /// Playbook service manages playbook storage and execution
@@ -23,6 +22,7 @@ pub struct PlaybookService {
     executions: Arc<DashMap<Uuid, PlaybookExecution>>,
 
     /// Store for incidents
+    #[allow(dead_code)]
     store: Arc<dyn IncidentStore>,
 
     /// Whether automatic execution is enabled

@@ -1,8 +1,7 @@
 //! Dashboard data providers for real-time metrics
 
 use crate::analytics::aggregation::MetricsAggregator;
-use crate::analytics::error::{AnalyticsError, AnalyticsResult};
-use crate::analytics::metrics::{IncidentMetrics, PerformanceMetrics, SLAMetrics};
+use crate::analytics::error::AnalyticsResult;
 use crate::models::Incident;
 use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};

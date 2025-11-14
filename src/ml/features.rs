@@ -1,8 +1,7 @@
 use crate::error::{AppError, Result};
-use crate::ml::models::{FeatureConfig, TrainingSample};
+use crate::ml::models::FeatureConfig;
 use crate::models::Incident;
 use chrono::{Datelike, Timelike};
-use ndarray::Array1;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

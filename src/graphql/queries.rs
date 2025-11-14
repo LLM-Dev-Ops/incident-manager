@@ -156,7 +156,7 @@ impl QueryRoot {
 
     /// List all playbooks
     async fn playbooks(&self, ctx: &Context<'_>) -> Result<Vec<Playbook>> {
-        let gql_ctx = ctx.data::<GraphQLContext>()?;
+        let _gql_ctx = ctx.data::<GraphQLContext>()?;
 
         // Access playbook_service through processor
         // Note: This requires the playbook_service to be set on the processor
@@ -205,7 +205,7 @@ impl QueryRoot {
 
         // Apply pagination
         let start = (pagination.page * pagination.page_size) as usize;
-        let end = start + pagination.page_size as usize;
+        let _end = start + pagination.page_size as usize;
         let paginated = filtered
             .into_iter()
             .skip(start)

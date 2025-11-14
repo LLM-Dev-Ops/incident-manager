@@ -8,7 +8,6 @@ use dashmap::DashMap;
 use std::sync::Arc;
 use tokio_cron_scheduler::{JobScheduler, JobSchedulerError};
 use tracing::{debug, error, info, warn};
-use uuid::Uuid;
 
 /// Main scheduler service that manages all scheduled jobs
 pub struct SchedulerService {

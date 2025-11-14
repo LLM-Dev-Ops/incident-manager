@@ -1,4 +1,3 @@
-use crate::models::Incident;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

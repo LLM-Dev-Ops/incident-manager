@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tantivy::collector::{Count, FacetCollector, TopDocs};
 use tantivy::query::Query;
-use tantivy::schema::{Field, Value};
+use tantivy::schema::Value;
 use tantivy::TantivyDocument;
 
 /// A single search result hit
@@ -315,7 +315,7 @@ impl SearchService {
                 Aggregation::Custom(name) => (name.as_str(), name.as_str()),
             };
 
-            if let Ok(field) = schema.get_field(field_name) {
+            if let Ok(_field) = schema.get_field(field_name) {
                 let mut facet_collector = FacetCollector::for_field(field_name);
                 facet_collector.add_facet(tantivy::schema::Facet::from("/"));
 

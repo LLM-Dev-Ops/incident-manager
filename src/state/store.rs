@@ -3,7 +3,6 @@ use crate::models::Incident;
 use crate::state::{IncidentFilter, IncidentStore};
 use async_trait::async_trait;
 use dashmap::DashMap;
-use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -113,7 +112,7 @@ impl IncidentStore for InMemoryStore {
 
         // Apply pagination
         let start = (page * page_size) as usize;
-        let end = start + page_size as usize;
+        let _end = start + page_size as usize;
 
         Ok(incidents
             .into_iter()

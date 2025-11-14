@@ -2,7 +2,7 @@ use crate::error::{AppError, Result};
 use crate::ml::classifier::SeverityClassifier;
 use crate::ml::features::FeatureExtractor;
 use crate::ml::models::{
-    FeatureConfig, MLConfig, ModelMetadata, ModelType, Prediction, TrainingDataset,
+    MLConfig, ModelMetadata, ModelType, Prediction, TrainingDataset,
     TrainingSample,
 };
 use crate::models::{Incident, IncidentType, Severity};

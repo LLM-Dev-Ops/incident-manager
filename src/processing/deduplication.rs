@@ -1,7 +1,7 @@
-use crate::error::{AppError, Result};
+use crate::error::Result;
 use crate::models::{Alert, Incident};
 use crate::state::IncidentStore;
-use chrono::{DateTime, Duration, Utc};
+use chrono::{Duration, Utc};
 use std::sync::Arc;
 
 /// Deduplication engine

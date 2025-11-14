@@ -13,6 +13,7 @@ use std::time::Duration;
 /// NATS producer
 pub struct NatsProducer {
     client: Arc<Client>,
+    #[allow(dead_code)]
     config: NatsConfig,
 }
 
@@ -69,6 +70,7 @@ impl MessageProducer for NatsProducer {
 /// NATS consumer
 pub struct NatsConsumer {
     client: Arc<Client>,
+    #[allow(dead_code)]
     config: NatsConfig,
 }
 

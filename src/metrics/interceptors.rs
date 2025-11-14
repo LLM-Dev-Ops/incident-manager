@@ -11,7 +11,7 @@
 
 use super::*;
 use std::time::Instant;
-use tonic::{Request, Response, Status};
+use tonic::Status;
 use std::task::{Context, Poll};
 use std::pin::Pin;
 use tower::Service;
@@ -198,10 +198,12 @@ impl Drop for RequestGuard {
 
 /// Tower layer for gRPC metrics
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct GrpcMetricsLayer {
     config: Arc<MetricsConfig>,
 }
 
+#[allow(dead_code)]
 impl GrpcMetricsLayer {
     /// Create a new gRPC metrics layer
     pub fn new() -> Self {
@@ -237,6 +239,7 @@ impl<S> tower::Layer<S> for GrpcMetricsLayer {
 
 /// Tower service for gRPC metrics
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct GrpcMetricsService<S> {
     inner: S,
     config: Arc<MetricsConfig>,

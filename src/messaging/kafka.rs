@@ -16,6 +16,7 @@ use std::time::Duration;
 /// Kafka producer
 pub struct KafkaProducer {
     producer: Arc<FutureProducer>,
+    #[allow(dead_code)]
     config: KafkaConfig,
 }
 
@@ -95,6 +96,7 @@ impl MessageProducer for KafkaProducer {
 /// Kafka consumer
 pub struct KafkaConsumer {
     consumer: Arc<StreamConsumer>,
+    #[allow(dead_code)]
     config: KafkaConfig,
 }
 

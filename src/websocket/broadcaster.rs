@@ -10,7 +10,7 @@ use tracing::{debug, error, info};
 
 use super::{
     connection::ConnectionManager,
-    events::{EventEnvelope, EventPriority, EventStats},
+    events::{EventEnvelope, EventStats},
     messages::Event,
 };
 

@@ -1,6 +1,6 @@
 use crate::enrichment::models::{
     EnrichedContext, EnrichmentConfig, EnrichmentResult, HistoricalContext, OnCallEngineer,
-    ServiceChange, ServiceContext, ServiceDependency, ServiceStatus, SimilarIncident, TeamContext,
+    ServiceContext, ServiceDependency, ServiceStatus, SimilarIncident, TeamContext,
 };
 use crate::error::{AppError, Result};
 use crate::models::Incident;
@@ -8,7 +8,7 @@ use crate::state::{IncidentFilter, IncidentStore};
 use async_trait::async_trait;
 use std::sync::Arc;
 use std::time::Instant;
-use tracing::{debug, warn};
+use tracing::warn;
 
 /// Trait for context enrichers
 #[async_trait]

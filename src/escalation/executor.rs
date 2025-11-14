@@ -7,7 +7,6 @@ use crate::notifications::NotificationService;
 use chrono::Utc;
 use dashmap::DashMap;
 use std::sync::Arc;
-use uuid::Uuid;
 
 /// Executes escalation levels by resolving targets and sending notifications
 pub struct EscalationLevelExecutor {
@@ -354,6 +353,7 @@ impl EscalationLevelExecutor {
 
 /// Recipient for escalation notification
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct NotificationRecipient {
     email: String,
     channel: String,
@@ -381,6 +381,7 @@ mod tests {
     use super::*;
     use crate::models::policy::{RotationStrategy, ScheduleLayer};
     use crate::models::{IncidentType, Severity};
+    use uuid::Uuid;
 
     fn create_test_incident() -> Incident {
         Incident::new(

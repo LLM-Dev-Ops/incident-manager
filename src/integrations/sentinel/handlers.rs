@@ -1,6 +1,6 @@
 use chrono::Utc;
 use std::collections::HashMap;
-use tracing::{debug, info, warn};
+use tracing::{debug, info};
 
 use super::models::{SentinelAlert, SeverityPredictionRequest};
 use crate::integrations::common::IntegrationResult;

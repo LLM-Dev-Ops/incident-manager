@@ -12,7 +12,7 @@ pub use redis_store::RedisStore;
 pub use sled_store::SledStore;
 pub use store::*;
 
-use crate::error::{AppError, Result};
+use crate::error::Result;
 use crate::models::Incident;
 use async_trait::async_trait;
 use uuid::Uuid;

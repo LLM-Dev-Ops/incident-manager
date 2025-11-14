@@ -15,6 +15,7 @@ pub struct RoutingRuleEvaluator {
     rules: Arc<DashMap<Uuid, RoutingRule>>,
 
     /// Optional playbook service for ApplyPlaybook actions
+    #[allow(dead_code)]
     playbook_service: Option<Arc<PlaybookService>>,
 }
 

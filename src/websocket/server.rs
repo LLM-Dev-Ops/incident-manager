@@ -10,13 +10,13 @@ use axum::{
     response::Response,
 };
 use chrono::Utc;
-use futures::{stream::StreamExt, SinkExt};
+use futures::stream::StreamExt;
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tokio::time::interval;
 use tracing::{debug, error, info, warn};
 
 use super::{
-    connection::{ConnectionManager, MessageWriter},
+    connection::MessageWriter,
     messages::{ClientMessage, ServerMessage},
     session::Session,
     WebSocketState,
@@ -63,7 +63,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<WebSocketState>, addr: Sock
 
     // Spawn message sender task
     let session_id_clone = session_id.clone();
-    let mut sender_handle = tokio::spawn(async move {
+    let sender_handle = tokio::spawn(async move {
         while let Some(message) = message_rx.recv().await {
             if let Err(e) = writer.send(message).await {
                 error!(session_id = %session_id_clone, error = ?e, "Failed to send message");
@@ -78,7 +78,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<WebSocketState>, addr: Sock
     // Spawn heartbeat task
     let connection_clone = connection.clone();
     let heartbeat_interval = state.config.heartbeat_interval_secs;
-    let mut heartbeat_handle = tokio::spawn(async move {
+    let heartbeat_handle = tokio::spawn(async move {
         let mut ticker = interval(Duration::from_secs(heartbeat_interval));
         loop {
             ticker.tick().await;
@@ -153,7 +153,7 @@ async fn handle_socket(socket: WebSocket, state: Arc<WebSocketState>, addr: Sock
 async fn handle_client_message(
     text: &str,
     connection: &Arc<super::connection::Connection>,
-    state: &Arc<WebSocketState>,
+    _state: &Arc<WebSocketState>,
 ) -> Result<(), String> {
     let message: ClientMessage = serde_json::from_str(text)
         .map_err(|e| format!("Invalid JSON: {}", e))?;

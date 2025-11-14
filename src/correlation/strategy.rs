@@ -125,6 +125,7 @@ impl PatternStrategy {
     }
 
     /// Calculate Levenshtein distance ratio
+    #[allow(dead_code)]
     fn levenshtein_ratio(s1: &str, s2: &str) -> f64 {
         let len1 = s1.len();
         let len2 = s2.len();
@@ -140,6 +141,7 @@ impl PatternStrategy {
     }
 
     /// Calculate Levenshtein distance
+    #[allow(dead_code)]
     fn levenshtein_distance(s1: &str, s2: &str) -> usize {
         let len1 = s1.len();
         let len2 = s2.len();

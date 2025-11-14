@@ -14,6 +14,7 @@ use uuid::Uuid;
 /// Playbook executor - executes playbooks for incidents
 pub struct PlaybookExecutor {
     action_registry: Arc<ActionExecutorRegistry>,
+    #[allow(dead_code)]
     store: Arc<dyn IncidentStore>,
 }
 

@@ -1,6 +1,6 @@
 use crate::error::{AppError, Result};
 use crate::ml::models::{ModelMetadata, ModelMetrics, ModelType, Prediction, TrainingDataset};
-use crate::models::{IncidentType, Severity};
+use crate::models::Severity;
 use ndarray::{Array1, Array2};
 use serde::{Deserialize, Serialize};
 use smartcore::linalg::basic::matrix::DenseMatrix;
@@ -530,6 +530,7 @@ pub struct SeverityClassifier {
     primary_model: Box<dyn Classifier>,
 
     /// Model type
+    #[allow(dead_code)]
     model_type: ModelType,
 }
 

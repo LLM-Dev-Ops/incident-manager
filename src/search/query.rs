@@ -1,7 +1,6 @@
 //! Search query building and parsing
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 /// Sort order for search results
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]

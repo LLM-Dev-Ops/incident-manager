@@ -3,14 +3,14 @@ use crate::models::Incident;
 use crate::state::{IncidentFilter, IncidentStore};
 use async_trait::async_trait;
 use redis::aio::ConnectionManager;
-use redis::{AsyncCommands, Client, RedisError};
+use redis::{AsyncCommands, Client};
 use std::sync::Arc;
-use std::time::Duration;
 use uuid::Uuid;
 
 /// Redis-based persistent incident store
 #[derive(Clone)]
 pub struct RedisStore {
+    #[allow(dead_code)]
     client: Arc<Client>,
     connection: ConnectionManager,
     key_prefix: String,
@@ -427,7 +427,7 @@ impl IncidentStore for RedisStore {
         page: u32,
         page_size: u32,
     ) -> Result<Vec<Incident>> {
-        let mut conn = self.connection.clone();
+        let _conn = self.connection.clone();
 
         // Get filtered incident IDs
         let incident_ids = self.clone().get_filtered_incident_ids(filter).await?;

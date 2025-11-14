@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use std::time::Duration;
 
 /// Main application configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]

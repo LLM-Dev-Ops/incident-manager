@@ -14,11 +14,13 @@ use tracing::warn;
 
 /// Middleware layer for circuit breaker
 #[derive(Clone)]
+#[allow(dead_code)]
 pub struct CircuitBreakerLayer {
     name: String,
     config: CircuitBreakerConfig,
 }
 
+#[allow(dead_code)]
 impl CircuitBreakerLayer {
     /// Create a new circuit breaker layer
     pub fn new(name: impl Into<String>, config: CircuitBreakerConfig) -> Self {

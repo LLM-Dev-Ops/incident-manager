@@ -2,9 +2,9 @@ use crate::error::{AppError, Result};
 use crate::models::{Incident, Notification, NotificationStatus};
 use chrono::Utc;
 use reqwest::Client;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::time::Duration;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 
 /// Webhook notification sender
 #[derive(Clone)]

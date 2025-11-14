@@ -48,6 +48,7 @@ impl Loader<Uuid> for IncidentLoader {
 /// Loader for batching playbook queries
 #[derive(Clone)]
 pub struct PlaybookLoader {
+    #[allow(dead_code)]
     processor: Arc<IncidentProcessor>,
 }
 

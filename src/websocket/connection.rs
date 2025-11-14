@@ -18,6 +18,7 @@ use super::{
 };
 
 /// Maximum pending messages per connection before dropping
+#[allow(dead_code)]
 const MAX_PENDING_MESSAGES: usize = 1000;
 
 /// Connection handle for sending messages

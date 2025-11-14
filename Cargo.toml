@@ -1,6 +1,6 @@
 [package]
 name = "llm-incident-manager"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 rust-version = "1.75"
 authors = ["LLM DevOps Team"]
@@ -12,6 +12,8 @@ homepage = "https://github.com/globalbusinessadvisors/llm-incident-manager"
 keywords = ["incident", "management", "llm", "devops", "observability"]
 categories = ["development-tools", "web-programming"]
 readme = "README.md"
+autobenches = false
+autotests = false
 exclude = [
     "docs/",
     ".claude-flow/",
@@ -139,13 +141,15 @@ mockito = "1.2"
 [build-dependencies]
 tonic-build = "0.11"
 
-[[bench]]
-name = "metrics_benchmark"
-harness = false
-
-[[bench]]
-name = "circuit_breaker_benchmark"
-harness = false
+# Benchmark declarations removed - benches/ directory is excluded from publishing
+# To run benchmarks locally: cargo bench
+# [[bench]]
+# name = "metrics_benchmark"
+# harness = false
+#
+# [[bench]]
+# name = "circuit_breaker_benchmark"
+# harness = false
 
 [profile.dev]
 opt-level = 0

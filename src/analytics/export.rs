@@ -5,7 +5,6 @@ use crate::analytics::reports::Report;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use tokio::fs;
-use tokio::io::AsyncWriteExt;
 
 /// Export format for reports
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]

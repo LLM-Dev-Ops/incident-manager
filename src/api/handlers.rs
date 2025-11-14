@@ -1,5 +1,5 @@
 use crate::api::AppState;
-use crate::error::{AppError, Result};
+use crate::error::Result;
 use crate::models::*;
 use crate::state::IncidentFilter;
 use axum::{

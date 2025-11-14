@@ -1,7 +1,7 @@
 //! Metrics aggregation and time-series data handling
 
 use crate::analytics::error::{AnalyticsError, AnalyticsResult};
-use crate::analytics::metrics::{IncidentMetrics, PerformanceMetrics, SLAMetrics, TeamMetrics};
+use crate::analytics::metrics::{IncidentMetrics, PerformanceMetrics, SLAMetrics};
 use crate::models::Incident;
 use chrono::{DateTime, Duration, Timelike, Utc};
 use serde::{Deserialize, Serialize};

@@ -145,7 +145,7 @@ impl NotificationService {
         &self,
         incident: &Incident,
         channels: Vec<NotificationChannel>,
-        message: &str,
+        _message: &str,
     ) -> Result<Vec<Uuid>> {
         let mut notification_ids = Vec::new();
 

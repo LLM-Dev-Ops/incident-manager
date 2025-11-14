@@ -3,7 +3,6 @@ use tracing::{info, warn};
 
 use super::client::EdgeAgentClient;
 use super::models::*;
-use super::stream::StreamManager;
 use crate::error::Result;
 
 /// Edge inference handler for processing requests

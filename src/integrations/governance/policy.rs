@@ -1,4 +1,4 @@
-use crate::error::{AppError, Result};
+use crate::error::Result;
 use super::models::*;
 use std::collections::HashMap;
 

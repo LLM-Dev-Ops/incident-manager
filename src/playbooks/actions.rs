@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::time::sleep;
-use tracing::{info, warn};
+use tracing::info;
 
 /// Action executor trait
 #[async_trait]
@@ -431,7 +431,7 @@ impl SeverityChangeActionExecutor {
 
 #[async_trait]
 impl ActionExecutor for SeverityChangeActionExecutor {
-    async fn execute(&self, action: &Action, _context: &mut ExecutionContext) -> Result<ActionResult> {
+    async fn execute(&self, _action: &Action, _context: &mut ExecutionContext) -> Result<ActionResult> {
         let mut incident = _context.incident().clone();
 
         let old_severity = incident.severity.clone();

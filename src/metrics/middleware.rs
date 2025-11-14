@@ -10,7 +10,6 @@
 
 use super::*;
 use axum::{
-    body::Body,
     extract::{MatchedPath, Request},
     middleware::Next,
     response::Response,
@@ -24,6 +23,7 @@ use std::future::Future;
 /// Middleware layer for metrics collection
 #[derive(Clone)]
 pub struct MetricsMiddleware {
+    #[allow(dead_code)]
     config: Arc<MetricsConfig>,
 }
 
@@ -213,6 +213,7 @@ where
 /// let app = Router::new()
 ///     .layer(middleware::from_fn(track_metrics));
 /// ```
+#[allow(dead_code)]
 pub async fn track_metrics(req: Request, next: Next) -> Response {
     let config = MetricsConfig::default();
 

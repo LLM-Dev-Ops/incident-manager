@@ -1,4 +1,4 @@
-use crate::error::{AppError, Result};
+use crate::error::AppError;
 use crate::grpc::conversions::*;
 use crate::grpc::proto::incidents::*;
 use crate::models::{Incident, IncidentState, Severity};
