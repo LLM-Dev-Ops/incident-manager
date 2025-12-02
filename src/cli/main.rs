@@ -69,6 +69,26 @@ enum Commands {
 
     /// Check server health
     Health,
+
+    /// Run all benchmarks and output results
+    #[command(name = "run")]
+    Run {
+        /// Output directory for benchmark results
+        #[arg(short, long, default_value = "benchmarks/output")]
+        output: String,
+
+        /// Only run specific target (by ID)
+        #[arg(short, long)]
+        target: Option<String>,
+
+        /// Output format: json, markdown, or both
+        #[arg(short, long, default_value = "both")]
+        format: String,
+
+        /// Quiet mode - only output results, no progress
+        #[arg(short, long)]
+        quiet: bool,
+    },
 }
 
 #[tokio::main]
@@ -154,6 +174,127 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             let body: serde_json::Value = response.json().await?;
             println!("{}", serde_json::to_string_pretty(&body)?);
+        }
+
+        Commands::Run {
+            output,
+            target,
+            format,
+            quiet,
+        } => {
+            use llm_incident_manager::adapters::all_targets;
+            use llm_incident_manager::benchmarks::{io, markdown, BenchmarkResult};
+            use std::fs;
+            use std::time::Instant;
+
+            // Create output directories
+            let raw_dir = format!("{}/raw", output);
+            fs::create_dir_all(&raw_dir)?;
+
+            if !quiet {
+                println!("LLM Incident Manager Benchmark Runner");
+                println!("=====================================");
+                println!();
+            }
+
+            let targets = all_targets();
+            let mut results: Vec<BenchmarkResult> = Vec::new();
+
+            // Filter targets if specific one requested
+            let targets_to_run: Vec<_> = if let Some(ref target_id) = target {
+                targets
+                    .into_iter()
+                    .filter(|t| t.id() == *target_id)
+                    .collect()
+            } else {
+                targets
+            };
+
+            if targets_to_run.is_empty() {
+                if let Some(ref target_id) = target {
+                    eprintln!("Error: No benchmark target found with ID '{}'", target_id);
+                    eprintln!("Available targets:");
+                    for t in all_targets() {
+                        eprintln!("  - {}", t.id());
+                    }
+                    std::process::exit(1);
+                }
+            }
+
+            if !quiet {
+                println!("Running {} benchmark targets...", targets_to_run.len());
+                println!();
+            }
+
+            let total_start = Instant::now();
+
+            for t in targets_to_run {
+                let id = t.id();
+                if !quiet {
+                    print!("  {} ... ", id);
+                }
+
+                let start = Instant::now();
+                let result = t.run().await;
+                let elapsed = start.elapsed();
+
+                if !quiet {
+                    if result.is_success() {
+                        println!("OK ({:.2}ms)", elapsed.as_secs_f64() * 1000.0);
+                    } else {
+                        println!("FAILED ({:.2}ms)", elapsed.as_secs_f64() * 1000.0);
+                    }
+                }
+
+                results.push(result);
+            }
+
+            let total_elapsed = total_start.elapsed();
+
+            if !quiet {
+                println!();
+                println!("Completed {} benchmarks in {:.2}s", results.len(), total_elapsed.as_secs_f64());
+                let successful = results.iter().filter(|r| r.is_success()).count();
+                println!("  Successful: {}", successful);
+                println!("  Failed: {}", results.len() - successful);
+            }
+
+            // Write results based on format
+            match format.as_str() {
+                "json" => {
+                    io::write_results(&results)?;
+                    io::write_combined_results(&results)?;
+                    if !quiet {
+                        println!();
+                        println!("Results written to: {}/raw/", output);
+                    }
+                }
+                "markdown" => {
+                    let summary_path = format!("{}/summary.md", output);
+                    markdown::write_summary_to_path(&results, &summary_path)?;
+                    if !quiet {
+                        println!();
+                        println!("Summary written to: {}", summary_path);
+                    }
+                }
+                "both" | _ => {
+                    io::write_results(&results)?;
+                    io::write_combined_results(&results)?;
+                    let summary_path = format!("{}/summary.md", output);
+                    markdown::write_summary_to_path(&results, &summary_path)?;
+                    if !quiet {
+                        println!();
+                        println!("Results written to:");
+                        println!("  - {}/raw/ (JSON)", output);
+                        println!("  - {} (Markdown)", summary_path);
+                    }
+                }
+            }
+
+            // Output JSON to stdout if quiet mode
+            if quiet {
+                println!("{}", serde_json::to_string_pretty(&results)?);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
+pub mod adapters;
 pub mod analytics;
 pub mod api;
+pub mod benchmarks;
 pub mod circuit_breaker;
 pub mod config;
 pub mod correlation;
@@ -23,3 +25,7 @@ pub mod websocket;
 
 pub use config::Config;
 pub use error::{AppError, Result};
+
+// Re-export canonical benchmark interface
+pub use benchmarks::{run_all_benchmarks, BenchmarkResult};
+pub use adapters::{all_targets, BenchTarget};
