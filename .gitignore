@@ -42,3 +42,9 @@ docker-compose.override.yml
 # Temporary
 tmp/
 temp/
+
+# Node modules
+node_modules/
+
+# Claude Flow metrics
+.claude-flow/
