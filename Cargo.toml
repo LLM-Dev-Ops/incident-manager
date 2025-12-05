@@ -40,6 +40,14 @@ name = "llm-im-cli"
 path = "src/cli/main.rs"
 
 [dependencies]
+# LLM-Dev-Ops Ecosystem Dependencies (Phase 2A - Compile-time only)
+llm-sentinel-core = { git = "https://github.com/LLM-Dev-Ops/sentinel" }
+llm-observatory-core = { git = "https://github.com/LLM-Dev-Ops/observatory" }
+llm-governance-common = { git = "https://github.com/LLM-Dev-Ops/governance-dashboard" }
+llm-analytics-hub = { git = "https://github.com/LLM-Dev-Ops/analytics-hub" }
+# NOTE: policy-engine-benchmarks has upstream compile errors - marked optional until fixed
+policy-engine-benchmarks = { git = "https://github.com/LLM-Dev-Ops/policy-engine", package = "policy-engine-benchmarks", optional = true }
+
 # Async Runtime & Concurrency
 tokio = { version = "1.35", features = ["full"] }
 tokio-stream = "0.1"
