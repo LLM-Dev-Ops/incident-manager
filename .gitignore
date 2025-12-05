@@ -43,8 +43,10 @@ docker-compose.override.yml
 tmp/
 temp/
 
-# Node modules
+# Node modules (all locations)
 node_modules/
+**/node_modules/
 
 # Claude Flow metrics
 .claude-flow/
+**/.claude-flow/
