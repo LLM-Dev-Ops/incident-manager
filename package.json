@@ -74,9 +74,6 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "claude-flow": "^2.7.31"
-  },
-  "devDependencies": {},
-  "peerDependencies": {},
-  "optionalDependencies": {}
+    "claude-flow": "^2.7.41"
+  }
 }
