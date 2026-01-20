@@ -31,9 +31,10 @@ steps:
       - |
         apt-get update && apt-get install -y pkg-config libssl-dev cmake clang protobuf-compiler
         cargo build --release --bin llm-incident-manager --bin llm-im-cli
-        mkdir -p /workspace/bin
-        cp target/release/llm-incident-manager /workspace/bin/
-        cp target/release/llm-im-cli /workspace/bin/
+        mkdir -p bin
+        cp target/release/llm-incident-manager bin/
+        cp target/release/llm-im-cli bin/
+        ls -la bin/
 
   # Step 2: Build TypeScript contracts (optional - skip if deps not available)
   - name: 'node:20-slim'
