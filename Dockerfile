@@ -1,7 +1,7 @@
 # Multi-stage build for LLM Incident Manager
 
 # Stage 1: Builder
-FROM rust:1.75-slim as builder
+FROM rust:1.84-slim as builder
 
 WORKDIR /app
 
@@ -9,6 +9,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
+    cmake \
+    clang \
+    protobuf-compiler \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy manifests
