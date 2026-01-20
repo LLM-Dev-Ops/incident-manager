@@ -56,3 +56,8 @@ node_modules/
 .mcp.json
 .swarm/
 CLAUDE.md
+.claude-*
+
+# Google Cloud SDK (local install)
+google-cloud-sdk/
+google-cloud-cli-*.tar.gz
