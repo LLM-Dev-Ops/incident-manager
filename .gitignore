@@ -50,3 +50,9 @@ node_modules/
 # Claude Flow metrics
 .claude-flow/
 **/.claude-flow/
+
+# Claude Code configuration
+.claude/
+.mcp.json
+.swarm/
+CLAUDE.md
