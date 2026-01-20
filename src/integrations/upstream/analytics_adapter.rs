@@ -8,9 +8,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-// Import upstream analytics types
-use llm_analytics_hub::{Anomaly, AnomalyType as AnalyticsAnomalyType, AnomalySeverity};
-use llm_analytics_hub::analytics::anomaly::DetectorStats;
+// Import upstream analytics types (disabled - ecosystem feature not enabled)
+// When ecosystem feature is enabled, uncomment these imports:
+// use llm_analytics_hub::{Anomaly, AnomalyType as AnalyticsAnomalyType, AnomalySeverity};
+// use llm_analytics_hub::analytics::anomaly::DetectorStats;
 
 /// Adapter for consuming analytics from llm-analytics-hub
 #[derive(Debug, Clone)]
@@ -63,25 +64,9 @@ impl AnalyticsHubAdapter {
         }
     }
 
-    /// Convert upstream Anomaly to internal outlier detection result
-    pub fn convert_anomaly(&self, anomaly: &Anomaly) -> UpstreamOutlierDetection {
-        UpstreamOutlierDetection {
-            id: format!("outlier-{}", uuid::Uuid::new_v4()),
-            metric_name: anomaly.metric_name.clone(),
-            timestamp: anomaly.timestamp,
-            observed_value: anomaly.value,
-            expected_value: anomaly.expected_value,
-            deviation: anomaly.deviation,
-            deviation_percentage: self.calculate_deviation_percentage(
-                anomaly.value,
-                anomaly.expected_value,
-            ),
-            anomaly_type: self.convert_anomaly_type(&anomaly.anomaly_type),
-            severity: self.convert_anomaly_severity(&anomaly.severity),
-            confidence: self.estimate_confidence(anomaly),
-            source: self.source_id.clone(),
-        }
-    }
+    // NOTE: convert_anomaly requires ecosystem feature (llm_analytics_hub)
+    // Uncomment when ecosystem dependencies are available
+    // pub fn convert_anomaly(&self, anomaly: &Anomaly) -> UpstreamOutlierDetection { ... }
 
     /// Extract long-tail analytics from metrics data
     pub fn create_long_tail_analytics(&self, metrics: &[UpstreamAggregatedMetric]) -> UpstreamLongTailAnalytics {
@@ -102,54 +87,12 @@ impl AnalyticsHubAdapter {
         }
     }
 
-    /// Convert detector statistics
-    pub fn convert_detector_stats(&self, stats: &DetectorStats) -> DetectorStatistics {
-        DetectorStatistics {
-            total_metrics_monitored: stats.total_metrics as u64,
-            total_anomalies_detected: stats.total_anomalies as u64,
-            active_baselines: stats.active_baselines as u64,
-            detection_rate: if stats.total_metrics > 0 {
-                stats.total_anomalies as f64 / stats.total_metrics as f64
-            } else {
-                0.0
-            },
-        }
-    }
-
-    /// Filter anomalies by confidence threshold
-    pub fn filter_high_confidence_anomalies(&self, anomalies: &[Anomaly]) -> Vec<UpstreamOutlierDetection> {
-        anomalies
-            .iter()
-            .filter(|a| self.estimate_confidence(a) >= self.confidence_threshold)
-            .map(|a| self.convert_anomaly(a))
-            .collect()
-    }
-
-    /// Batch convert multiple anomalies
-    pub fn convert_anomaly_batch(&self, anomalies: &[Anomaly]) -> Vec<UpstreamOutlierDetection> {
-        anomalies.iter().map(|a| self.convert_anomaly(a)).collect()
-    }
+    // NOTE: The following methods require ecosystem feature (llm_analytics_hub)
+    // convert_detector_stats, filter_high_confidence_anomalies, convert_anomaly_batch
+    // convert_anomaly_type, convert_anomaly_severity, estimate_confidence
+    // Uncomment when ecosystem dependencies are available
 
     // --- Private helper methods ---
-
-    fn convert_anomaly_type(&self, anomaly_type: &AnalyticsAnomalyType) -> OutlierType {
-        match anomaly_type {
-            AnalyticsAnomalyType::Spike => OutlierType::Spike,
-            AnalyticsAnomalyType::Drop => OutlierType::Drop,
-            AnalyticsAnomalyType::HighValue => OutlierType::HighValue,
-            AnalyticsAnomalyType::LowValue => OutlierType::LowValue,
-            AnalyticsAnomalyType::Pattern => OutlierType::Pattern,
-        }
-    }
-
-    fn convert_anomaly_severity(&self, severity: &AnomalySeverity) -> OutlierSeverity {
-        match severity {
-            AnomalySeverity::Low => OutlierSeverity::Low,
-            AnomalySeverity::Medium => OutlierSeverity::Medium,
-            AnomalySeverity::High => OutlierSeverity::High,
-            AnomalySeverity::Critical => OutlierSeverity::Critical,
-        }
-    }
 
     fn calculate_deviation_percentage(&self, observed: f64, expected: f64) -> f64 {
         if expected == 0.0 {
@@ -161,18 +104,6 @@ impl AnalyticsHubAdapter {
         } else {
             ((observed - expected).abs() / expected.abs()) * 100.0
         }
-    }
-
-    fn estimate_confidence(&self, anomaly: &Anomaly) -> f64 {
-        // Confidence estimation based on deviation magnitude
-        let deviation_factor = (anomaly.deviation.abs() / 3.0).min(1.0);
-        let severity_factor = match anomaly.severity {
-            AnomalySeverity::Critical => 0.95,
-            AnomalySeverity::High => 0.85,
-            AnomalySeverity::Medium => 0.70,
-            AnomalySeverity::Low => 0.50,
-        };
-        (deviation_factor + severity_factor) / 2.0
     }
 
     fn compute_summary_stats(&self, metrics: &[UpstreamAggregatedMetric]) -> StatsSummary {
@@ -500,16 +431,5 @@ mod tests {
         assert_eq!(adapter.calculate_deviation_percentage(0.0, 0.0), 0.0);
     }
 
-    #[test]
-    fn test_outlier_type_conversion() {
-        let adapter = AnalyticsHubAdapter::default();
-        assert_eq!(
-            adapter.convert_anomaly_type(&AnalyticsAnomalyType::Spike),
-            OutlierType::Spike
-        );
-        assert_eq!(
-            adapter.convert_anomaly_type(&AnalyticsAnomalyType::Pattern),
-            OutlierType::Pattern
-        );
-    }
+    // NOTE: test_outlier_type_conversion requires ecosystem feature (llm_analytics_hub)
 }

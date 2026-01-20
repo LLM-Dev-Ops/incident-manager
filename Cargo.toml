@@ -2,7 +2,7 @@
 name = "llm-incident-manager"
 version = "1.0.1"
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.84"
 authors = ["LLM DevOps Team"]
 description = "Enterprise-grade incident management system for LLM operations"
 license = "MIT OR Apache-2.0"
@@ -40,13 +40,14 @@ name = "llm-im-cli"
 path = "src/cli/main.rs"
 
 [dependencies]
-# LLM-Dev-Ops Ecosystem Dependencies (Phase 2A - Compile-time only)
-llm-sentinel-core = { git = "https://github.com/LLM-Dev-Ops/sentinel" }
-llm-observatory-core = { git = "https://github.com/LLM-Dev-Ops/observatory" }
-llm-governance-common = { git = "https://github.com/LLM-Dev-Ops/governance-dashboard" }
-llm-analytics-hub = { git = "https://github.com/LLM-Dev-Ops/analytics-hub" }
-# NOTE: policy-engine-benchmarks has upstream compile errors - marked optional until fixed
-policy-engine-benchmarks = { git = "https://github.com/LLM-Dev-Ops/policy-engine", package = "policy-engine-benchmarks", optional = true }
+# LLM-Dev-Ops Ecosystem Dependencies (Phase 2A - DISABLED for production deployment)
+# NOTE: All external ecosystem dependencies are temporarily disabled due to upstream dependency issues
+# These can be re-enabled once the upstream repositories fix their dependency chains
+# llm-sentinel-core = { git = "https://github.com/LLM-Dev-Ops/sentinel", optional = true }
+# llm-observatory-core = { git = "https://github.com/LLM-Dev-Ops/observatory", optional = true }
+# llm-governance-common = { git = "https://github.com/LLM-Dev-Ops/governance-dashboard", optional = true }
+# llm-analytics-hub = { git = "https://github.com/LLM-Dev-Ops/analytics-hub", optional = true }
+# policy-engine-benchmarks = { git = "https://github.com/LLM-Dev-Ops/policy-engine", package = "policy-engine-benchmarks", optional = true }
 
 # Async Runtime & Concurrency
 tokio = { version = "1.35", features = ["full"] }
@@ -55,6 +56,8 @@ async-trait = "0.1"
 futures = "0.3"
 rayon = "1.8"
 crossbeam = "0.8"
+# Pin to version compatible with Rust 1.84 (3.4.x requires Rust 1.85)
+async-lock = "=3.3.0"
 
 # Web Frameworks & Networking
 axum = { version = "0.7", features = ["ws", "macros"] }
@@ -63,9 +66,9 @@ tower-http = { version = "0.5", features = ["fs", "trace", "cors"] }
 hyper = { version = "1.0", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "stream", "rustls-tls"], default-features = false }
 
-# GraphQL
-async-graphql = { version = "7.0", features = ["chrono", "uuid", "dataloader"] }
-async-graphql-axum = "7.0"
+# GraphQL (6.x series - 7.x requires Rust 2024 edition which isn't stable yet)
+async-graphql = { version = "6.0", features = ["chrono", "uuid", "dataloader"] }
+async-graphql-axum = "6.0"
 
 # Email Support
 lettre = { version = "0.11", features = ["tokio1", "tokio1-native-tls", "smtp-transport", "builder"], default-features = false }
@@ -105,6 +108,8 @@ config = { version = "0.14", default-features = false, features = ["toml"] }
 
 # Security & Cryptography
 sha2 = "0.10"
+# Pin to version compatible with Rust 2021 (1.8.x requires Rust 2024)
+base64ct = "=1.6.0"
 
 # Error Handling & Validation
 anyhow = "1.0"
@@ -159,6 +164,14 @@ tonic-build = "0.11"
 # name = "circuit_breaker_benchmark"
 # harness = false
 
+[features]
+default = []
+# NOTE: Ecosystem feature enables integration with upstream LLM-Dev-Ops crates
+# When disabled (default), stub implementations are used
+# Enable with: cargo build --features ecosystem
+ecosystem = []
+# benchmarks = ["policy-engine-benchmarks"]
+
 [profile.dev]
 opt-level = 0
 debug = true
@@ -170,3 +183,4 @@ codegen-units = 1
 panic = "abort"
 strip = true
 debug = false
+

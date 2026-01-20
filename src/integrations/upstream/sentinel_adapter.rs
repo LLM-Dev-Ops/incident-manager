@@ -176,21 +176,9 @@ pub struct UpstreamAnomalyEvent {
 }
 
 impl UpstreamAnomalyEvent {
-    /// Create from llm_sentinel_core::events::AnomalyEvent
-    pub fn from_sentinel(event: &llm_sentinel_core::events::AnomalyEvent) -> Self {
-        Self {
-            id: event.alert_id.to_string(),
-            timestamp: event.timestamp,
-            anomaly_type: format!("{:?}", event.anomaly_type),
-            severity: format!("{:?}", event.severity),
-            confidence: event.confidence,
-            service_id: event.service_name.to_string(),
-            model_id: event.model.to_string(),
-            description: event.root_cause.clone(),
-            detection_method: format!("{:?}", event.detection_method),
-            metadata: HashMap::new(),
-        }
-    }
+    // NOTE: from_sentinel requires ecosystem feature (llm_sentinel_core)
+    // Uncomment when ecosystem dependencies are available
+    // pub fn from_sentinel(event: &llm_sentinel_core::events::AnomalyEvent) -> Self { ... }
 }
 
 /// Threat signal extracted from sentinel telemetry

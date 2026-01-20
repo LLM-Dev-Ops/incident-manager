@@ -9,7 +9,7 @@ substitutions:
   _SERVICE_NAME: llm-incident-manager
   _ENV: dev
   _REGION: us-central1
-  _IMAGE_TAG: ${SHORT_SHA}
+  _IMAGE_TAG: latest
   _MIN_INSTANCES: '1'
   _MAX_INSTANCES: '10'
   _MEMORY: '2Gi'
@@ -23,13 +23,13 @@ options:
 
 steps:
   # Step 1: Build Rust binary
-  - name: 'rust:1.75-slim'
+  - name: 'rust:1.84-slim'
     id: 'build-rust'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        apt-get update && apt-get install -y pkg-config libssl-dev cmake clang
+        apt-get update && apt-get install -y pkg-config libssl-dev cmake clang protobuf-compiler
         cargo build --release --bin llm-incident-manager --bin llm-im-cli
         mkdir -p /workspace/bin
         cp target/release/llm-incident-manager /workspace/bin/
@@ -105,9 +105,9 @@ steps:
           --set-env-vars="RUST_LOG=info" \
           --set-env-vars="LOG_FORMAT=json" \
           --set-env-vars="TELEMETRY_ENABLED=true" \
-          --set-secrets="RUVECTOR_API_KEY=ruvector-api-key-${_ENV}:latest" \
-          --update-env-vars="RUVECTOR_SERVICE_URL=https://ruvector-service-${_ENV}.${PROJECT_ID}.run.app" \
-          --update-env-vars="TELEMETRY_ENDPOINT=https://llm-observatory-${_ENV}.${PROJECT_ID}.run.app/v1/ingest" \
+          --set-secrets="RUVECTOR_API_KEY=RUVECTOR_API_KEY:latest" \
+          --set-secrets="RUVECTOR_SERVICE_URL=RUVECTOR_SERVICE_URL:latest" \
+          --set-secrets="TELEMETRY_ENDPOINT=TELEMETRY_ENDPOINT:latest" \
           --labels="env=${_ENV},service=llm-incident-manager,team=agentics" \
           --no-allow-unauthenticated
     waitFor: ['push-image']
@@ -120,36 +120,36 @@ steps:
       - '-c'
       - |
         echo "Verifying deployment..."
-        SERVICE_URL=$(gcloud run services describe ${_SERVICE_NAME} \
+        SVCURL=$$(gcloud run services describe ${_SERVICE_NAME} \
           --region=${_REGION} \
           --format='value(status.url)')
 
-        echo "Service URL: $SERVICE_URL"
+        echo "Service URL: $$SVCURL"
 
         # Get identity token for internal service
-        TOKEN=$(gcloud auth print-identity-token)
+        TOKEN=$$(gcloud auth print-identity-token)
 
         # Check health endpoint
-        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-          -H "Authorization: Bearer $TOKEN" \
-          "$SERVICE_URL/health")
+        HTTP_CODE=$$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Authorization: Bearer $$TOKEN" \
+          "$$SVCURL/health")
 
-        if [ "$HTTP_CODE" -eq 200 ]; then
+        if [ "$$HTTP_CODE" -eq 200 ]; then
           echo "Health check passed"
         else
-          echo "Health check failed with HTTP $HTTP_CODE"
+          echo "Health check failed with HTTP $$HTTP_CODE"
           exit 1
         fi
 
         # Check readiness
-        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-          -H "Authorization: Bearer $TOKEN" \
-          "$SERVICE_URL/health/ready")
+        HTTP_CODE=$$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Authorization: Bearer $$TOKEN" \
+          "$$SVCURL/health/ready")
 
-        if [ "$HTTP_CODE" -eq 200 ]; then
+        if [ "$$HTTP_CODE" -eq 200 ]; then
           echo "Readiness check passed"
         else
-          echo "Readiness check failed with HTTP $HTTP_CODE"
+          echo "Readiness check failed with HTTP $$HTTP_CODE"
           exit 1
         fi
 

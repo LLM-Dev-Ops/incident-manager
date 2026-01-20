@@ -116,51 +116,9 @@ impl ObservatoryCoreAdapter {
         }
     }
 
-    /// Create from llm_observatory_core::span::LlmSpan
-    pub fn from_observatory_span(span: &llm_observatory_core::span::LlmSpan) -> UpstreamLlmSpan {
-        use llm_observatory_core::types::Provider;
-
-        UpstreamLlmSpan {
-            trace_id: span.trace_id.clone(),
-            span_id: span.span_id.clone(),
-            parent_span_id: span.parent_span_id.clone(),
-            operation_name: span.name.clone(),
-            service_name: "observatory".to_string(),
-            start_time: span.latency.start_time,
-            end_time: Some(span.latency.end_time),
-            duration_ms: span.latency.total_ms as f64,
-            status: match &span.status {
-                llm_observatory_core::span::SpanStatus::Ok => TraceStatus::Ok,
-                llm_observatory_core::span::SpanStatus::Error => TraceStatus::Error("Error".to_string()),
-                llm_observatory_core::span::SpanStatus::Unset => TraceStatus::Unset,
-            },
-            provider: match &span.provider {
-                Provider::OpenAI => "openai".to_string(),
-                Provider::Anthropic => "anthropic".to_string(),
-                Provider::Google => "google".to_string(),
-                Provider::Mistral => "mistral".to_string(),
-                Provider::Cohere => "cohere".to_string(),
-                Provider::SelfHosted => "self-hosted".to_string(),
-                Provider::Custom(name) => name.clone(),
-            },
-            model: span.model.clone(),
-            token_usage: span.token_usage.as_ref().map(|t| UpstreamTokenUsage {
-                prompt_tokens: t.prompt_tokens,
-                completion_tokens: t.completion_tokens,
-                total_tokens: t.total_tokens,
-            }),
-            cost: span.cost.as_ref().map(|c| UpstreamCost {
-                total_cost: c.amount_usd,
-                currency: c.currency.clone(),
-            }),
-            events: span.events.iter().map(|e| UpstreamSpanEvent {
-                name: e.name.clone(),
-                timestamp: e.timestamp,
-                attributes: e.attributes.clone(),
-            }).collect(),
-            attributes: HashMap::new(),
-        }
-    }
+    // NOTE: from_observatory_span requires ecosystem feature (llm_observatory_core)
+    // Uncomment when ecosystem dependencies are available
+    // pub fn from_observatory_span(span: &llm_observatory_core::span::LlmSpan) -> UpstreamLlmSpan { ... }
 
     /// Extract structured events from span for incident correlation
     pub fn extract_structured_events(&self, span: &UpstreamLlmSpan) -> Vec<UpstreamStructuredEvent> {

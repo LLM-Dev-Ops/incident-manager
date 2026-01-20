@@ -2,6 +2,7 @@
 //!
 //! Prevents N+1 query problems by batching database requests
 
+use async_trait::async_trait;
 use crate::models::{Incident, Playbook};
 use crate::processing::IncidentProcessor;
 use async_graphql::dataloader::Loader;
@@ -21,6 +22,7 @@ impl IncidentLoader {
     }
 }
 
+#[async_trait]
 impl Loader<Uuid> for IncidentLoader {
     type Value = Incident;
     type Error = Arc<anyhow::Error>;
@@ -58,6 +60,7 @@ impl PlaybookLoader {
     }
 }
 
+#[async_trait]
 impl Loader<Uuid> for PlaybookLoader {
     type Value = Playbook;
     type Error = Arc<anyhow::Error>;
@@ -89,6 +92,7 @@ impl RelatedIncidentsLoader {
     }
 }
 
+#[async_trait]
 impl Loader<Uuid> for RelatedIncidentsLoader {
     type Value = Vec<Incident>;
     type Error = Arc<anyhow::Error>;
