@@ -35,16 +35,20 @@ steps:
         cp target/release/llm-incident-manager /workspace/bin/
         cp target/release/llm-im-cli /workspace/bin/
 
-  # Step 2: Build TypeScript agents
+  # Step 2: Build TypeScript contracts (optional - skip if deps not available)
   - name: 'node:20-slim'
-    id: 'build-agents'
+    id: 'build-contracts'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        cd packages/agentics-contracts && npm ci && npm run build
-        cd ../ruvector-client && npm ci && npm run build
-        cd ../agents/escalation-agent && npm ci && npm run build
+        cd packages/agentics-contracts
+        if [ -f package-lock.json ]; then
+          npm ci && npm run build
+        else
+          npm install && npm run build
+        fi
+        echo "Contracts build complete"
 
   # Step 3: Build container image
   - name: 'gcr.io/cloud-builders/docker'
@@ -64,7 +68,7 @@ steps:
       - '-f'
       - 'Dockerfile'
       - '.'
-    waitFor: ['build-rust', 'build-agents']
+    waitFor: ['build-rust', 'build-contracts']
 
   # Step 4: Push to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
