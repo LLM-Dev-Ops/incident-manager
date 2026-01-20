@@ -1,0 +1,45 @@
+{
+  "name": "@agentics/ruvector-client",
+  "version": "1.0.0",
+  "description": "Client for ruvector-service - the ONLY permitted persistence layer for Agentics agents",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "tsc --noEmit"
+  },
+  "keywords": [
+    "ruvector",
+    "persistence",
+    "agentics",
+    "decision-event",
+    "incident-manager"
+  ],
+  "author": "Agentics Dev Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globalbusinessadvisors/llm-incident-manager.git",
+    "directory": "packages/ruvector-client"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@agentics/contracts": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

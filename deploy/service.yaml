@@ -1,0 +1,148 @@
+# Cloud Run Service Definition for LLM-Incident-Manager
+# This is the declarative service configuration
+#
+# Apply with:
+#   gcloud run services replace deploy/service.yaml --region=us-central1
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: llm-incident-manager
+  labels:
+    service: llm-incident-manager
+    team: agentics
+    component: incident-management
+  annotations:
+    run.googleapis.com/description: "LLM Incident Manager - Unified service for incident lifecycle management"
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+    run.googleapis.com/launch-stage: GA
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scaling configuration
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "10"
+
+        # VPC configuration
+        run.googleapis.com/vpc-access-connector: projects/${PROJECT_ID}/locations/${REGION}/connectors/agentics-vpc
+        run.googleapis.com/vpc-access-egress: all-traffic
+
+        # Startup CPU boost for faster cold starts
+        run.googleapis.com/startup-cpu-boost: "true"
+
+        # Session affinity for sticky sessions (optional)
+        run.googleapis.com/sessionAffinity: "false"
+
+    spec:
+      # Service account with least privilege
+      serviceAccountName: llm-incident-manager@${PROJECT_ID}.iam.gserviceaccount.com
+
+      # Request timeout
+      timeoutSeconds: 300
+
+      # Container concurrency
+      containerConcurrency: 80
+
+      containers:
+        - name: llm-incident-manager
+          image: ${REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/llm-incident-manager:${TAG}
+
+          # Resource limits
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 1Gi
+
+          # Container port
+          ports:
+            - name: http1
+              containerPort: 8080
+              protocol: TCP
+
+          # Health probes
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 12
+
+          # Environment variables
+          env:
+            # Core service configuration
+            - name: SERVICE_NAME
+              value: llm-incident-manager
+            - name: SERVICE_VERSION
+              value: "${TAG}"
+            - name: PLATFORM_ENV
+              value: "${ENV}"
+            - name: GOOGLE_CLOUD_PROJECT
+              value: "${PROJECT_ID}"
+            - name: GOOGLE_CLOUD_REGION
+              value: "${REGION}"
+
+            # Server configuration
+            - name: HTTP_PORT
+              value: "8080"
+            - name: GRPC_PORT
+              value: "9000"
+            - name: METRICS_PORT
+              value: "9090"
+            - name: REQUEST_TIMEOUT_SECS
+              value: "30"
+            - name: MAX_CONNECTIONS
+              value: "10000"
+
+            # Logging
+            - name: RUST_LOG
+              value: "info"
+            - name: LOG_FORMAT
+              value: "json"
+
+            # RuVector service (persistence)
+            - name: RUVECTOR_SERVICE_URL
+              value: "https://ruvector-service-${ENV}.${PROJECT_ID}.run.app"
+            - name: RUVECTOR_TIMEOUT_MS
+              value: "30000"
+
+            # RuVector API key from Secret Manager
+            - name: RUVECTOR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ruvector-api-key-${ENV}
+                  key: latest
+
+            # Telemetry (LLM-Observatory)
+            - name: TELEMETRY_ENDPOINT
+              value: "https://llm-observatory-${ENV}.${PROJECT_ID}.run.app/v1/ingest"
+            - name: TELEMETRY_ENABLED
+              value: "true"
+
+  # Traffic configuration - 100% to latest revision
+  traffic:
+    - percent: 100
+      latestRevision: true

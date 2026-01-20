@@ -89,6 +89,70 @@ enum Commands {
         #[arg(short, long)]
         quiet: bool,
     },
+
+    /// Post-mortem management commands
+    Postmortem {
+        #[command(subcommand)]
+        action: PostmortemCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum PostmortemCommands {
+    /// Generate a post-mortem for a resolved incident
+    Generate {
+        /// The incident ID to generate a post-mortem for
+        #[arg(value_name = "INCIDENT_ID")]
+        incident_id: String,
+
+        /// Output format: json or markdown
+        #[arg(short, long, default_value = "json")]
+        output: String,
+
+        /// Include raw LLM response data
+        #[arg(long)]
+        include_raw: bool,
+    },
+
+    /// Retrieve an existing post-mortem
+    Get {
+        /// The post-mortem ID to retrieve
+        #[arg(value_name = "POSTMORTEM_ID")]
+        id: String,
+    },
+
+    /// List post-mortems
+    List {
+        /// Filter by incident ID
+        #[arg(short, long)]
+        incident_id: Option<String>,
+
+        /// Filter by status: draft, review, or published
+        #[arg(short, long)]
+        status: Option<String>,
+
+        /// Maximum number of results to return
+        #[arg(short, long, default_value = "20")]
+        limit: u32,
+    },
+
+    /// Mark a post-mortem as published (immutable)
+    Publish {
+        /// The post-mortem ID to publish
+        #[arg(value_name = "POSTMORTEM_ID")]
+        id: String,
+
+        /// The user who reviewed and approved the post-mortem
+        #[arg(long)]
+        reviewed_by: String,
+    },
+
+    /// Inspect the DecisionEvent for a post-mortem
+    Inspect {
+        /// The post-mortem ID to inspect
+        #[arg(value_name = "POSTMORTEM_ID")]
+        id: String,
+    },
 }
 
 #[tokio::main]
@@ -296,6 +360,127 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 println!("{}", serde_json::to_string_pretty(&results)?);
             }
         }
+
+        Commands::Postmortem { action } => match action {
+            PostmortemCommands::Generate {
+                incident_id,
+                output,
+                include_raw,
+            } => {
+                let mut url = format!(
+                    "{}/v1/postmortems/generate/{}",
+                    cli.endpoint, incident_id
+                );
+
+                let mut query_params = Vec::new();
+                if output != "json" {
+                    query_params.push(format!("output={}", output));
+                }
+                if include_raw {
+                    query_params.push("include_raw=true".to_string());
+                }
+                if !query_params.is_empty() {
+                    url.push('?');
+                    url.push_str(&query_params.join("&"));
+                }
+
+                let response = client.post(&url).send().await?;
+
+                if !response.status().is_success() {
+                    let status = response.status();
+                    let body: serde_json::Value = response.json().await?;
+                    eprintln!("Error ({}): {}", status, serde_json::to_string_pretty(&body)?);
+                    std::process::exit(1);
+                }
+
+                let body: serde_json::Value = response.json().await?;
+                println!("{}", serde_json::to_string_pretty(&body)?);
+            }
+
+            PostmortemCommands::Get { id } => {
+                let response = client
+                    .get(format!("{}/v1/postmortems/{}", cli.endpoint, id))
+                    .send()
+                    .await?;
+
+                if !response.status().is_success() {
+                    let status = response.status();
+                    let body: serde_json::Value = response.json().await?;
+                    eprintln!("Error ({}): {}", status, serde_json::to_string_pretty(&body)?);
+                    std::process::exit(1);
+                }
+
+                let body: serde_json::Value = response.json().await?;
+                println!("{}", serde_json::to_string_pretty(&body)?);
+            }
+
+            PostmortemCommands::List {
+                incident_id,
+                status,
+                limit,
+            } => {
+                let mut url = format!("{}/v1/postmortems?limit={}", cli.endpoint, limit);
+
+                if let Some(ref inc_id) = incident_id {
+                    url.push_str(&format!("&incident_id={}", inc_id));
+                }
+                if let Some(ref s) = status {
+                    url.push_str(&format!("&status={}", s));
+                }
+
+                let response = client.get(&url).send().await?;
+
+                if !response.status().is_success() {
+                    let status = response.status();
+                    let body: serde_json::Value = response.json().await?;
+                    eprintln!("Error ({}): {}", status, serde_json::to_string_pretty(&body)?);
+                    std::process::exit(1);
+                }
+
+                let body: serde_json::Value = response.json().await?;
+                println!("{}", serde_json::to_string_pretty(&body)?);
+            }
+
+            PostmortemCommands::Publish { id, reviewed_by } => {
+                let response = client
+                    .post(format!("{}/v1/postmortems/{}/publish", cli.endpoint, id))
+                    .json(&json!({
+                        "reviewed_by": reviewed_by,
+                    }))
+                    .send()
+                    .await?;
+
+                if !response.status().is_success() {
+                    let status = response.status();
+                    let body: serde_json::Value = response.json().await?;
+                    eprintln!("Error ({}): {}", status, serde_json::to_string_pretty(&body)?);
+                    std::process::exit(1);
+                }
+
+                let body: serde_json::Value = response.json().await?;
+                println!("{}", serde_json::to_string_pretty(&body)?);
+            }
+
+            PostmortemCommands::Inspect { id } => {
+                let response = client
+                    .get(format!(
+                        "{}/v1/postmortems/{}/decision-event",
+                        cli.endpoint, id
+                    ))
+                    .send()
+                    .await?;
+
+                if !response.status().is_success() {
+                    let status = response.status();
+                    let body: serde_json::Value = response.json().await?;
+                    eprintln!("Error ({}): {}", status, serde_json::to_string_pretty(&body)?);
+                    std::process::exit(1);
+                }
+
+                let body: serde_json::Value = response.json().await?;
+                println!("{}", serde_json::to_string_pretty(&body)?);
+            }
+        },
     }
 
     Ok(())

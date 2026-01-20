@@ -1,0 +1,59 @@
+{
+  "name": "@agentics/contracts",
+  "version": "1.1.0",
+  "description": "Contract schemas and types for Agentics Dev platform agents - defines all input/output schemas, DecisionEvents, and validation rules",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:types": "tsc --noEmit",
+    "lint": "tsc --noEmit && echo 'Types OK'"
+  },
+  "keywords": [
+    "agentics",
+    "contracts",
+    "schemas",
+    "decision-event",
+    "incident-manager",
+    "agents",
+    "typescript",
+    "validation"
+  ],
+  "author": "Agentics Dev Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globalbusinessadvisors/llm-incident-manager.git",
+    "directory": "packages/agentics-contracts"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@llm-dev-ops/incident-manager-types": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@llm-dev-ops/incident-manager-types": {
+      "optional": true
+    }
+  }
+}

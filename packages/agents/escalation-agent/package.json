@@ -1,0 +1,55 @@
+{
+  "name": "@agentics/escalation-agent",
+  "version": "1.0.0",
+  "description": "Incident Escalation Agent for Agentics Dev platform - determines severity changes and triggers controlled escalation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "escalate": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "node --test dist/**/*.test.js",
+    "test:types": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "cli": "node dist/cli.js",
+    "deploy": "gcloud functions deploy incident-escalation-agent --runtime nodejs20 --trigger-http --entry-point handler"
+  },
+  "keywords": [
+    "agentics",
+    "agent",
+    "escalation",
+    "incident-management",
+    "google-cloud-functions",
+    "edge-function"
+  ],
+  "author": "Agentics Dev Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/globalbusinessadvisors/llm-incident-manager.git",
+    "directory": "packages/agents/escalation-agent"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@agentics/contracts": "^1.0.0",
+    "@agentics/ruvector-client": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

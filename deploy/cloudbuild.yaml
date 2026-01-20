@@ -1,0 +1,164 @@
+# Cloud Build configuration for LLM-Incident-Manager
+# Deploys a unified service with all agents as endpoints
+#
+# Usage:
+#   gcloud builds submit --config deploy/cloudbuild.yaml \
+#     --substitutions=_ENV=prod,_REGION=us-central1
+
+substitutions:
+  _SERVICE_NAME: llm-incident-manager
+  _ENV: dev
+  _REGION: us-central1
+  _IMAGE_TAG: ${SHORT_SHA}
+  _MIN_INSTANCES: '1'
+  _MAX_INSTANCES: '10'
+  _MEMORY: '2Gi'
+  _CPU: '2'
+  _CONCURRENCY: '80'
+  _TIMEOUT: '300s'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+steps:
+  # Step 1: Build Rust binary
+  - name: 'rust:1.75-slim'
+    id: 'build-rust'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update && apt-get install -y pkg-config libssl-dev cmake clang
+        cargo build --release --bin llm-incident-manager --bin llm-im-cli
+        mkdir -p /workspace/bin
+        cp target/release/llm-incident-manager /workspace/bin/
+        cp target/release/llm-im-cli /workspace/bin/
+
+  # Step 2: Build TypeScript agents
+  - name: 'node:20-slim'
+    id: 'build-agents'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cd packages/agentics-contracts && npm ci && npm run build
+        cd ../ruvector-client && npm ci && npm run build
+        cd ../agents/escalation-agent && npm ci && npm run build
+
+  # Step 3: Build container image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:${_IMAGE_TAG}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:${_ENV}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:latest'
+      - '--build-arg'
+      - 'SERVICE_VERSION=${_IMAGE_TAG}'
+      - '--build-arg'
+      - 'PLATFORM_ENV=${_ENV}'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+    waitFor: ['build-rust', 'build-agents']
+
+  # Step 4: Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}'
+    waitFor: ['build-image']
+
+  # Step 5: Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run deploy ${_SERVICE_NAME} \
+          --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:${_IMAGE_TAG} \
+          --region=${_REGION} \
+          --platform=managed \
+          --min-instances=${_MIN_INSTANCES} \
+          --max-instances=${_MAX_INSTANCES} \
+          --memory=${_MEMORY} \
+          --cpu=${_CPU} \
+          --concurrency=${_CONCURRENCY} \
+          --timeout=${_TIMEOUT} \
+          --port=8080 \
+          --ingress=internal-and-cloud-load-balancing \
+          --vpc-connector=projects/${PROJECT_ID}/locations/${_REGION}/connectors/agentics-vpc \
+          --vpc-egress=all-traffic \
+          --service-account=llm-incident-manager@${PROJECT_ID}.iam.gserviceaccount.com \
+          --set-env-vars="SERVICE_NAME=${_SERVICE_NAME}" \
+          --set-env-vars="SERVICE_VERSION=${_IMAGE_TAG}" \
+          --set-env-vars="PLATFORM_ENV=${_ENV}" \
+          --set-env-vars="GOOGLE_CLOUD_PROJECT=${PROJECT_ID}" \
+          --set-env-vars="GOOGLE_CLOUD_REGION=${_REGION}" \
+          --set-env-vars="RUST_LOG=info" \
+          --set-env-vars="LOG_FORMAT=json" \
+          --set-env-vars="TELEMETRY_ENABLED=true" \
+          --set-secrets="RUVECTOR_API_KEY=ruvector-api-key-${_ENV}:latest" \
+          --update-env-vars="RUVECTOR_SERVICE_URL=https://ruvector-service-${_ENV}.${PROJECT_ID}.run.app" \
+          --update-env-vars="TELEMETRY_ENDPOINT=https://llm-observatory-${_ENV}.${PROJECT_ID}.run.app/v1/ingest" \
+          --labels="env=${_ENV},service=llm-incident-manager,team=agentics" \
+          --no-allow-unauthenticated
+    waitFor: ['push-image']
+
+  # Step 6: Verify deployment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'verify'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Verifying deployment..."
+        SERVICE_URL=$(gcloud run services describe ${_SERVICE_NAME} \
+          --region=${_REGION} \
+          --format='value(status.url)')
+
+        echo "Service URL: $SERVICE_URL"
+
+        # Get identity token for internal service
+        TOKEN=$(gcloud auth print-identity-token)
+
+        # Check health endpoint
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Authorization: Bearer $TOKEN" \
+          "$SERVICE_URL/health")
+
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "Health check passed"
+        else
+          echo "Health check failed with HTTP $HTTP_CODE"
+          exit 1
+        fi
+
+        # Check readiness
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+          -H "Authorization: Bearer $TOKEN" \
+          "$SERVICE_URL/health/ready")
+
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "Readiness check passed"
+        else
+          echo "Readiness check failed with HTTP $HTTP_CODE"
+          exit 1
+        fi
+
+        echo "Deployment verified successfully"
+    waitFor: ['deploy']
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:${_IMAGE_TAG}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:${_ENV}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/agentics/${_SERVICE_NAME}:latest'
+
+timeout: '1800s'
