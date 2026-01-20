@@ -1,0 +1,32 @@
+# Ignore gcloud SDK
+google-cloud-sdk/
+google-cloud-cli-linux-x86_64.tar.gz
+
+# Ignore node_modules
+node_modules/
+packages/*/node_modules/
+
+# Git
+.git/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+target/
+dist/
+build/
+
+# Test files
+coverage/
+.nyc_output/
+
+# Claude files
+.claude-flow/
+
+# Temporary files
+*.log
+*.tmp
