@@ -98,10 +98,8 @@ steps:
           --concurrency=${_CONCURRENCY} \
           --timeout=${_TIMEOUT} \
           --port=8080 \
-          --ingress=internal-and-cloud-load-balancing \
-          --vpc-connector=projects/${PROJECT_ID}/locations/${_REGION}/connectors/agentics-vpc \
-          --vpc-egress=all-traffic \
-          --service-account=llm-incident-manager@${PROJECT_ID}.iam.gserviceaccount.com \
+          --ingress=all \
+          --allow-unauthenticated \
           --set-env-vars="SERVICE_NAME=${_SERVICE_NAME}" \
           --set-env-vars="SERVICE_VERSION=${_IMAGE_TAG}" \
           --set-env-vars="PLATFORM_ENV=${_ENV}" \
@@ -110,11 +108,9 @@ steps:
           --set-env-vars="RUST_LOG=info" \
           --set-env-vars="LOG_FORMAT=json" \
           --set-env-vars="TELEMETRY_ENABLED=true" \
-          --set-secrets="RUVECTOR_API_KEY=RUVECTOR_API_KEY:latest" \
-          --set-secrets="RUVECTOR_SERVICE_URL=RUVECTOR_SERVICE_URL:latest" \
-          --set-secrets="TELEMETRY_ENDPOINT=TELEMETRY_ENDPOINT:latest" \
-          --labels="env=${_ENV},service=llm-incident-manager,team=agentics" \
-          --no-allow-unauthenticated
+          --set-env-vars="RUVECTOR_SERVICE_URL=https://ruvector-service-${_ENV}.agentics-dev.run.app" \
+          --set-env-vars="TELEMETRY_ENDPOINT=https://llm-observatory-${_ENV}.agentics-dev.run.app/v1/ingest" \
+          --labels="env=${_ENV},service=llm-incident-manager,team=agentics"
     waitFor: ['push-image']
 
   # Step 6: Verify deployment
