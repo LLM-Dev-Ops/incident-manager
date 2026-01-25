@@ -1,6 +1,6 @@
 {
   "name": "@agentics/contracts",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Contract schemas and types for Agentics Dev platform agents - defines all input/output schemas, DecisionEvents, and validation rules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

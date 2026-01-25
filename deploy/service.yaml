@@ -105,6 +105,23 @@ spec:
             - name: GOOGLE_CLOUD_REGION
               value: "${REGION}"
 
+            # ============================================================
+            # PHASE 3 - AUTOMATION & RESILIENCE (LAYER 1)
+            # CRITICAL: These must be set for startup validation
+            # ============================================================
+            - name: AGENT_PHASE
+              value: "phase3"
+            - name: AGENT_LAYER
+              value: "layer1"
+
+            # Performance Budgets (HARD LIMITS)
+            - name: MAX_TOKENS
+              value: "1500"
+            - name: MAX_LATENCY_MS
+              value: "3000"
+            - name: MAX_CALLS_PER_RUN
+              value: "4"
+
             # Server configuration
             - name: HTTP_PORT
               value: "8080"
@@ -123,17 +140,24 @@ spec:
             - name: LOG_FORMAT
               value: "json"
 
-            # RuVector service (persistence)
+            # ============================================================
+            # RUVECTOR (REQUIRED - HARD FAIL IF UNAVAILABLE)
+            # ============================================================
             - name: RUVECTOR_SERVICE_URL
-              value: "https://ruvector-service-${ENV}.${PROJECT_ID}.run.app"
+              valueFrom:
+                secretKeyRef:
+                  name: RUVECTOR_SERVICE_URL
+                  key: latest
             - name: RUVECTOR_TIMEOUT_MS
               value: "30000"
+            - name: RUVECTOR_RETRIES
+              value: "3"
 
-            # RuVector API key from Secret Manager
+            # RuVector API key from Secret Manager (REQUIRED)
             - name: RUVECTOR_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ruvector-api-key-${ENV}
+                  name: RUVECTOR_API_KEY
                   key: latest
 
             # Telemetry (LLM-Observatory)
