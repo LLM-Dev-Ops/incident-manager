@@ -464,8 +464,7 @@ impl SearchService {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::{IncidentState, IncidentType, Severity};
-    use std::collections::HashMap;
+    use crate::models::{IncidentType, Severity};
     use tempfile::TempDir;
 
     async fn create_test_service() -> SearchService {
@@ -478,23 +477,14 @@ mod tests {
         SearchService::new(config).await.unwrap()
     }
 
-    fn create_test_incident(id: &str, title: &str, severity: Severity) -> Incident {
-        Incident {
-            id: id.to_string(),
-            title: title.to_string(),
-            description: "Test description".to_string(),
+    fn create_test_incident(title: &str, severity: Severity) -> Incident {
+        Incident::new(
+            "test".to_string(),
+            title.to_string(),
+            "Test description".to_string(),
             severity,
-            incident_type: IncidentType::Infrastructure,
-            state: IncidentState::Open,
-            source: "test".to_string(),
-            assignee: None,
-            tags: vec![],
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
-            resolved_at: None,
-            correlation_id: None,
-            metadata: HashMap::new(),
-        }
+            IncidentType::Infrastructure,
+        )
     }
 
     #[tokio::test]
@@ -509,7 +499,8 @@ mod tests {
         let service = create_test_service().await;
 
         // Index an incident
-        let incident = create_test_incident("test-1", "Database connection error", Severity::P0);
+        let incident = create_test_incident("Database connection error", Severity::P0);
+        let expected_id = incident.id.to_string();
         service.index_incident(&incident).await.unwrap();
 
         // Commit to make it searchable
@@ -520,7 +511,7 @@ mod tests {
         let results = service.search(&query).await.unwrap();
 
         assert_eq!(results.total_hits, 1);
-        assert_eq!(results.hits[0].id, "test-1");
+        assert_eq!(results.hits[0].id, expected_id);
     }
 
     #[tokio::test]
@@ -529,9 +520,9 @@ mod tests {
 
         // Index multiple incidents
         let incidents = vec![
-            create_test_incident("test-1", "Error 1", Severity::P0),
-            create_test_incident("test-2", "Error 2", Severity::P1),
-            create_test_incident("test-3", "Error 3", Severity::P0),
+            create_test_incident("Error 1", Severity::P0),
+            create_test_incident("Error 2", Severity::P1),
+            create_test_incident("Error 3", Severity::P0),
         ];
 
         service.index_incidents(&incidents).await.unwrap();

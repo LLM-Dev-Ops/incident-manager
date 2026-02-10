@@ -1,5 +1,7 @@
 use crate::api::{handlers, AppState};
+use crate::execution::middleware::execution_context_middleware;
 use axum::{
+    middleware,
     routing::{get, post, put},
     Router,
 };
@@ -47,7 +49,8 @@ pub fn build_router(state: AppState) -> Router {
         )
         // Add state after all routes
         .with_state(state)
-        // Add middleware
+        // Middleware stack (applied bottom-to-top: execution context -> trace -> cors)
+        .layer(middleware::from_fn(execution_context_middleware))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().include_headers(true))

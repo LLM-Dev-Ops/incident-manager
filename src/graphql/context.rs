@@ -2,6 +2,7 @@
 //!
 //! Provides access to services, authentication, and DataLoaders
 
+use crate::execution::ExecutionContext;
 use crate::processing::IncidentProcessor;
 use async_graphql::dataloader::DataLoader;
 use std::sync::Arc;
@@ -24,6 +25,9 @@ pub struct GraphQLContext {
 
     /// Optional authenticated user
     pub user: Option<String>,
+
+    /// Optional execution context for agentics span tracking
+    pub execution_context: Option<ExecutionContext>,
 }
 
 impl GraphQLContext {
@@ -51,6 +55,7 @@ impl GraphQLContext {
             playbook_loader,
             related_incidents_loader,
             user: None,
+            execution_context: None,
         }
     }
 

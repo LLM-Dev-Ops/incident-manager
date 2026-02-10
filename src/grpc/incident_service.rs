@@ -1,4 +1,7 @@
 use crate::error::AppError;
+use crate::execution::middleware::{
+    attach_execution_graph_to_grpc_response, extract_execution_context_from_grpc_metadata,
+};
 use crate::grpc::conversions::*;
 use crate::grpc::proto::incidents::*;
 use crate::models::{Incident, IncidentState, Severity};
@@ -37,6 +40,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
         &self,
         request: Request<CreateIncidentRequest>,
     ) -> std::result::Result<Response<IncidentResponse>, Status> {
+        let exec_ctx = extract_execution_context_from_grpc_metadata(request.metadata()).ok();
         let req = request.into_inner();
 
         tracing::info!(
@@ -65,14 +69,21 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         let created = self
             .processor
-            .create_incident(incident)
+            .create_incident(incident, exec_ctx.as_ref())
             .await
             .map_err(Self::app_error_to_status)?;
 
-        Ok(Response::new(IncidentResponse {
+        let mut response = Response::new(IncidentResponse {
             incident: Some(created.into()),
             message: "Incident created successfully".to_string(),
-        }))
+        });
+
+        if let Some(ctx) = exec_ctx {
+            let graph = ctx.finalize(None);
+            attach_execution_graph_to_grpc_response(&mut response, &graph);
+        }
+
+        Ok(response)
     }
 
     async fn get_incident(
@@ -236,6 +247,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
         &self,
         request: Request<ResolveIncidentRequest>,
     ) -> std::result::Result<Response<IncidentResponse>, Status> {
+        let exec_ctx = extract_execution_context_from_grpc_metadata(request.metadata()).ok();
         let req = request.into_inner();
 
         let id = Uuid::parse_str(&req.incident_id).map_err(|_| Status::invalid_argument("Invalid UUID"))?;
@@ -244,14 +256,28 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 
         let incident = self
             .processor
-            .resolve_incident(&id, req.resolved_by, crate::models::ResolutionMethod::Manual, req.resolution_note, None)
+            .resolve_incident(
+                &id,
+                req.resolved_by,
+                crate::models::ResolutionMethod::Manual,
+                req.resolution_note,
+                None,
+                exec_ctx.as_ref(),
+            )
             .await
             .map_err(Self::app_error_to_status)?;
 
-        Ok(Response::new(IncidentResponse {
+        let mut response = Response::new(IncidentResponse {
             incident: Some(incident.into()),
             message: "Incident resolved successfully".to_string(),
-        }))
+        });
+
+        if let Some(ctx) = exec_ctx {
+            let graph = ctx.finalize(None);
+            attach_execution_graph_to_grpc_response(&mut response, &graph);
+        }
+
+        Ok(response)
     }
 
     async fn add_note(
@@ -374,6 +400,7 @@ impl incident_service_server::IncidentService for IncidentServiceImpl {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::grpc::proto::incidents::incident_service_server::IncidentService;
     use crate::processing::DeduplicationEngine;
     use crate::state::InMemoryStore;
 

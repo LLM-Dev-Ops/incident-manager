@@ -68,6 +68,10 @@ pub enum AppError {
     /// Invalid state transition
     #[error("Invalid state transition: {0}")]
     InvalidStateTransition(String),
+
+    /// Execution context violation (missing or invalid execution headers)
+    #[error("Execution violation: {0}")]
+    ExecutionViolation(String),
 }
 
 impl AppError {
@@ -89,6 +93,7 @@ impl AppError {
             AppError::Integration { .. } => StatusCode::BAD_GATEWAY,
             AppError::Processing(_) => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::InvalidStateTransition(_) => StatusCode::CONFLICT,
+            AppError::ExecutionViolation(_) => StatusCode::BAD_REQUEST,
         }
     }
 
@@ -110,6 +115,7 @@ impl AppError {
             AppError::Integration { .. } => "INTEGRATION_ERROR",
             AppError::Processing(_) => "PROCESSING_ERROR",
             AppError::InvalidStateTransition(_) => "INVALID_STATE_TRANSITION",
+            AppError::ExecutionViolation(_) => "EXECUTION_VIOLATION",
         }
     }
 }

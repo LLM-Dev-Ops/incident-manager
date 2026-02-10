@@ -351,7 +351,7 @@ mod tests {
 
         let mut labels = HashMap::new();
         labels.insert("pii".to_string(), "true".to_string());
-        incident.labels = Some(labels);
+        incident.labels = labels;
 
         handler.on_incident_created(&incident).await.unwrap();
 
@@ -425,7 +425,7 @@ mod tests {
         let mut labels = HashMap::new();
         labels.insert("gdpr".to_string(), "true".to_string());
         labels.insert("pii".to_string(), "true".to_string());
-        incident.labels = Some(labels);
+        incident.labels = labels;
 
         let frameworks = handler.determine_required_frameworks(&incident);
         assert!(frameworks.contains(&ComplianceFramework::GDPR));

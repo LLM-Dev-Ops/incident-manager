@@ -8,6 +8,8 @@ pub mod correlation;
 pub mod enrichment;
 pub mod error;
 pub mod escalation;
+#[macro_use]
+pub mod execution;
 pub mod graphql;
 pub mod grpc;
 pub mod integrations;

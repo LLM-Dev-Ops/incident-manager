@@ -2,6 +2,7 @@ use crate::correlation::CorrelationEngine;
 use crate::enrichment::EnrichmentService;
 use crate::error::{AppError, Result};
 use crate::escalation::{EscalationEngine, RoutingRuleEvaluator};
+use crate::execution::{Artifact, ExecutionContext};
 use crate::ml::MLService;
 use crate::models::{Alert, AlertAck, Incident, IncidentState};
 use crate::notifications::NotificationService;
@@ -94,7 +95,11 @@ impl IncidentProcessor {
     }
 
     /// Process an incoming alert
-    pub async fn process_alert(&self, mut alert: Alert) -> Result<AlertAck> {
+    pub async fn process_alert(
+        &self,
+        mut alert: Alert,
+        exec_ctx: Option<&ExecutionContext>,
+    ) -> Result<AlertAck> {
         tracing::info!(
             alert_id = %alert.id,
             source = %alert.source,
@@ -103,7 +108,15 @@ impl IncidentProcessor {
         );
 
         // Check for duplicates
-        if let Some(mut existing_incident) = self.dedup_engine.find_duplicate(&alert).await? {
+        let duplicate_result = if let Some(ctx) = exec_ctx {
+            execute_agent!(ctx, "DeduplicationEngine", {
+                self.dedup_engine.find_duplicate(&alert).await
+            })
+        } else {
+            self.dedup_engine.find_duplicate(&alert).await
+        };
+
+        if let Some(mut existing_incident) = duplicate_result? {
             tracing::info!(
                 alert_id = %alert.id,
                 incident_id = %existing_incident.id,
@@ -143,149 +156,43 @@ impl IncidentProcessor {
         // Publish WebSocket events
         if let Some(ref ws_handlers) = self.websocket_handlers {
             ws_handlers.alerts.on_alert_received(alert.clone()).await;
-            ws_handlers.alerts.on_alert_converted(alert.clone(), incident.id).await;
-            ws_handlers.incidents.on_incident_created(incident.clone()).await;
+            ws_handlers
+                .alerts
+                .on_alert_converted(alert.clone(), incident.id)
+                .await;
+            ws_handlers
+                .incidents
+                .on_incident_created(incident.clone())
+                .await;
         }
 
-        // Enrich incident with additional context if enrichment service is configured
-        if let Some(ref enrichment_service) = self.enrichment_service {
-            match enrichment_service.enrich_incident(&incident).await {
-                Ok(context) => {
-                    tracing::info!(
-                        incident_id = %incident.id,
-                        enrichers = context.total_enrichers(),
-                        successful = context.successful_enrichers.len(),
-                        duration_ms = context.enrichment_duration_ms,
-                        "Incident enriched with context"
-                    );
-                }
-                Err(e) => {
-                    tracing::error!(
-                        incident_id = %incident.id,
-                        error = %e,
-                        "Failed to enrich incident context"
-                    );
-                    // Don't fail the entire operation if enrichment fails
-                }
-            }
-        }
-
-        // Send notifications if notification service is configured
-        if let Some(ref notif_service) = self.notification_service {
-            if let Err(e) = notif_service.notify_incident_detected(&incident).await {
-                tracing::error!(
-                    incident_id = %incident.id,
-                    error = %e,
-                    "Failed to send incident detection notification"
-                );
-                // Don't fail the entire operation if notification fails
-            }
-        }
-
-        // Auto-execute playbooks if playbook service is configured
-        if let Some(ref playbook_service) = self.playbook_service {
-            let executions = playbook_service.auto_execute_for_incident(&incident).await;
-            if !executions.is_empty() {
-                tracing::info!(
-                    incident_id = %incident.id,
-                    execution_count = executions.len(),
-                    "Auto-executed playbooks for incident"
-                );
-            }
-        }
-
-        // Apply routing rules if routing evaluator is configured
-        if let Some(ref routing_evaluator) = self.routing_evaluator {
-            let matches = routing_evaluator.evaluate_incident(&incident);
-            if !matches.is_empty() {
-                tracing::info!(
-                    incident_id = %incident.id,
-                    rule_count = matches.len(),
-                    "Routing rules matched"
-                );
-
-                if let Ok(action_result) = routing_evaluator.apply_actions(&incident, &matches).await {
-                    if !action_result.suggested_assignees.is_empty() {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            assignees = ?action_result.suggested_assignees,
-                            "Routing suggested assignees"
-                        );
-                    }
-                }
-            }
-        }
-
-        // Auto-start escalation if escalation engine is configured
-        if let Some(ref escalation_engine) = self.escalation_engine {
-            if let Some(policy) = escalation_engine.find_policy_for_incident(&incident) {
-                match escalation_engine.start_escalation(&incident, policy.id) {
-                    Ok(_) => {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            policy_id = %policy.id,
-                            policy_name = %policy.name,
-                            "Started escalation for incident"
-                        );
-                    }
-                    Err(e) => {
-                        tracing::error!(
-                            incident_id = %incident.id,
-                            error = %e,
-                            "Failed to start escalation"
-                        );
-                    }
-                }
-            }
-        }
-
-        // Analyze for correlations if correlation engine is configured
-        if let Some(ref correlation_engine) = self.correlation_engine {
-            match correlation_engine.analyze_incident(&incident).await {
-                Ok(result) => {
-                    if result.has_correlations() {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            correlation_count = result.correlation_count(),
-                            groups_affected = result.groups_affected.len(),
-                            groups_created = result.groups_created.len(),
-                            "Correlations detected for incident"
-                        );
-                    }
-                }
-                Err(e) => {
-                    tracing::error!(
-                        incident_id = %incident.id,
-                        error = %e,
-                        "Failed to analyze incident correlations"
-                    );
-                }
-            }
-        }
-
-        // Add to ML training set if ML service is configured
-        if let Some(ref ml_service) = self.ml_service {
-            if let Err(e) = ml_service.add_training_sample(&incident).await {
-                tracing::warn!(
-                    incident_id = %incident.id,
-                    error = %e,
-                    "Failed to add incident to ML training set"
-                );
-            }
-        }
+        // Run agent pipeline
+        self.run_agent_pipeline(&incident, exec_ctx).await;
 
         Ok(AlertAck::accepted(alert.id, incident.id))
     }
 
     /// Create a new incident directly
-    pub async fn create_incident(&self, mut incident: Incident) -> Result<Incident> {
+    pub async fn create_incident(
+        &self,
+        mut incident: Incident,
+        exec_ctx: Option<&ExecutionContext>,
+    ) -> Result<Incident> {
         // Generate fingerprint if not present
         if incident.fingerprint.is_none() {
             incident.fingerprint = Some(incident.generate_fingerprint());
         }
 
         // Check for duplicates
-        if self.dedup_engine.is_duplicate_incident(&incident).await? {
+        let is_dup = if let Some(ctx) = exec_ctx {
+            execute_agent!(ctx, "DeduplicationEngine", {
+                self.dedup_engine.is_duplicate_incident(&incident).await
+            })
+        } else {
+            self.dedup_engine.is_duplicate_incident(&incident).await
+        }?;
+
+        if is_dup {
             return Err(AppError::Validation(
                 "Incident appears to be a duplicate".to_string(),
             ));
@@ -300,32 +207,100 @@ impl IncidentProcessor {
             "Created new incident"
         );
 
-        // Enrich incident with additional context if enrichment service is configured
+        // Run agent pipeline
+        self.run_agent_pipeline(&incident, exec_ctx).await;
+
+        Ok(incident)
+    }
+
+    /// Run the post-creation agent pipeline (enrichment, notifications, playbooks,
+    /// routing, escalation, correlation, ML). Shared between process_alert and create_incident.
+    async fn run_agent_pipeline(
+        &self,
+        incident: &Incident,
+        exec_ctx: Option<&ExecutionContext>,
+    ) {
+        // Enrich incident with additional context
         if let Some(ref enrichment_service) = self.enrichment_service {
-            match enrichment_service.enrich_incident(&incident).await {
-                Ok(context) => {
-                    tracing::info!(
-                        incident_id = %incident.id,
-                        enrichers = context.total_enrichers(),
-                        successful = context.successful_enrichers.len(),
-                        duration_ms = context.enrichment_duration_ms,
-                        "Incident enriched with context"
-                    );
+            if let Some(ctx) = exec_ctx {
+                let mut guard = ctx.start_agent_span("EnrichmentService");
+                match enrichment_service.enrich_incident(incident).await {
+                    Ok(context) => {
+                        guard.add_artifact(Artifact {
+                            name: "enrichment_result".to_string(),
+                            artifact_type: "enrichment_context".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({
+                                "total_enrichers": context.total_enrichers(),
+                                "successful": context.successful_enrichers.len(),
+                                "duration_ms": context.enrichment_duration_ms,
+                            }),
+                            created_at: chrono::Utc::now(),
+                        });
+                        tracing::info!(
+                            incident_id = %incident.id,
+                            enrichers = context.total_enrichers(),
+                            successful = context.successful_enrichers.len(),
+                            duration_ms = context.enrichment_duration_ms,
+                            "Incident enriched with context"
+                        );
+                        guard.complete_ok(vec![]);
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to enrich incident context"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
                 }
-                Err(e) => {
-                    tracing::error!(
-                        incident_id = %incident.id,
-                        error = %e,
-                        "Failed to enrich incident context"
-                    );
-                    // Don't fail the entire operation if enrichment fails
+            } else {
+                match enrichment_service.enrich_incident(incident).await {
+                    Ok(context) => {
+                        tracing::info!(
+                            incident_id = %incident.id,
+                            enrichers = context.total_enrichers(),
+                            successful = context.successful_enrichers.len(),
+                            duration_ms = context.enrichment_duration_ms,
+                            "Incident enriched with context"
+                        );
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to enrich incident context"
+                        );
+                    }
                 }
             }
         }
 
-        // Send notifications if notification service is configured
+        // Send notifications
         if let Some(ref notif_service) = self.notification_service {
-            if let Err(e) = notif_service.notify_incident_detected(&incident).await {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("NotificationService");
+                match notif_service.notify_incident_detected(incident).await {
+                    Ok(ids) => {
+                        guard.complete_ok(vec![Artifact {
+                            name: "notification_dispatch".to_string(),
+                            artifact_type: "notification_ids".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({ "notification_count": ids.len() }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to send incident detection notification"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
+                }
+            } else if let Err(e) = notif_service.notify_incident_detected(incident).await {
                 tracing::error!(
                     incident_id = %incident.id,
                     error = %e,
@@ -334,99 +309,273 @@ impl IncidentProcessor {
             }
         }
 
-        // Auto-execute playbooks if playbook service is configured
+        // Auto-execute playbooks
         if let Some(ref playbook_service) = self.playbook_service {
-            let executions = playbook_service.auto_execute_for_incident(&incident).await;
-            if !executions.is_empty() {
-                tracing::info!(
-                    incident_id = %incident.id,
-                    execution_count = executions.len(),
-                    "Auto-executed playbooks for incident"
-                );
-            }
-        }
-
-        // Apply routing rules if routing evaluator is configured
-        if let Some(ref routing_evaluator) = self.routing_evaluator {
-            let matches = routing_evaluator.evaluate_incident(&incident);
-            if !matches.is_empty() {
-                tracing::info!(
-                    incident_id = %incident.id,
-                    rule_count = matches.len(),
-                    "Routing rules matched"
-                );
-
-                if let Ok(action_result) = routing_evaluator.apply_actions(&incident, &matches).await {
-                    if !action_result.suggested_assignees.is_empty() {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            assignees = ?action_result.suggested_assignees,
-                            "Routing suggested assignees"
-                        );
-                    }
-                }
-            }
-        }
-
-        // Auto-start escalation if escalation engine is configured
-        if let Some(ref escalation_engine) = self.escalation_engine {
-            if let Some(policy) = escalation_engine.find_policy_for_incident(&incident) {
-                match escalation_engine.start_escalation(&incident, policy.id) {
-                    Ok(_) => {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            policy_id = %policy.id,
-                            policy_name = %policy.name,
-                            "Started escalation for incident"
-                        );
-                    }
-                    Err(e) => {
-                        tracing::error!(
-                            incident_id = %incident.id,
-                            error = %e,
-                            "Failed to start escalation"
-                        );
-                    }
-                }
-            }
-        }
-
-        // Analyze for correlations if correlation engine is configured
-        if let Some(ref correlation_engine) = self.correlation_engine {
-            match correlation_engine.analyze_incident(&incident).await {
-                Ok(result) => {
-                    if result.has_correlations() {
-                        tracing::info!(
-                            incident_id = %incident.id,
-                            correlation_count = result.correlation_count(),
-                            groups_affected = result.groups_affected.len(),
-                            groups_created = result.groups_created.len(),
-                            "Correlations detected for incident"
-                        );
-                    }
-                }
-                Err(e) => {
-                    tracing::error!(
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("PlaybookService");
+                let executions = playbook_service
+                    .auto_execute_for_incident(incident)
+                    .await;
+                if !executions.is_empty() {
+                    tracing::info!(
                         incident_id = %incident.id,
-                        error = %e,
-                        "Failed to analyze incident correlations"
+                        execution_count = executions.len(),
+                        "Auto-executed playbooks for incident"
+                    );
+                }
+                guard.complete_ok(vec![Artifact {
+                    name: "playbook_executions".to_string(),
+                    artifact_type: "playbook_result".to_string(),
+                    reference: format!("incident:{}", incident.id),
+                    data: serde_json::json!({ "execution_count": executions.len() }),
+                    created_at: chrono::Utc::now(),
+                }]);
+            } else {
+                let executions = playbook_service
+                    .auto_execute_for_incident(incident)
+                    .await;
+                if !executions.is_empty() {
+                    tracing::info!(
+                        incident_id = %incident.id,
+                        execution_count = executions.len(),
+                        "Auto-executed playbooks for incident"
                     );
                 }
             }
         }
 
-        // Add to ML training set if ML service is configured
-        if let Some(ref ml_service) = self.ml_service {
-            if let Err(e) = ml_service.add_training_sample(&incident).await {
-                tracing::warn!(
-                    incident_id = %incident.id,
-                    error = %e,
-                    "Failed to add incident to ML training set"
-                );
+        // Apply routing rules
+        if let Some(ref routing_evaluator) = self.routing_evaluator {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("RoutingRuleEvaluator");
+                let matches = routing_evaluator.evaluate_incident(incident);
+                if !matches.is_empty() {
+                    tracing::info!(
+                        incident_id = %incident.id,
+                        rule_count = matches.len(),
+                        "Routing rules matched"
+                    );
+
+                    if let Ok(action_result) =
+                        routing_evaluator.apply_actions(incident, &matches).await
+                    {
+                        if !action_result.suggested_assignees.is_empty() {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                assignees = ?action_result.suggested_assignees,
+                                "Routing suggested assignees"
+                            );
+                        }
+                        guard.complete_ok(vec![Artifact {
+                            name: "routing_result".to_string(),
+                            artifact_type: "routing_evaluation".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({
+                                "matched_rules": matches.len(),
+                                "suggested_assignees": action_result.suggested_assignees,
+                            }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    } else {
+                        guard.complete_ok(vec![Artifact {
+                            name: "routing_result".to_string(),
+                            artifact_type: "routing_evaluation".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({ "matched_rules": matches.len() }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                } else {
+                    guard.complete_ok(vec![Artifact {
+                        name: "routing_result".to_string(),
+                        artifact_type: "routing_evaluation".to_string(),
+                        reference: format!("incident:{}", incident.id),
+                        data: serde_json::json!({ "matched_rules": 0 }),
+                        created_at: chrono::Utc::now(),
+                    }]);
+                }
+            } else {
+                let matches = routing_evaluator.evaluate_incident(incident);
+                if !matches.is_empty() {
+                    tracing::info!(
+                        incident_id = %incident.id,
+                        rule_count = matches.len(),
+                        "Routing rules matched"
+                    );
+
+                    if let Ok(action_result) =
+                        routing_evaluator.apply_actions(incident, &matches).await
+                    {
+                        if !action_result.suggested_assignees.is_empty() {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                assignees = ?action_result.suggested_assignees,
+                                "Routing suggested assignees"
+                            );
+                        }
+                    }
+                }
             }
         }
 
-        Ok(incident)
+        // Auto-start escalation
+        if let Some(ref escalation_engine) = self.escalation_engine {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("EscalationEngine");
+                if let Some(policy) = escalation_engine.find_policy_for_incident(incident) {
+                    match escalation_engine.start_escalation(incident, policy.id) {
+                        Ok(_) => {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                policy_id = %policy.id,
+                                policy_name = %policy.name,
+                                "Started escalation for incident"
+                            );
+                            guard.complete_ok(vec![Artifact {
+                                name: "escalation_started".to_string(),
+                                artifact_type: "escalation_policy".to_string(),
+                                reference: format!("policy:{}", policy.id),
+                                data: serde_json::json!({
+                                    "policy_id": policy.id.to_string(),
+                                    "policy_name": policy.name,
+                                }),
+                                created_at: chrono::Utc::now(),
+                            }]);
+                        }
+                        Err(e) => {
+                            tracing::error!(
+                                incident_id = %incident.id,
+                                error = %e,
+                                "Failed to start escalation"
+                            );
+                            guard.complete_err(format!("{}", e));
+                        }
+                    }
+                } else {
+                    guard.complete_ok(vec![Artifact {
+                        name: "escalation_check".to_string(),
+                        artifact_type: "escalation_policy".to_string(),
+                        reference: format!("incident:{}", incident.id),
+                        data: serde_json::json!({ "policy_matched": false }),
+                        created_at: chrono::Utc::now(),
+                    }]);
+                }
+            } else {
+                if let Some(policy) = escalation_engine.find_policy_for_incident(incident) {
+                    match escalation_engine.start_escalation(incident, policy.id) {
+                        Ok(_) => {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                policy_id = %policy.id,
+                                policy_name = %policy.name,
+                                "Started escalation for incident"
+                            );
+                        }
+                        Err(e) => {
+                            tracing::error!(
+                                incident_id = %incident.id,
+                                error = %e,
+                                "Failed to start escalation"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        // Analyze for correlations
+        if let Some(ref correlation_engine) = self.correlation_engine {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("CorrelationEngine");
+                match correlation_engine.analyze_incident(incident).await {
+                    Ok(result) => {
+                        if result.has_correlations() {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                correlation_count = result.correlation_count(),
+                                groups_affected = result.groups_affected.len(),
+                                groups_created = result.groups_created.len(),
+                                "Correlations detected for incident"
+                            );
+                        }
+                        guard.complete_ok(vec![Artifact {
+                            name: "correlation_analysis".to_string(),
+                            artifact_type: "correlation_result".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({
+                                "correlation_count": result.correlation_count(),
+                                "groups_affected": result.groups_affected.len(),
+                                "groups_created": result.groups_created.len(),
+                            }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to analyze incident correlations"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
+                }
+            } else {
+                match correlation_engine.analyze_incident(incident).await {
+                    Ok(result) => {
+                        if result.has_correlations() {
+                            tracing::info!(
+                                incident_id = %incident.id,
+                                correlation_count = result.correlation_count(),
+                                groups_affected = result.groups_affected.len(),
+                                groups_created = result.groups_created.len(),
+                                "Correlations detected for incident"
+                            );
+                        }
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to analyze incident correlations"
+                        );
+                    }
+                }
+            }
+        }
+
+        // Add to ML training set
+        if let Some(ref ml_service) = self.ml_service {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("MLService");
+                match ml_service.add_training_sample(incident).await {
+                    Ok(()) => {
+                        guard.complete_ok(vec![Artifact {
+                            name: "ml_training_sample".to_string(),
+                            artifact_type: "ml_sample".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({ "added": true }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                    Err(e) => {
+                        tracing::warn!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to add incident to ML training set"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
+                }
+            } else {
+                if let Err(e) = ml_service.add_training_sample(incident).await {
+                    tracing::warn!(
+                        incident_id = %incident.id,
+                        error = %e,
+                        "Failed to add incident to ML training set"
+                    );
+                }
+            }
+        }
     }
 
     /// Get an incident by ID
@@ -466,6 +615,7 @@ impl IncidentProcessor {
         method: crate::models::ResolutionMethod,
         notes: String,
         root_cause: Option<String>,
+        exec_ctx: Option<&ExecutionContext>,
     ) -> Result<Incident> {
         let mut incident = self.get_incident(id).await?;
 
@@ -477,9 +627,30 @@ impl IncidentProcessor {
             "Incident resolved"
         );
 
-        // Send resolution notifications if notification service is configured
+        // Send resolution notifications
         if let Some(ref notif_service) = self.notification_service {
-            if let Err(e) = notif_service.notify_incident_resolved(&incident).await {
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("NotificationService");
+                match notif_service.notify_incident_resolved(&incident).await {
+                    Ok(ids) => {
+                        guard.complete_ok(vec![Artifact {
+                            name: "resolution_notification".to_string(),
+                            artifact_type: "notification_ids".to_string(),
+                            reference: format!("incident:{}", incident.id),
+                            data: serde_json::json!({ "notification_count": ids.len() }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %incident.id,
+                            error = %e,
+                            "Failed to send incident resolution notification"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
+                }
+            } else if let Err(e) = notif_service.notify_incident_resolved(&incident).await {
                 tracing::error!(
                     incident_id = %incident.id,
                     error = %e,
@@ -488,19 +659,43 @@ impl IncidentProcessor {
             }
         }
 
-        // Resolve escalation if escalation engine is configured
+        // Resolve escalation
         if let Some(ref escalation_engine) = self.escalation_engine {
-            if let Err(e) = escalation_engine.resolve_escalation(id) {
-                tracing::error!(
-                    incident_id = %id,
-                    error = %e,
-                    "Failed to resolve escalation"
-                );
+            if let Some(ctx) = exec_ctx {
+                let guard = ctx.start_agent_span("EscalationEngine");
+                match escalation_engine.resolve_escalation(id) {
+                    Ok(()) => {
+                        tracing::info!(incident_id = %id, "Escalation resolved");
+                        guard.complete_ok(vec![Artifact {
+                            name: "escalation_resolved".to_string(),
+                            artifact_type: "escalation_resolution".to_string(),
+                            reference: format!("incident:{}", id),
+                            data: serde_json::json!({ "resolved": true }),
+                            created_at: chrono::Utc::now(),
+                        }]);
+                    }
+                    Err(e) => {
+                        tracing::error!(
+                            incident_id = %id,
+                            error = %e,
+                            "Failed to resolve escalation"
+                        );
+                        guard.complete_err(format!("{}", e));
+                    }
+                }
             } else {
-                tracing::info!(
-                    incident_id = %id,
-                    "Escalation resolved"
-                );
+                if let Err(e) = escalation_engine.resolve_escalation(id) {
+                    tracing::error!(
+                        incident_id = %id,
+                        error = %e,
+                        "Failed to resolve escalation"
+                    );
+                } else {
+                    tracing::info!(
+                        incident_id = %id,
+                        "Escalation resolved"
+                    );
+                }
             }
         }
 
@@ -553,7 +748,7 @@ mod tests {
             IncidentType::Infrastructure,
         );
 
-        let ack = processor.process_alert(alert.clone()).await.unwrap();
+        let ack = processor.process_alert(alert.clone(), None).await.unwrap();
 
         assert_eq!(ack.status, crate::models::AckStatus::Accepted);
         assert!(ack.incident_id.is_some());
@@ -579,7 +774,7 @@ mod tests {
             IncidentType::Application,
         );
 
-        let ack1 = processor.process_alert(alert1).await.unwrap();
+        let ack1 = processor.process_alert(alert1, None).await.unwrap();
 
         // Process duplicate alert
         let alert2 = Alert::new(
@@ -591,7 +786,7 @@ mod tests {
             IncidentType::Application,
         );
 
-        let ack2 = processor.process_alert(alert2).await.unwrap();
+        let ack2 = processor.process_alert(alert2, None).await.unwrap();
 
         // Second alert should be marked as duplicate
         assert_eq!(ack2.status, crate::models::AckStatus::Duplicate);
@@ -613,7 +808,7 @@ mod tests {
         );
 
         let id = incident.id;
-        processor.create_incident(incident).await.unwrap();
+        processor.create_incident(incident, None).await.unwrap();
 
         let updated = processor
             .update_incident_state(&id, IncidentState::Investigating, "user@test.com".to_string())
@@ -621,5 +816,41 @@ mod tests {
             .unwrap();
 
         assert_eq!(updated.state, IncidentState::Investigating);
+    }
+
+    #[tokio::test]
+    async fn test_process_alert_with_execution_context() {
+        let store = Arc::new(InMemoryStore::new());
+        let dedup = Arc::new(DeduplicationEngine::new(store.clone(), 900));
+        let processor = IncidentProcessor::new(store.clone(), dedup);
+
+        let exec_ctx = ExecutionContext::new(Uuid::new_v4(), Uuid::new_v4());
+
+        let alert = Alert::new(
+            "ext-ctx-1".to_string(),
+            "sentinel".to_string(),
+            "Context Alert".to_string(),
+            "Testing execution context".to_string(),
+            Severity::P2,
+            IncidentType::Application,
+        );
+
+        let ack = processor
+            .process_alert(alert, Some(&exec_ctx))
+            .await
+            .unwrap();
+
+        assert_eq!(ack.status, crate::models::AckStatus::Accepted);
+        assert!(exec_ctx.has_agent_spans());
+
+        let graph = exec_ctx.finalize(None);
+        assert_eq!(graph.repo_span.status, crate::execution::SpanStatus::Ok);
+        assert!(!graph.repo_span.children.is_empty());
+        // At minimum, DeduplicationEngine should have emitted a span
+        assert!(graph
+            .repo_span
+            .children
+            .iter()
+            .any(|s| s.name == "DeduplicationEngine"));
     }
 }

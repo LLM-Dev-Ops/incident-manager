@@ -1,9 +1,10 @@
 use crate::api::AppState;
 use crate::error::Result;
+use crate::execution::{ExecutionContext, ExecutionResponse};
 use crate::models::*;
 use crate::state::IncidentFilter;
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Extension, Path, Query, State},
     http::StatusCode,
     Json,
 };
@@ -31,9 +32,12 @@ pub struct HealthResponse {
 /// Submit an alert
 pub async fn submit_alert(
     State(state): State<AppState>,
+    exec_ctx: Option<Extension<ExecutionContext>>,
     Json(request): Json<SubmitAlertRequest>,
-) -> Result<Json<AlertAckResponse>> {
+) -> Result<Json<ExecutionResponse<AlertAckResponse>>> {
     request.validate()?;
+
+    let ctx = exec_ctx.map(|Extension(c)| c);
 
     let alert = Alert::new(
         request.external_id.unwrap_or_else(|| Uuid::new_v4().to_string()),
@@ -44,14 +48,19 @@ pub async fn submit_alert(
         request.alert_type,
     );
 
-    let ack = state.processor.process_alert(alert).await?;
+    let ack = state.processor.process_alert(alert, ctx.as_ref()).await?;
 
-    Ok(Json(AlertAckResponse {
-        alert_id: ack.alert_id,
-        incident_id: ack.incident_id,
-        status: ack.status,
-        message: ack.message,
-    }))
+    let graph = ctx.map(|c| c.finalize(None));
+
+    Ok(Json(ExecutionResponse::new(
+        AlertAckResponse {
+            alert_id: ack.alert_id,
+            incident_id: ack.incident_id,
+            status: ack.status,
+            message: ack.message,
+        },
+        graph,
+    )))
 }
 
 #[derive(Debug, Deserialize, Validate)]
@@ -82,9 +91,12 @@ pub struct AlertAckResponse {
 /// Create an incident directly
 pub async fn create_incident(
     State(state): State<AppState>,
+    exec_ctx: Option<Extension<ExecutionContext>>,
     Json(request): Json<CreateIncidentRequest>,
-) -> Result<(StatusCode, Json<IncidentResponse>)> {
+) -> Result<(StatusCode, Json<ExecutionResponse<IncidentResponse>>)> {
     request.validate()?;
+
+    let ctx = exec_ctx.map(|Extension(c)| c);
 
     let incident = Incident::new(
         request.source,
@@ -94,9 +106,14 @@ pub async fn create_incident(
         request.incident_type,
     );
 
-    let created = state.processor.create_incident(incident).await?;
+    let created = state.processor.create_incident(incident, ctx.as_ref()).await?;
 
-    Ok((StatusCode::CREATED, Json(IncidentResponse::from(created))))
+    let graph = ctx.map(|c| c.finalize(None));
+
+    Ok((
+        StatusCode::CREATED,
+        Json(ExecutionResponse::new(IncidentResponse::from(created), graph)),
+    ))
 }
 
 #[derive(Debug, Deserialize, Validate)]
@@ -191,10 +208,13 @@ pub struct UpdateIncidentRequest {
 /// Resolve incident
 pub async fn resolve_incident(
     State(state): State<AppState>,
+    exec_ctx: Option<Extension<ExecutionContext>>,
     Path(id): Path<Uuid>,
     Json(request): Json<ResolveIncidentRequest>,
-) -> Result<Json<IncidentResponse>> {
+) -> Result<Json<ExecutionResponse<IncidentResponse>>> {
     request.validate()?;
+
+    let ctx = exec_ctx.map(|Extension(c)| c);
 
     let incident = state
         .processor
@@ -204,10 +224,16 @@ pub async fn resolve_incident(
             request.method,
             request.notes,
             request.root_cause,
+            ctx.as_ref(),
         )
         .await?;
 
-    Ok(Json(IncidentResponse::from(incident)))
+    let graph = ctx.map(|c| c.finalize(None));
+
+    Ok(Json(ExecutionResponse::new(
+        IncidentResponse::from(incident),
+        graph,
+    )))
 }
 
 #[derive(Debug, Deserialize, Validate)]

@@ -27,7 +27,7 @@ mod collectors;
 mod config;
 mod middleware;
 mod interceptors;
-mod decorators;
+pub mod decorators;
 mod registry;
 
 pub use collectors::*;

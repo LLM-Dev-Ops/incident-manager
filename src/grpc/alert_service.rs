@@ -1,4 +1,7 @@
 use crate::error::AppError;
+use crate::execution::middleware::{
+    attach_execution_graph_to_grpc_response, extract_execution_context_from_grpc_metadata,
+};
 use crate::grpc::conversions::*;
 use crate::grpc::proto::alerts::*;
 use crate::models::{Alert, IncidentType, Severity};
@@ -31,6 +34,7 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
         &self,
         request: Request<CreateAlertRequest>,
     ) -> std::result::Result<Response<AlertResponse>, Status> {
+        let exec_ctx = extract_execution_context_from_grpc_metadata(request.metadata()).ok();
         let create_req = request.into_inner();
 
         tracing::info!(
@@ -69,7 +73,7 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
         // Process the alert
         let ack = self
             .processor
-            .process_alert(alert.clone())
+            .process_alert(alert.clone(), exec_ctx.as_ref())
             .await
             .map_err(Self::app_error_to_status)?;
 
@@ -101,10 +105,17 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
             fingerprint: String::new(),
         };
 
-        Ok(Response::new(AlertResponse {
+        let mut response = Response::new(AlertResponse {
             alert: Some(proto_alert),
             message: format!("Alert processed successfully, incident: {:?}", ack.incident_id),
-        }))
+        });
+
+        if let Some(ctx) = exec_ctx {
+            let graph = ctx.finalize(None);
+            attach_execution_graph_to_grpc_response(&mut response, &graph);
+        }
+
+        Ok(response)
     }
 
     type StreamAlertsStream =
@@ -149,7 +160,7 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
                 alert.annotations = alert_msg.annotations;
                 alert.timestamp = timestamp_to_datetime(alert_msg.fired_at);
 
-                match processor.process_alert(alert).await {
+                match processor.process_alert(alert, None).await {
                     Ok(ack) => {
                         let response = AlertAck {
                             alert_id: alert_msg.id,
@@ -194,7 +205,7 @@ impl alert_ingestion_server::AlertIngestion for AlertIngestionServiceImpl {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::grpc::proto::incidents;
+    use crate::grpc::proto::alerts::alert_ingestion_server::AlertIngestion;
     use crate::processing::DeduplicationEngine;
     use crate::state::InMemoryStore;
 
@@ -225,9 +236,9 @@ mod tests {
         let response = service.submit_alert(request).await;
         assert!(response.is_ok());
 
-        let ack = response.unwrap().into_inner();
-        assert!(!ack.alert_id.is_empty());
-        assert_eq!(ack.status, AckStatus::Accepted as i32);
+        let resp = response.unwrap().into_inner();
+        let alert = resp.alert.expect("alert should be present");
+        assert!(!alert.id.is_empty());
     }
 
     #[tokio::test]

@@ -40,7 +40,7 @@ impl MutationRoot {
         // Process the alert
         let ack = gql_ctx
             .processor
-            .process_alert(alert)
+            .process_alert(alert, gql_ctx.execution_context.as_ref())
             .await
             .map_err(|e| Error::new(format!("Failed to process alert: {}", e)))?;
 
@@ -70,7 +70,7 @@ impl MutationRoot {
         // Create the incident
         let created = gql_ctx
             .processor
-            .create_incident(incident)
+            .create_incident(incident, gql_ctx.execution_context.as_ref())
             .await
             .map_err(|e| Error::new(format!("Failed to create incident: {}", e)))?;
 
@@ -148,6 +148,7 @@ impl MutationRoot {
                 input.method.into(),
                 input.notes,
                 input.root_cause,
+                gql_ctx.execution_context.as_ref(),
             )
             .await
             .map_err(|e| Error::new(format!("Failed to resolve incident: {}", e)))?;

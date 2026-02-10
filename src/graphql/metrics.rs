@@ -175,6 +175,6 @@ mod tests {
     fn test_metrics_extension_creation() {
         let factory = MetricsExtension;
         let extension = factory.create();
-        assert!(!std::ptr::eq(Arc::as_ptr(&extension), std::ptr::null()));
+        assert!(!Arc::as_ptr(&extension).is_null());
     }
 }
