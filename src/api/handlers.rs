@@ -291,6 +291,54 @@ pub struct ListIncidentsResponse {
     pub page_size: u32,
 }
 
+/// Ingest a security event from internal core-bundle fanout
+pub async fn ingest_event(
+    Json(request): Json<IngestEventRequest>,
+) -> (StatusCode, Json<IngestEventResponse>) {
+    tracing::info!(
+        execution_id = %request.execution_id,
+        severity = %request.severity,
+        source = %request.source,
+        event_type = %request.event_type,
+        "Inbound security event"
+    );
+
+    let execution_id = request.execution_id.clone();
+
+    // Process asynchronously
+    tokio::spawn(async move {
+        tracing::debug!(
+            execution_id = %request.execution_id,
+            "Processing security event"
+        );
+        // Future: route to correlation engine, create incidents, etc.
+    });
+
+    (
+        StatusCode::ACCEPTED,
+        Json(IngestEventResponse {
+            status: "accepted".to_string(),
+            execution_id,
+        }),
+    )
+}
+
+#[derive(Debug, Deserialize)]
+pub struct IngestEventRequest {
+    pub source: String,
+    pub event_type: String,
+    pub execution_id: String,
+    pub timestamp: String,
+    pub severity: String,
+    pub payload: serde_json::Value,
+}
+
+#[derive(Debug, Serialize)]
+pub struct IngestEventResponse {
+    pub status: String,
+    pub execution_id: String,
+}
+
 /// Prometheus metrics endpoint
 ///
 /// Returns metrics in Prometheus text exposition format

@@ -23,12 +23,13 @@ options:
 
 steps:
   # Step 1: Build Rust binary
-  - name: 'rust:1.84-slim'
+  - name: 'rust:latest'
     id: 'build-rust'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        set -e
         apt-get update && apt-get install -y pkg-config libssl-dev cmake clang protobuf-compiler
         cargo build --release --bin llm-incident-manager --bin llm-im-cli
         mkdir -p bin
@@ -108,8 +109,8 @@ steps:
           --set-env-vars="RUST_LOG=info" \
           --set-env-vars="LOG_FORMAT=json" \
           --set-env-vars="TELEMETRY_ENABLED=true" \
-          --set-env-vars="RUVECTOR_SERVICE_URL=https://ruvector-service-${_ENV}.agentics-dev.run.app" \
           --set-env-vars="TELEMETRY_ENDPOINT=https://llm-observatory-${_ENV}.agentics-dev.run.app/v1/ingest" \
+          --set-secrets="RUVECTOR_SERVICE_URL=RUVECTOR_SERVICE_URL:latest,RUVECTOR_API_KEY=RUVECTOR_API_KEY:latest" \
           --labels="env=${_ENV},service=llm-incident-manager,team=agentics"
     waitFor: ['push-image']
 

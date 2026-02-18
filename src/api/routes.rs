@@ -27,6 +27,8 @@ pub fn build_router(state: AppState) -> Router {
         .route("/v1/incidents/:id", get(handlers::get_incident))
         .route("/v1/incidents/:id", put(handlers::update_incident))
         .route("/v1/incidents/:id/resolve", post(handlers::resolve_incident))
+        // Internal event ingestion (core-bundle fanout)
+        .route("/api/v1/events", post(handlers::ingest_event))
         // Add WebSocket endpoint if WebSocket is enabled
         .route(
             "/ws",
