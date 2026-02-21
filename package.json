@@ -73,6 +73,12 @@
     "LICENSE",
     "CHANGELOG.md"
   ],
+  "workspaces": [
+    "packages/agentics-contracts",
+    "packages/ruvector-client",
+    "packages/agents/escalation-agent",
+    "functions"
+  ],
   "dependencies": {
     "claude-flow": "^2.7.41"
   }

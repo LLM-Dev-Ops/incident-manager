@@ -1,0 +1,20 @@
+# Node modules (reinstalled during deploy)
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test/coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.log
+*.tmp

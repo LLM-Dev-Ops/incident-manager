@@ -152,6 +152,37 @@ export type {
 } from './hitl-handler.js';
 
 // ============================================================================
+// POST-MORTEM GENERATOR AGENT
+// ============================================================================
+
+export {
+  POSTMORTEM_AGENT_METADATA,
+  POSTMORTEM_PERSISTENCE,
+  validatePostMortemInput,
+  validatePostMortemOutput
+} from './postmortem-agent.js';
+
+export type {
+  PostMortemStatus,
+  ActionItemPriority,
+  ActionItemStatus,
+  TimelineEntryType,
+  RootCauseCategory,
+  PostMortemAgentInput,
+  TimelineEvent,
+  EscalationHistoryRef,
+  PostMortemAgentOutput,
+  ReconstructedTimelineEntry,
+  KeyMoment,
+  RootCauseAnalysis,
+  ImpactAnalysis,
+  ResolutionAnalysis,
+  ActionItem,
+  PostMortemOrchestratorAction,
+  PostMortemDecisionEvent
+} from './postmortem-agent.js';
+
+// ============================================================================
 // PHASE 3 - AUTOMATION & RESILIENCE (LAYER 1)
 // ============================================================================
 
