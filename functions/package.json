@@ -1,6 +1,6 @@
 {
   "name": "@agentics/incident-manager-agents",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Unified Cloud Function entry point for incident-manager agents (escalation, post-mortem, hitl)",
   "main": "dist/index.js",
   "type": "module",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@agentics/contracts": "file:vendor/agentics-contracts-1.2.0.tgz",
-    "@agentics/escalation-agent": "file:vendor/agentics-escalation-agent-1.0.0.tgz",
+    "@agentics/escalation-agent": "file:vendor/agentics-escalation-agent-1.0.1.tgz",
     "@agentics/ruvector-client": "file:vendor/agentics-ruvector-client-1.0.0.tgz"
   },
   "devDependencies": {

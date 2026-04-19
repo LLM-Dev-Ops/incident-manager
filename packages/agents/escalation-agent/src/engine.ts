@@ -35,8 +35,10 @@ export class EscalationDecisionEngine {
    * - Stateless
    * - Return exactly one decision
    */
-  evaluate(input: EscalationAgentInput): EscalationResult {
+  evaluate(rawInput: EscalationAgentInput): EscalationResult {
     const startTime = Date.now();
+
+    const input = this.normalizeInput(rawInput);
 
     // 1. Evaluate all thresholds
     const thresholds = this.evaluateThresholds(input);
@@ -105,6 +107,33 @@ export class EscalationDecisionEngine {
       confidence,
       confidenceFactors: factors,
       processingTimeMs
+    };
+  }
+
+  // ============================================================================
+  // INPUT NORMALIZATION
+  // ============================================================================
+
+  // Upstream callers (e.g. agentics-cli) may omit optional nested containers
+  // that the engine dereferences. Fill them with safe defaults so a minimal
+  // but contract-valid payload produces a decision instead of a TypeError.
+  private normalizeInput(input: EscalationAgentInput): EscalationAgentInput {
+    const fallbackTs = (input as any).signal_timestamp ?? new Date().toISOString();
+    return {
+      ...input,
+      sla: input.sla ?? {
+        acknowledgment_breached: false,
+        resolution_breached: false
+      },
+      signal_payload: input.signal_payload ?? { type: 'manual' },
+      escalation_history: input.escalation_history ?? [],
+      tags: input.tags ?? {},
+      incident_created_at: input.incident_created_at ?? fallbackTs,
+      incident_updated_at: input.incident_updated_at ?? fallbackTs,
+      title: input.title ?? `Incident ${input.incident_id}`,
+      description: input.description ?? '',
+      category: input.category ?? 'other',
+      environment: input.environment ?? 'production'
     };
   }
 

@@ -127,6 +127,13 @@ export async function handler(
   } catch (error) {
     const err = error as Error;
 
+    console.error("[escalation]", {
+      message: err.message,
+      stack: err.stack,
+      cause: (err as any).cause,
+      original_code: (err as any).code,
+    });
+
     // Emit error telemetry
     telemetry.emitError(config.agentId, executionId, err);
 
