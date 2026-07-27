@@ -1,0 +1,110 @@
+name: Build (feature matrix)
+
+# ADR-0001, Implementation Plan step 7 / Verification check 9.
+# The `ecosystem` feature names no dependencies and was never compiled in CI, which is
+# how it decayed into a no-op without anyone noticing. Both configurations are built
+# here so that cannot recur.
+#
+# HONEST SCOPE: while `ecosystem = []`, the two matrix entries compile an identical
+# crate graph, so the `ecosystem` job proves only that the feature name still exists.
+# It becomes a real second configuration the moment a `dep:` entry is added. The
+# `pinning` job below is the one doing load-bearing work today.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: default
+            features: ""
+          - name: ecosystem
+            features: "--features ecosystem"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # rdkafka is built from source (cmake-build) and tonic-build needs protoc.
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake protobuf-compiler libssl-dev zlib1g-dev libsasl2-dev
+
+      # rust-version = "1.84" is load-bearing: async-lock and base64ct carry exact pins
+      # solely to hold that line (ADR-0001, "Toolchain constraint"). Building on 1.84
+      # is what proves an upstream crate has not dragged the floor up.
+      - name: Install Rust 1.84
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.84"
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ matrix.name }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ matrix.name }}-
+
+      # ADR-0001's verification steps all specify `cargo build --locked`, but Cargo.lock
+      # is gitignored here (.gitignore:5), so `--locked` would fail outright. That is a
+      # decision ADR-0001 did not account for: a tag pin only yields a reproducible build
+      # if the rest of the graph is locked too. Committing the lockfile is the right
+      # follow-up; add `--locked` once it lands.
+      - name: Build
+        run: cargo build --workspace ${{ matrix.features }}
+
+      - name: Test
+        run: cargo test --workspace ${{ matrix.features }}
+
+  pinning:
+    name: upstream pins are immutable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ADR-0001 Verification checks 1 and 2. A branch ref or a bare git ref re-resolves
+      # whenever upstream moves, which turns a green build red with no commit here.
+      #
+      # Comment lines are stripped first. The manifest documents these forbidden forms in
+      # prose, and a guard that trips over its own documentation is a guard people delete.
+      - name: Reject floating git dependencies
+        run: |
+          manifest=$(grep -vE '^\s*#' Cargo.toml)
+
+          floating=$(echo "$manifest" | grep -nE 'branch\s*=' || true)
+          if [ -n "$floating" ]; then
+            echo "::error::Cargo.toml pins an upstream to a branch; ADR-0001 requires an immutable tag."
+            echo "$floating"
+            exit 1
+          fi
+
+          untagged=$(echo "$manifest" | grep -nE 'git\s*=\s*"' | grep -v 'tag\s*=' || true)
+          if [ -n "$untagged" ]; then
+            echo "::error::git dependency without a tag:"
+            echo "$untagged"
+            exit 1
+          fi
+
+          echo "All git dependencies are tag-pinned (or there are none yet)."
+
+# NOT YET COVERED (ADR-0001 step 7 asks for it):
+#   cargo build --features benchmarks
+# The `benchmarks` feature cannot exist until github.com/LLM-Dev-Ops/policy-engine cuts
+# a tag for policy-engine-benchmarks. Add a third matrix entry when it does.

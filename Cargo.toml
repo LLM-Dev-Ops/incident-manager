@@ -50,8 +50,8 @@ path = "src/cli/main.rs"
 #
 # When re-enabling any line below, it MUST carry an immutable `tag`. A bare `git =`
 # or a `branch =` re-resolves whenever upstream moves, which is the diamond-dependency
-# failure connector-hub hit (ADR-0001, Finding 3). This is not yet enforced by CI —
-# see the PR for the feature-matrix + tag-guard workflow that could not be pushed.
+# failure connector-hub hit (ADR-0001, Finding 3). CI enforces this — see the
+# `pinning` job in .github/workflows/build-features.yml.
 #
 #   llm-observatory-core     observatory          0 tags, 0 releases — nothing to pin
 #   llm-governance-common    governance-dashboard 0 tags, 0 releases — nothing to pin
