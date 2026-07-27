@@ -68,16 +68,25 @@ jobs:
       - name: Build
         run: cargo build --workspace ${{ matrix.features }}
 
-      # Advisory, not blocking, and time-capped — for a reason worth reading before you
-      # "fix" it by deleting the flags. `cargo test --workspace` compiles fine, prints
-      # `running 478 tests`, then hangs indefinitely: at least one test opens sockets and
-      # blocks forever waiting on Redis/NATS/Kafka, which no runner provides. Observed
-      # locally at ~30 min, 0% CPU, blocked on futex.
+      # Advisory, not blocking, and time-capped — read this before "fixing" it by deleting
+      # the flags. `cargo test --workspace` is broken on main in two separate ways, both
+      # pre-existing and unrelated to ADR-0001 (the commit that added this workflow changes
+      # only comments). Measured on the first real run of this job:
       #
-      # This is pre-existing and unrelated to ADR-0001. Without the cap, the job burns the
-      # full 6h GitHub timeout on every push. Make this blocking once those tests are
-      # either gated behind a feature or given service containers.
-      - name: Test (advisory — suite has a pre-existing hang)
+      #   - 29 tests FAIL, concentrated in metrics::collectors, metrics::decorators and
+      #     metrics::interceptors. The pattern points at a shared global metrics registry
+      #     that tests mutate concurrently, so they pass alone and fail in parallel.
+      #   - The suite then HANGS. It prints `running 478 tests`, produces results, and
+      #     stops: a test opens sockets and blocks forever on Redis/NATS/Kafka, which no
+      #     runner provides. Confirmed here — the step hit the 20-minute cap. Reproduced
+      #     locally at ~30 min, 0% CPU, blocked on futex.
+      #
+      # Without the cap this burns the full 6h GitHub timeout on every push. Making it
+      # blocking today would gate every PR on defects this branch did not introduce.
+      # Make it blocking once the metrics tests are serialized (or given a per-test
+      # registry) and the networked ones are gated behind a feature or given service
+      # containers.
+      - name: Test (advisory — 29 pre-existing failures + a hang)
         run: cargo test --workspace ${{ matrix.features }}
         timeout-minutes: 20
         continue-on-error: true
