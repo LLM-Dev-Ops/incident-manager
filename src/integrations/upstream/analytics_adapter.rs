@@ -8,8 +8,13 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-// Import upstream analytics types (disabled - ecosystem feature not enabled)
-// When ecosystem feature is enabled, uncomment these imports:
+// BLOCKED: upstream analytics types cannot be imported yet.
+//
+// ADR-0001 requires these behind an ecosystem gate, but that needs
+// `llm-analytics-hub` in the dependency graph and
+// github.com/LLM-Dev-Ops/analytics-hub has no tag to pin (zero tags, zero releases
+// as of 2026-07-27). A floating `git =` ref is forbidden by ADR-0001 Finding 3.
+//
 // use llm_analytics_hub::{Anomaly, AnomalyType as AnalyticsAnomalyType, AnomalySeverity};
 // use llm_analytics_hub::analytics::anomaly::DetectorStats;
 
@@ -64,8 +69,7 @@ impl AnalyticsHubAdapter {
         }
     }
 
-    // NOTE: convert_anomaly requires ecosystem feature (llm_analytics_hub)
-    // Uncomment when ecosystem dependencies are available
+    // BLOCKED on an `llm-analytics-hub` tag — see the module-level note and ADR-0001.
     // pub fn convert_anomaly(&self, anomaly: &Anomaly) -> UpstreamOutlierDetection { ... }
 
     /// Extract long-tail analytics from metrics data
@@ -87,10 +91,9 @@ impl AnalyticsHubAdapter {
         }
     }
 
-    // NOTE: The following methods require ecosystem feature (llm_analytics_hub)
-    // convert_detector_stats, filter_high_confidence_anomalies, convert_anomaly_batch
+    // BLOCKED on an `llm-analytics-hub` tag — see the module-level note and ADR-0001:
+    // convert_detector_stats, filter_high_confidence_anomalies, convert_anomaly_batch,
     // convert_anomaly_type, convert_anomaly_severity, estimate_confidence
-    // Uncomment when ecosystem dependencies are available
 
     // --- Private helper methods ---
 
@@ -431,5 +434,6 @@ mod tests {
         assert_eq!(adapter.calculate_deviation_percentage(0.0, 0.0), 0.0);
     }
 
-    // NOTE: test_outlier_type_conversion requires ecosystem feature (llm_analytics_hub)
+    // BLOCKED: test_outlier_type_conversion needs `llm-analytics-hub` in the graph.
+    // ADR-0001 Verification check 7 stays unmet until analytics-hub cuts a tag.
 }

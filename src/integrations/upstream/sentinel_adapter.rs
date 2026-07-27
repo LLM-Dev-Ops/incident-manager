@@ -176,8 +176,18 @@ pub struct UpstreamAnomalyEvent {
 }
 
 impl UpstreamAnomalyEvent {
-    // NOTE: from_sentinel requires ecosystem feature (llm_sentinel_core)
-    // Uncomment when ecosystem dependencies are available
+    // NO LONGER BLOCKED UPSTREAM — but deliberately still not restored here.
+    //
+    // The v0.1.0 blocker (E0599 "no method named `validate_length` found for struct
+    // `ServiceId`", from `#[validate(length(...))]` on a newtype that does not
+    // implement validator 0.18's `ValidateLength`) is fixed at tag v0.1.1, and
+    // `llm-sentinel-core` is now pinned to that tag behind the `ecosystem` feature.
+    // Verified 2026-07-27 by building v0.1.1 standalone (EXIT=0).
+    //
+    // What remains is ordinary work, not an upstream blocker: restoring this needs the
+    // conversion re-written against v0.1.1's actual `AnomalyEvent` shape and gated on
+    // `ecosystem`, since the dependency is optional and absent from a default build.
+    // Left commented rather than guessed at, so nothing here claims to compile untested.
     // pub fn from_sentinel(event: &llm_sentinel_core::events::AnomalyEvent) -> Self { ... }
 }
 

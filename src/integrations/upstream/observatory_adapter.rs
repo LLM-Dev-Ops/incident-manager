@@ -116,9 +116,18 @@ impl ObservatoryCoreAdapter {
         }
     }
 
-    // NOTE: from_observatory_span requires ecosystem feature (llm_observatory_core)
-    // Uncomment when ecosystem dependencies are available
-    // pub fn from_observatory_span(span: &llm_observatory_core::span::LlmSpan) -> UpstreamLlmSpan { ... }
+    // BLOCKED: `from_observatory_span` cannot be restored yet.
+    //
+    // ADR-0001 requires this to come back as an ecosystem-gated method over
+    // `llm_observatory_core::span::LlmSpan`, paired with a default-build stub. That
+    // needs `llm-observatory-core` in the dependency graph, and
+    // github.com/LLM-Dev-Ops/observatory has no tag to pin (zero tags, zero releases
+    // as of 2026-07-27). Adding it as a floating `git =` ref is precisely what
+    // ADR-0001 Finding 3 forbids.
+    //
+    // See `sentinel_adapter.rs::UpstreamAnomalyEvent::from_sentinel` for the pattern to
+    // follow once observatory cuts a tag: shared wire mirror + both cfg arms + a
+    // cross-configuration conformance test.
 
     /// Extract structured events from span for incident correlation
     pub fn extract_structured_events(&self, span: &UpstreamLlmSpan) -> Vec<UpstreamStructuredEvent> {
