@@ -40,14 +40,37 @@ name = "llm-im-cli"
 path = "src/cli/main.rs"
 
 [dependencies]
-# LLM-Dev-Ops Ecosystem Dependencies (Phase 2A - DISABLED for production deployment)
-# NOTE: All external ecosystem dependencies are temporarily disabled due to upstream dependency issues
-# These can be re-enabled once the upstream repositories fix their dependency chains
-# llm-sentinel-core = { git = "https://github.com/LLM-Dev-Ops/sentinel", optional = true }
-# llm-observatory-core = { git = "https://github.com/LLM-Dev-Ops/observatory", optional = true }
-# llm-governance-common = { git = "https://github.com/LLM-Dev-Ops/governance-dashboard", optional = true }
-# llm-analytics-hub = { git = "https://github.com/LLM-Dev-Ops/analytics-hub", optional = true }
-# policy-engine-benchmarks = { git = "https://github.com/LLM-Dev-Ops/policy-engine", package = "policy-engine-benchmarks", optional = true }
+# LLM-Dev-Ops Ecosystem Dependencies — ALL BLOCKED UPSTREAM.
+# See docs/adr/ADR-0001-re-enabling-llm-dev-ops-ecosystem-dependencies.md
+#
+# ADR-0001 decided these come back as tag-pinned git dependencies. Its Implementation
+# Plan step 1 makes upstream tags a blocking precondition: each repo must cut a tag
+# that builds standalone on Rust 1.84. Status verified 2026-07-27 against the real
+# remotes — step 1 is unmet for all five, so nothing can be pinned yet.
+#
+# When re-enabling any line below, it MUST carry an immutable `tag`. A bare `git =`
+# or a `branch =` re-resolves whenever upstream moves, which is the diamond-dependency
+# failure connector-hub hit (ADR-0001, Finding 3). This is not yet enforced by CI —
+# see the PR for the feature-matrix + tag-guard workflow that could not be pushed.
+#
+#   llm-observatory-core     observatory          0 tags, 0 releases — nothing to pin
+#   llm-governance-common    governance-dashboard 0 tags, 0 releases — nothing to pin
+#   llm-analytics-hub        analytics-hub        0 tags, 0 releases — nothing to pin
+#   policy-engine-benchmarks policy-engine        0 tags, 0 releases — nothing to pin
+#
+#   llm-sentinel-core        sentinel             HAS tag v0.1.0, but it DOES NOT BUILD.
+#     Pinned and compiled to confirm, rather than assumed. Two independent defects:
+#       1. `sentinel-core` fails to compile against validator 0.18 — E0599 "no method
+#          named `validate_length` found for struct `ServiceId`". events.rs applies
+#          `#[validate(length(...))]` to newtypes that don't implement `ValidateLength`.
+#       2. The workspace does not even resolve standalone: `sentinel-api` requires
+#          `axum-test = "^16.5"`, which no longer exists on crates.io (16.x is gone;
+#          20.x/21.x are current). There is no Cargo.lock at the tag to hold it.
+#     Also note the crate is named `sentinel-core` at v0.1.0 — the rename to
+#     `llm-sentinel-core` happened after the tag, so re-enabling will need
+#     `package = "sentinel-core"` unless a later tag is cut post-rename.
+#     ADR-0001 step 2 forbids papering over this with `[patch]`; it must be fixed
+#     upstream and a new tag cut.
 
 # Async Runtime & Concurrency
 tokio = { version = "1.35", features = ["full"] }
@@ -166,11 +189,28 @@ tonic-build = "0.11"
 
 [features]
 default = []
-# NOTE: Ecosystem feature enables integration with upstream LLM-Dev-Ops crates
-# When disabled (default), stub implementations are used
-# Enable with: cargo build --features ecosystem
+
+# Integration with upstream LLM-Dev-Ops crates. See
+# docs/adr/ADR-0001-re-enabling-llm-dev-ops-ecosystem-dependencies.md
+#
+# KNOWN NO-OP, AND DELIBERATELY STILL A NO-OP. `ecosystem = []` names no dependencies,
+# so `--features ecosystem` compiles exactly the same crate graph as a default build
+# (ADR-0001, Finding 1). The fix is `ecosystem = ["dep:<crate>", ...]`, which cannot be
+# written until at least one ecosystem dependency is pinnable — see [dependencies].
+#
+# The previous comment here claimed "When disabled (default), stub implementations are
+# used". That was false: no `cfg(feature = "ecosystem")` gate has ever existed in src/.
+# Do not restore that claim without the gates to back it.
+#
+# Do NOT list a member here without a corresponding tag-pinned entry in [dependencies]
+# — a feature naming a non-existent dependency is a manifest error, and a feature
+# naming nothing is the exact defect ADR-0001 exists to remove.
 ecosystem = []
-# benchmarks = ["policy-engine-benchmarks"]
+
+# `benchmarks` stays unavailable until policy-engine cuts a tag. It is deliberately
+# kept separate from `ecosystem` so benchmark-only transitive dependencies never
+# reach production builds (ADR-0001, "Per-dependency target state").
+# benchmarks = ["dep:policy-engine-benchmarks"]
 
 [profile.dev]
 opt-level = 0
