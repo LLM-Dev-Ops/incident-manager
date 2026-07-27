@@ -176,18 +176,18 @@ pub struct UpstreamAnomalyEvent {
 }
 
 impl UpstreamAnomalyEvent {
-    // BLOCKED: `from_sentinel` cannot be restored yet.
+    // NO LONGER BLOCKED UPSTREAM — but deliberately still not restored here.
     //
-    // sentinel is the only upstream with a tag (v0.1.0), but that tag does not build.
-    // Verified 2026-07-27 by pinning it and compiling:
-    //   crates/sentinel-core/src/events.rs applies `#[validate(length(min = 1, max =
-    //   255))]` to `service_name: ServiceId`, but `ServiceId` is a newtype that does
-    //   not implement validator 0.18's `ValidateLength` trait, so `sentinel-core`
-    //   fails with E0599 "no method named `validate_length` found for struct
-    //   `ServiceId`". This is an upstream defect, not a pinning problem.
+    // The v0.1.0 blocker (E0599 "no method named `validate_length` found for struct
+    // `ServiceId`", from `#[validate(length(...))]` on a newtype that does not
+    // implement validator 0.18's `ValidateLength`) is fixed at tag v0.1.1, and
+    // `llm-sentinel-core` is now pinned to that tag behind the `ecosystem` feature.
+    // Verified 2026-07-27 by building v0.1.1 standalone (EXIT=0).
     //
-    // ADR-0001 forbids papering over it with `[patch]`. See the [dependencies] block
-    // in Cargo.toml for the full per-dependency status.
+    // What remains is ordinary work, not an upstream blocker: restoring this needs the
+    // conversion re-written against v0.1.1's actual `AnomalyEvent` shape and gated on
+    // `ecosystem`, since the dependency is optional and absent from a default build.
+    // Left commented rather than guessed at, so nothing here claims to compile untested.
     // pub fn from_sentinel(event: &llm_sentinel_core::events::AnomalyEvent) -> Self { ... }
 }
 

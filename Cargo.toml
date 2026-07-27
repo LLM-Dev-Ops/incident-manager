@@ -40,13 +40,12 @@ name = "llm-im-cli"
 path = "src/cli/main.rs"
 
 [dependencies]
-# LLM-Dev-Ops Ecosystem Dependencies — ALL BLOCKED UPSTREAM.
+# LLM-Dev-Ops Ecosystem Dependencies — FOUR OF FIVE STILL BLOCKED UPSTREAM.
 # See docs/adr/ADR-0001-re-enabling-llm-dev-ops-ecosystem-dependencies.md
 #
 # ADR-0001 decided these come back as tag-pinned git dependencies. Its Implementation
 # Plan step 1 makes upstream tags a blocking precondition: each repo must cut a tag
-# that builds standalone on Rust 1.84. Status verified 2026-07-27 against the real
-# remotes — step 1 is unmet for all five, so nothing can be pinned yet.
+# that builds standalone. Status re-verified 2026-07-27 against the real remotes.
 #
 # When re-enabling any line below, it MUST carry an immutable `tag`. A bare `git =`
 # or a `branch =` re-resolves whenever upstream moves, which is the diamond-dependency
@@ -58,19 +57,33 @@ path = "src/cli/main.rs"
 #   llm-analytics-hub        analytics-hub        0 tags, 0 releases — nothing to pin
 #   policy-engine-benchmarks policy-engine        0 tags, 0 releases — nothing to pin
 #
-#   llm-sentinel-core        sentinel             HAS tag v0.1.0, but it DOES NOT BUILD.
-#     Pinned and compiled to confirm, rather than assumed. Two independent defects:
-#       1. `sentinel-core` fails to compile against validator 0.18 — E0599 "no method
-#          named `validate_length` found for struct `ServiceId`". events.rs applies
-#          `#[validate(length(...))]` to newtypes that don't implement `ValidateLength`.
-#       2. The workspace does not even resolve standalone: `sentinel-api` requires
-#          `axum-test = "^16.5"`, which no longer exists on crates.io (16.x is gone;
-#          20.x/21.x are current). There is no Cargo.lock at the tag to hold it.
-#     Also note the crate is named `sentinel-core` at v0.1.0 — the rename to
-#     `llm-sentinel-core` happened after the tag, so re-enabling will need
-#     `package = "sentinel-core"` unless a later tag is cut post-rename.
-#     ADR-0001 step 2 forbids papering over this with `[patch]`; it must be fixed
-#     upstream and a new tag cut.
+#   llm-sentinel-core        sentinel             UNBLOCKED at tag v0.1.1 — pinned below.
+#     v0.1.0 was rejected here for two defects; v0.1.1 fixes both, and the fixes were
+#     re-verified by building the tag standalone rather than trusting the tag message:
+#       1. Naming. At v0.1.0 the crate was `sentinel-core`, so ADR-0001's target-state
+#          line would not have resolved without a `package = "sentinel-core"` alias.
+#          At v0.1.1 `crates/sentinel-core/Cargo.toml` declares
+#          `name = "llm-sentinel-core"`, so no alias is needed.
+#       2. Build. `sentinel-api` moved `axum-test` from the yanked `^16.5` to `18.2`,
+#          so the workspace resolves; and `events.rs` no longer applies
+#          `#[validate(length(...))]` to the `ServiceId` newtype, so the E0599
+#          "no method named `validate_length`" failure against validator 0.18 is gone.
+#     Evidence — clean clone of tag v0.1.1 (remote tag -> commit 504b0ea), then
+#     `cargo build --workspace`:
+#         Finished `dev` profile [unoptimized + debuginfo] target(s) in 14m 52s
+#         EXIT=0        (warnings only; zero errors)
+#
+#     CAVEAT, not papered over: that build ran on stable 1.97.1, which is the only
+#     toolchain installed here. ADR-0001 step 1 asks for Rust 1.84 specifically, and
+#     1.84 is not available in this environment, so the MSRV half of step 1 is
+#     asserted-but-unverified for sentinel — same gap the `msrv` CI job already
+#     tracks for this repo's own 1.84 floor.
+#
+#     Cosmetic upstream inconsistency, noted so nobody thinks the pin is wrong:
+#     sentinel did not bump `workspace.package.version` when cutting v0.1.1, so the
+#     crate still reports 0.1.0 and `cargo tree` prints
+#     `llm-sentinel-core v0.1.0 (...?tag=v0.1.1#504b0ea4)`. The tag is what pins us.
+llm-sentinel-core = { git = "https://github.com/LLM-Dev-Ops/sentinel", tag = "v0.1.1", optional = true }
 
 # Async Runtime & Concurrency
 tokio = { version = "1.35", features = ["full"] }
@@ -193,19 +206,21 @@ default = []
 # Integration with upstream LLM-Dev-Ops crates. See
 # docs/adr/ADR-0001-re-enabling-llm-dev-ops-ecosystem-dependencies.md
 #
-# KNOWN NO-OP, AND DELIBERATELY STILL A NO-OP. `ecosystem = []` names no dependencies,
-# so `--features ecosystem` compiles exactly the same crate graph as a default build
-# (ADR-0001, Finding 1). The fix is `ecosystem = ["dep:<crate>", ...]`, which cannot be
-# written until at least one ecosystem dependency is pinnable — see [dependencies].
+# NO LONGER A NO-OP. `ecosystem` now names a real, tag-pinned dependency, so
+# `--features ecosystem` compiles a genuinely different crate graph from a default
+# build — which is what ADR-0001 Finding 1 asked for. It is still only ONE of the five
+# members: the other four have no tag to pin (see [dependencies]).
 #
 # The previous comment here claimed "When disabled (default), stub implementations are
 # used". That was false: no `cfg(feature = "ecosystem")` gate has ever existed in src/.
-# Do not restore that claim without the gates to back it.
+# Do not restore that claim without the gates to back it. Enabling this feature today
+# pulls llm-sentinel-core into the graph but does not yet change any behaviour, because
+# the adapter call sites are still commented out — restoring those is separate work.
 #
 # Do NOT list a member here without a corresponding tag-pinned entry in [dependencies]
 # — a feature naming a non-existent dependency is a manifest error, and a feature
 # naming nothing is the exact defect ADR-0001 exists to remove.
-ecosystem = []
+ecosystem = ["dep:llm-sentinel-core"]
 
 # `benchmarks` stays unavailable until policy-engine cuts a tag. It is deliberately
 # kept separate from `ecosystem` so benchmark-only transitive dependencies never
