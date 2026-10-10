@@ -13,12 +13,14 @@ The candidate must install from the lockfile; build and test every configured np
 | --- | ---: | ---: |
 | `npm ci --ignore-scripts` | pass | pass |
 | `npm run build --workspaces --if-present` | fail (6 TypeScript errors) | pass |
-| `npm run test --workspaces --if-present` | pass; no escalation contract tests | pass; 106 tests including 2 new contract tests |
+| `npm run test --workspaces --if-present` | Node 24 pass; Node 20 fails on an unmatched functions glob | pass; 106 tests including 2 new contract tests |
 | `npm audit --omit=dev --json` | 38 findings (2 critical, 26 high, 10 moderate) | 0 findings |
 | Production dependency count | 435 | 12 |
 | Escalation CLI help | fail because workspace does not build | pass |
 
 The security reduction comes from removing the unused root `claude-flow` production dependency and regenerating the lockfile. Repository search found no source, script, or workflow using that package.
+
+The functions workspace had no tests but invoked `node --test dist/**/*.test.js`. Node 20 treats the unmatched glob as an error while Node 24 returned an empty successful suite locally. Using the test runner's native discovery (`node --test`) is portable across the declared Node 20 floor and will automatically discover tests when they are added.
 
 ## MetaHarness retention record
 
