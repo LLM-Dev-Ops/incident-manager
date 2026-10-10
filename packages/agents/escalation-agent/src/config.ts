@@ -55,22 +55,6 @@ export interface AgentConfig {
 }
 
 // ============================================================================
-// DEFAULT CONFIGURATION
-// ============================================================================
-
-const DEFAULT_CONFIG: Partial<AgentConfig> = {
-  agentVersion: ESCALATION_AGENT_METADATA.version,
-  environment: 'production',
-  escalation: {
-    maxEscalationLevel: 5,
-    minEscalationInterval: 300, // 5 minutes
-    autoEscalationConfidenceThreshold: 0.8,
-    requireApprovalForP0: true
-  },
-  debug: false
-};
-
-// ============================================================================
 // CONFIGURATION FACTORY
 // ============================================================================
 
