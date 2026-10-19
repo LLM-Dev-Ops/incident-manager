@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Install Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -34,3 +36,27 @@ jobs:
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
+
+      - name: Evaluate frozen native HTTP contract and replay Flywheel receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline="$(mktemp -d "$RUNNER_TEMP/incident-baseline.XXXXXX")"
+          tools="$(mktemp -d "$RUNNER_TEMP/incident-tools.XXXXXX")"
+          git fetch --no-tags origin 834452bad11f38fd70cf73bb9991f83d9d19c299
+          git archive 834452bad11f38fd70cf73bb9991f83d9d19c299 | tar -x -C "$baseline"
+          npm ci --ignore-scripts --prefix "$baseline"
+          npm run build --workspaces --if-present --prefix "$baseline"
+          npm install --prefix "$tools" --ignore-scripts --no-audit --no-fund --save-exact @metaharness/flywheel@0.1.12
+          node scripts/evaluate-transport.mjs "$baseline" "$GITHUB_WORKSPACE" "$tools" "$RUNNER_TEMP/incident-flywheel.json"
+          node scripts/benchmark-transport.mjs "$baseline" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/incident-benchmark.json"
+
+      - name: Upload live evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: incident-native-transport-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/incident-flywheel.json
+            ${{ runner.temp }}/incident-benchmark.json
+          if-no-files-found: error

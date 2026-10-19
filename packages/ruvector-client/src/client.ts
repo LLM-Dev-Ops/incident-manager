@@ -181,8 +181,7 @@ export class RuvectorClient {
   private async request<T>(
     method: string,
     path: string,
-    body?: unknown,
-    attempt = 1
+    body?: unknown
   ): Promise<AgentResult<T>> {
     const url = `${this.config.baseUrl}${path}`;
 
@@ -190,86 +189,85 @@ export class RuvectorClient {
       console.log(`[RuvectorClient] ${method} ${url}`);
     }
 
-    try {
+    for (let attempt = 1; ; attempt++) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.config.timeoutMs);
+      let failure: Extract<AgentResult<T>, { success: false }>;
+      try {
+        const response = await this.fetchFn(url, {
+          method,
+          headers: this.headers,
+          body: body ? JSON.stringify(body) : undefined,
+          signal: controller.signal
+        });
 
-      const response = await this.fetchFn(url, {
-        method,
-        headers: this.headers,
-        body: body ? JSON.stringify(body) : undefined,
-        signal: controller.signal
-      });
+        if (!response.ok) {
+          // Keep the same deadline while consuming error bodies too. Swallowing
+          // an abort here would incorrectly turn a deadline into REQUEST_FAILED.
+          const errorBody = await response.text();
+          const error = new RuvectorError(
+            `Request failed: ${response.status} ${response.statusText} - ${errorBody}`,
+            'REQUEST_FAILED',
+            response.status,
+            response.status >= 500 || response.status === 429
+          );
 
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorBody = await response.text().catch(() => 'Unknown error');
-        const error = new RuvectorError(
-          `Request failed: ${response.status} ${response.statusText} - ${errorBody}`,
-          'REQUEST_FAILED',
-          response.status,
-          response.status >= 500 || response.status === 429
-        );
-
-        // Retry on retryable errors
-        if (error.retryable && attempt < this.config.retries) {
-          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
-          await this.sleep(delay);
-          return this.request<T>(method, path, body, attempt + 1);
+          failure = {
+            success: false,
+            error: {
+              code: error.code,
+              message: error.message,
+              details: { statusCode: error.statusCode },
+              retryable: error.retryable
+            }
+          };
+        } else {
+          // fetch() resolves at headers, not at the end of the response body.
+          const data = await response.json() as T;
+          return { success: true, data };
         }
 
-        return {
-          success: false,
-          error: {
-            code: error.code,
-            message: error.message,
-            details: { statusCode: error.statusCode },
-            retryable: error.retryable
-          }
-        };
+      } catch (err) {
+        const error = err as Error;
+
+        if (controller.signal.aborted || error.name === 'AbortError') {
+          const ruvectorError = new RuvectorError(
+            'Request timed out',
+            'TIMEOUT',
+            undefined,
+            true
+          );
+
+          failure = {
+            success: false,
+            error: {
+              code: ruvectorError.code,
+              message: ruvectorError.message,
+              details: {},
+              retryable: ruvectorError.retryable
+            }
+          };
+        } else {
+          failure = {
+            success: false,
+            error: {
+              code: 'NETWORK_ERROR',
+              message: error.message,
+              details: {},
+              retryable: true
+            }
+          };
+        }
+      } finally {
+        // Clear every attempt, including fetch/JSON failures, before backoff.
+        clearTimeout(timeoutId);
       }
 
-      const data = await response.json() as T;
-      return { success: true, data };
-
-    } catch (err) {
-      const error = err as Error;
-
-      if (error.name === 'AbortError') {
-        const ruvectorError = new RuvectorError(
-          'Request timed out',
-          'TIMEOUT',
-          undefined,
-          true
-        );
-
-        if (attempt < this.config.retries) {
-          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
-          await this.sleep(delay);
-          return this.request<T>(method, path, body, attempt + 1);
-        }
-
-        return {
-          success: false,
-          error: {
-            code: ruvectorError.code,
-            message: ruvectorError.message,
-            details: {},
-            retryable: ruvectorError.retryable
-          }
-        };
-      }
-
-      return {
-        success: false,
-        error: {
-          code: 'NETWORK_ERROR',
-          message: error.message,
-          details: {},
-          retryable: true
-        }
-      };
+      const shouldRetry = failure.error.code === 'TIMEOUT' ||
+        (failure.error.code === 'REQUEST_FAILED' && failure.error.retryable);
+      if (!shouldRetry || attempt >= this.config.retries) return failure;
+      const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+      await this.sleep(delay);
     }
   }
 
