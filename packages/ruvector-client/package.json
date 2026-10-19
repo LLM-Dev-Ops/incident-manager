@@ -9,7 +9,7 @@
     "build": "tsc",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm run build",
-    "test": "tsc --noEmit"
+    "test": "tsc --noEmit && node --test test/*.test.mjs"
   },
   "keywords": [
     "ruvector",
@@ -40,6 +40,7 @@
     "@agentics/contracts": "^1.0.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "typescript": "^5.3.0"
   }
 }

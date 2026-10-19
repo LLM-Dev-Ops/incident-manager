@@ -384,7 +384,7 @@ export class EscalationDecisionEngine {
   private calculateConfidence(
     decision: EscalationDecision,
     thresholds: ThresholdEvaluation[],
-    timeFactors: TimeFactor[],
+    _timeFactors: TimeFactor[],
     input: EscalationAgentInput
   ): { confidence: number; factors: ConfidenceFactor[] } {
     const factors: ConfidenceFactor[] = [];
@@ -686,7 +686,7 @@ export class EscalationDecisionEngine {
   private generateReason(
     decision: EscalationDecision,
     thresholds: ThresholdEvaluation[],
-    timeFactors: TimeFactor[],
+    _timeFactors: TimeFactor[],
     input: EscalationAgentInput
   ): string {
     const breachedThresholds = thresholds
