@@ -265,7 +265,8 @@ export class RuvectorClient {
 
       const shouldRetry = failure.error.code === 'TIMEOUT' ||
         (failure.error.code === 'REQUEST_FAILED' && failure.error.retryable);
-      if (!shouldRetry || attempt >= this.config.retries) return failure;
+      // Keep the original positive comparison: NaN must not enable retries.
+      if (!shouldRetry || !(attempt < this.config.retries)) return failure;
       const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
       await this.sleep(delay);
     }
