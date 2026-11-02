@@ -1,0 +1,187 @@
+{
+  "testedRevisions": {
+    "baseline": "f538ddd1d917f9a1b669d668af86815044bd088b",
+    "candidate": "04099fea90ceba3fd88c3b32f774ff0d7d0fd1b4"
+  },
+  "fullAcceptance": "BLOCKED: Rust dependency resolution and required CI/approvals are not all passing",
+  "scope": "Real compiled client and store, native loopback HTTP with synthetic fixtures; not deployed RuVector/CloudSQL validation",
+  "results": {
+    "data_source": "LIVE",
+    "root_id": "root",
+    "chain": [
+      {
+        "id": "root",
+        "generation": 0,
+        "parents": [],
+        "mutation": null,
+        "primaryDelta": 0,
+        "anchorScore": 1,
+        "verdict": "ROOT",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "root",
+            "root": "root"
+          },
+          "signature": "zuV7/Z+YGiMwoWpBCeUXTjB/AiVqAcqiIGFUnDRrDlH0JNRiHyb4xrBw+PqACVPs4LesTl5fhzMI9vCD5NkwCQ==",
+          "publicKey": "MCowBQYDK2VwAyEAP0LZKHM0LkGb1lwh9Lx1X03iIw1Sb06yVKwovTTpXl0=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-0"
+      }
+    ],
+    "all_commits": [
+      {
+        "id": "root__revision_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "revision",
+          "summary": "Copy-on-write own-property-only redaction; frozen four-case behavioral lift, but full Rust/CI gate remains unverified",
+          "inverse": {
+            "path": "packages/ruvector-client/src/decision-event-store.ts",
+            "parentBytes": "/**\n * DecisionEventStore - Specialized store for DecisionEvents\n *\n * Provides a higher-level API for working with DecisionEvents,\n * including validation and persistence specification enforcement.\n */\n\nimport type {\n  DecisionEvent,\n  UUID,\n  AgentResult,\n  PersistenceSpec\n} from '@agentics/contracts';\nimport {\n  validateDecisionEvent,\n  DECISION_EVENT_PERSISTENCE\n} from '@agentics/contracts';\nimport { RuvectorClient } from './client.js';\n\n// ============================================================================\n// DECISION EVENT STORE\n// ============================================================================\n\nexport class DecisionEventStore {\n  constructor(private readonly client: RuvectorClient) {}\n\n  /**\n   * Store a DecisionEvent with validation and filtering\n   *\n   * This method:\n   * 1. Validates the DecisionEvent\n   * 2. Filters out excluded fields per persistence spec\n   * 3. Stores via ruvector-service\n   */\n  async store<T>(\n    event: DecisionEvent<T>,\n    persistenceSpec?: PersistenceSpec\n  ): Promise<AgentResult<{ id: UUID }>> {\n    // Validate\n    const validation = validateDecisionEvent(event);\n    if (!validation.valid) {\n      return {\n        success: false,\n        error: {\n          code: 'VALIDATION_ERROR',\n          message: `DecisionEvent validation failed: ${validation.errors.join(', ')}`,\n          details: { errors: validation.errors },\n          retryable: false\n        }\n      };\n    }\n\n    // Filter out excluded fields\n    const spec = persistenceSpec ?? DECISION_EVENT_PERSISTENCE;\n    const filteredEvent = this.filterEvent(event, spec);\n\n    // Store\n    return this.client.storeDecisionEvent(filteredEvent);\n  }\n\n  /**\n   * Retrieve a DecisionEvent by ID\n   */\n  async get<T>(id: UUID): Promise<AgentResult<DecisionEvent<T>>> {\n    return this.client.getDecisionEvent<T>(id);\n  }\n\n  /**\n   * Query DecisionEvents by agent\n   */\n  async queryByAgent<T>(\n    agentId: string,\n    options?: { limit?: number; offset?: number }\n  ): Promise<AgentResult<DecisionEvent<T>[]>> {\n    const result = await this.client.queryDecisionEvents<T>({\n      agent_id: agentId,\n      limit: options?.limit ?? 100,\n      offset: options?.offset ?? 0\n    });\n\n    if (!result.success) {\n      return result;\n    }\n\n    return { success: true, data: result.data.events };\n  }\n\n  /**\n   * Query DecisionEvents by incident\n   */\n  async queryByIncident<T>(\n    incidentId: UUID,\n    options?: { limit?: number; offset?: number }\n  ): Promise<AgentResult<DecisionEvent<T>[]>> {\n    const result = await this.client.queryDecisionEvents<T>({\n      incident_id: incidentId,\n      limit: options?.limit ?? 100,\n      offset: options?.offset ?? 0\n    });\n\n    if (!result.success) {\n      return result;\n    }\n\n    return { success: true, data: result.data.events };\n  }\n\n  /**\n   * Get the latest DecisionEvent for an incident\n   */\n  async getLatestForIncident<T>(incidentId: UUID): Promise<AgentResult<DecisionEvent<T> | null>> {\n    const result = await this.client.queryDecisionEvents<T>({\n      incident_id: incidentId,\n      limit: 1,\n      offset: 0\n    });\n\n    if (!result.success) {\n      return result;\n    }\n\n    if (result.data.events.length === 0) {\n      return { success: true, data: null };\n    }\n\n    return { success: true, data: result.data.events[0] };\n  }\n\n  // ============================================================================\n  // PRIVATE METHODS\n  // ============================================================================\n\n  /**\n   * Filter event based on persistence spec\n   */\n  private filterEvent<T>(\n    event: DecisionEvent<T>,\n    spec: PersistenceSpec\n  ): DecisionEvent<T> {\n    const filtered = { ...event };\n\n    // Remove excluded fields\n    for (const field of spec.exclude) {\n      if (field.includes('.')) {\n        // Handle nested fields like 'signal_payload.raw_data'\n        const [parent, child] = field.split('.');\n        if (filtered[parent as keyof DecisionEvent<T>]) {\n          const parentObj = filtered[parent as keyof DecisionEvent<T>] as Record<string, unknown>;\n          if (typeof parentObj === 'object' && parentObj !== null) {\n            delete parentObj[child];\n          }\n        }\n      } else {\n        delete filtered[field as keyof DecisionEvent<T>];\n      }\n    }\n\n    return filtered;\n  }\n}\n",
+            "hash": "861e5934e13be70ce19e448b2d8407abce442db5dcef436fcc57c0fbc8ee8fbc"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": null,
+        "verdict": "REJECTED",
+        "failureReasons": [
+          "safety_regressed"
+        ],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__revision_gen1",
+            "target": "revision",
+            "verdict": "REJECTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true,
+              "itemWins": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+              ]
+            },
+            "candidateScore": {
+              "primary": 1,
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true,
+              "itemWins": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "anchorScore": null,
+            "failureReasons": [
+              "safety_regressed"
+            ],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "pycr0fQuoJqpqd9vNV7HMv2XO97dsPZCV0HQsr7oFlnfEFwneiXPUHHAoD6kP5UXeQQY6d8oBJzDBuccFaTyBQ==",
+          "publicKey": "MCowBQYDK2VwAyEAP0LZKHM0LkGb1lwh9Lx1X03iIw1Sb06yVKwovTTpXl0=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-1",
+        "baselineScore": {
+          "primary": 0,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "candidateScore": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      }
+    ],
+    "lift_curve": [
+      {
+        "generation": 0,
+        "primary": 0,
+        "delta": 0,
+        "anchor": 1
+      }
+    ],
+    "gate_fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "verified_improvements": 0,
+    "anchor_surviving_improvements": 0,
+    "milestone_reached": false,
+    "created_at": "gen-1"
+  },
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen0(root)"
+  }
+}

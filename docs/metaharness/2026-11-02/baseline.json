@@ -1,0 +1,76 @@
+{
+  "revision": "f538ddd1d917f9a1b669d668af86815044bd088b",
+  "build": {
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--workspaces",
+      "--if-present"
+    ],
+    "cwd": "/tmp/incident-nov02-base",
+    "status": 0,
+    "stdout": "\n> @agentics/contracts@1.2.0 build\n> tsc\n\n\n> @agentics/ruvector-client@1.0.0 build\n> tsc\n\n\n> @agentics/escalation-agent@1.0.1 build\n> tsc\n\n\n> @agentics/incident-manager-agents@1.0.1 prebuild\n> npm run clean\n\n\n> @agentics/incident-manager-agents@1.0.1 clean\n> rm -rf dist\n\n\n> @agentics/incident-manager-agents@1.0.1 build\n> tsc\n\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "test": {
+    "command": [
+      "npm",
+      "run",
+      "test",
+      "--workspaces",
+      "--if-present"
+    ],
+    "cwd": "/tmp/incident-nov02-base",
+    "status": 0,
+    "stdout": "\n> @agentics/contracts@1.2.0 test\n> vitest run\n\n\n RUN  v1.6.1 /tmp/incident-nov02-base/packages/agentics-contracts\n\n ✓ tests/hitl-handler.test.ts  (30 tests) 14ms\n ✓ tests/hitl-agent.test.ts  (74 tests) 17ms\n\n Test Files  2 passed (2)\n      Tests  104 passed (104)\n   Start at  21:19:47\n   Duration  406ms (transform 109ms, setup 0ms, collect 140ms, tests 31ms, environment 0ms, prepare 155ms)\n\n\n> @agentics/ruvector-client@1.0.0 test\n> tsc --noEmit && node --test test/*.test.mjs\n\n✔ non-finite retry configuration preserves one-attempt fallback (103.75718ms)\n✔ native RuVector transport: slow-success (161.100195ms)\n✔ native RuVector transport: slow-error (182.791612ms)\n✔ native RuVector transport: partial-success (170.326271ms)\n✔ native RuVector transport: network-cleanup (101.317412ms)\n✔ native RuVector transport: health (91.715477ms)\n✔ native RuVector transport: append-once (100.584172ms)\n✔ native RuVector transport: patch-state (101.955577ms)\n✔ native RuVector transport: client-error (105.655353ms)\n✔ native RuVector transport: server-retry (1228.586686ms)\n✔ native RuVector transport: invalid-json (112.824478ms)\n✔ native RuVector transport: rate-limit (1165.912018ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3644.44789\n\n> @agentics/escalation-agent@1.0.1 test\n> node --test dist/**/*.test.js\n\n▶ workspace contract\n  ✔ exposes a usable no-op telemetry emitter from the client package (2.292133ms)\n  ✔ keeps registration and explicit configuration overrides valid (1.617988ms)\n✔ workspace contract (5.945975ms)\nℹ tests 2\nℹ suites 1\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 167.414442\n\n> @agentics/incident-manager-agents@1.0.1 test\n> node --test\n\nℹ tests 0\nℹ suites 0\nℹ pass 0\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 17.920626\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "audit": {
+    "command": [
+      "npm",
+      "audit",
+      "--omit=dev",
+      "--json"
+    ],
+    "cwd": "/tmp/incident-nov02-base",
+    "status": 0,
+    "stdout": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 12,\n      \"dev\": 125,\n      \"optional\": 49,\n      \"peer\": 0,\n      \"peerOptional\": 0,\n      \"total\": 136\n    }\n  }\n}\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "trials": [
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-base"
+      ],
+      "cwd": "/tmp/incident-nov02-base",
+      "status": 1,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n- '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"secret\\\":\\\"sensitive-fixture\\\",\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n\"},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ {}\\n- {\\n-   nested: {\\n-     keep: 2\\n-   }\\n- }\\n\"},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ undefined\\n- 'retained'\\n\"},{\"name\":\"array path excludes only requested leaf\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ undefined\\n- [\\n-   {\\n-     keep: 3\\n-   }\\n- ]\\n\"}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-base"
+      ],
+      "cwd": "/tmp/incident-nov02-base",
+      "status": 1,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n- '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"secret\\\":\\\"sensitive-fixture\\\",\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n\"},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ {}\\n- {\\n-   nested: {\\n-     keep: 2\\n-   }\\n- }\\n\"},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ undefined\\n- 'retained'\\n\"},{\"name\":\"array path excludes only requested leaf\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ undefined\\n- [\\n-   {\\n-     keep: 3\\n-   }\\n- ]\\n\"}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-base"
+      ],
+      "cwd": "/tmp/incident-nov02-base",
+      "status": 1,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n- '{\\\"id\\\":\\\"fixture\\\",\\\"agent_id\\\":\\\"fixture-agent\\\",\\\"agent_version\\\":\\\"1.0.0\\\",\\\"agent_classification\\\":\\\"core\\\",\\\"decision_type\\\":\\\"incident_open\\\",\\\"inputs_hash\\\":\\\"synthetic\\\",\\\"outputs\\\":{\\\"secret\\\":\\\"sensitive-fixture\\\",\\\"keep\\\":1},\\\"confidence\\\":0.9,\\\"constraints_applied\\\":{},\\\"execution_ref\\\":\\\"fixture-run\\\",\\\"timestamp\\\":\\\"2026-11-02T00:00:00Z\\\",\\\"environment\\\":\\\"test\\\",\\\"requires_review\\\":false,\\\"trace_id\\\":\\\"transient\\\"}'\\n\"},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ {}\\n- {\\n-   nested: {\\n-     keep: 2\\n-   }\\n- }\\n\"},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":false,\"error\":\"Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ undefined\\n- 'retained'\\n\"},{\"name\":\"array path excludes only requested leaf\",\"passed\":false,\"error\":\"Expected values to be strictly deep-equal:\\n+ actual - expected\\n\\n+ undefined\\n- [\\n-   {\\n-     keep: 3\\n-   }\\n- ]\\n\"}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    }
+  ]
+}

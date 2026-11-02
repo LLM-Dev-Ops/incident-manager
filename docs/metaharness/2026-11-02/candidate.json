@@ -1,0 +1,76 @@
+{
+  "revision": "04099fea90ceba3fd88c3b32f774ff0d7d0fd1b4",
+  "build": {
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--workspaces",
+      "--if-present"
+    ],
+    "cwd": "/tmp/incident-nov02-repo",
+    "status": 0,
+    "stdout": "\n> @agentics/contracts@1.2.0 build\n> tsc\n\n\n> @agentics/ruvector-client@1.0.0 build\n> tsc\n\n\n> @agentics/escalation-agent@1.0.1 build\n> tsc\n\n\n> @agentics/incident-manager-agents@1.0.1 prebuild\n> npm run clean\n\n\n> @agentics/incident-manager-agents@1.0.1 clean\n> rm -rf dist\n\n\n> @agentics/incident-manager-agents@1.0.1 build\n> tsc\n\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "test": {
+    "command": [
+      "npm",
+      "run",
+      "test",
+      "--workspaces",
+      "--if-present"
+    ],
+    "cwd": "/tmp/incident-nov02-repo",
+    "status": 0,
+    "stdout": "\n> @agentics/contracts@1.2.0 test\n> vitest run\n\n\n RUN  v1.6.1 /tmp/incident-nov02-repo/packages/agentics-contracts\n\n ✓ tests/hitl-handler.test.ts  (30 tests) 12ms\n ✓ tests/hitl-agent.test.ts  (74 tests) 24ms\n\n Test Files  2 passed (2)\n      Tests  104 passed (104)\n   Start at  21:19:59\n   Duration  394ms (transform 123ms, setup 0ms, collect 147ms, tests 36ms, environment 0ms, prepare 146ms)\n\n\n> @agentics/ruvector-client@1.0.0 test\n> tsc --noEmit && node --test test/*.test.mjs\n\n✔ native DecisionEvent redaction preserves inputs and own-path boundaries (167.659324ms)\n✔ non-finite retry configuration preserves one-attempt fallback (119.793723ms)\n✔ native RuVector transport: slow-success (166.420265ms)\n✔ native RuVector transport: slow-error (175.416727ms)\n✔ native RuVector transport: partial-success (162.161022ms)\n✔ native RuVector transport: network-cleanup (99.761767ms)\n✔ native RuVector transport: health (129.524449ms)\n✔ native RuVector transport: append-once (113.374479ms)\n✔ native RuVector transport: patch-state (93.818337ms)\n✔ native RuVector transport: client-error (91.080358ms)\n✔ native RuVector transport: server-retry (1190.549307ms)\n✔ native RuVector transport: invalid-json (94.362078ms)\n✔ native RuVector transport: rate-limit (1164.58398ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3606.581558\n\n> @agentics/escalation-agent@1.0.1 test\n> node --test dist/**/*.test.js\n\n▶ workspace contract\n  ✔ exposes a usable no-op telemetry emitter from the client package (1.109167ms)\n  ✔ keeps registration and explicit configuration overrides valid (1.319858ms)\n✔ workspace contract (3.392468ms)\nℹ tests 2\nℹ suites 1\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 112.859879\n\n> @agentics/incident-manager-agents@1.0.1 test\n> node --test\n\nℹ tests 0\nℹ suites 0\nℹ pass 0\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12.528411\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "audit": {
+    "command": [
+      "npm",
+      "audit",
+      "--omit=dev",
+      "--json"
+    ],
+    "cwd": "/tmp/incident-nov02-repo",
+    "status": 0,
+    "stdout": "{\n  \"auditReportVersion\": 2,\n  \"vulnerabilities\": {},\n  \"metadata\": {\n    \"vulnerabilities\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"dependencies\": {\n      \"prod\": 12,\n      \"dev\": 125,\n      \"optional\": 49,\n      \"peer\": 0,\n      \"peerOptional\": 0,\n      \"total\": 136\n    }\n  }\n}\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  "trials": [
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-repo"
+      ],
+      "cwd": "/tmp/incident-nov02-repo",
+      "status": 0,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":true},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":true},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":true},{\"name\":\"array path excludes only requested leaf\",\"passed\":true}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-repo"
+      ],
+      "cwd": "/tmp/incident-nov02-repo",
+      "status": 0,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":true},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":true},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":true},{\"name\":\"array path excludes only requested leaf\",\"passed\":true}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "/tmp/incident-nov02-repo/scripts/probe-redaction.mjs",
+        "/tmp/incident-nov02-repo"
+      ],
+      "cwd": "/tmp/incident-nov02-repo",
+      "status": 0,
+      "stdout": "{\"holdout\":[{\"name\":\"nested redaction preserves caller event\",\"passed\":true},{\"name\":\"three-level exclusion preserves sibling fields\",\"passed\":true},{\"name\":\"inherited exclusion path never mutates Object.prototype\",\"passed\":true},{\"name\":\"array path excludes only requested leaf\",\"passed\":true}],\"anchors\":[{\"name\":\"default top-level policy remains append-once\",\"passed\":true},{\"name\":\"unknown exclusion is a no-op\",\"passed\":true},{\"name\":\"invalid event is rejected without HTTP\",\"passed\":true}],\"requests\":6}\n",
+      "stderr": ""
+    }
+  ]
+}
