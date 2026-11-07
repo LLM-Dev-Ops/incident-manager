@@ -118,7 +118,8 @@ export function verifyRegistration(): { valid: boolean; errors: string[] } {
   if (!AGENT_REGISTRATION.id) errors.push('Agent ID is required');
   if (!AGENT_REGISTRATION.version) errors.push('Version is required');
   if (!AGENT_REGISTRATION.type) errors.push('Type is required');
-  if (AGENT_REGISTRATION.classifications.length === 0) {
+  const classifications: readonly string[] = AGENT_REGISTRATION.classifications;
+  if (classifications.length === 0) {
     errors.push('At least one classification is required');
   }
 

@@ -139,19 +139,31 @@ export class DecisionEventStore {
   ): DecisionEvent<T> {
     const filtered = { ...event };
 
-    // Remove excluded fields
+    // Clone only the branches being redacted. DecisionEvents may be reused for
+    // audit/hash verification, so filtering must never mutate caller data.
     for (const field of spec.exclude) {
-      if (field.includes('.')) {
-        // Handle nested fields like 'signal_payload.raw_data'
-        const [parent, child] = field.split('.');
-        if (filtered[parent as keyof DecisionEvent<T>]) {
-          const parentObj = filtered[parent as keyof DecisionEvent<T>] as Record<string, unknown>;
-          if (typeof parentObj === 'object' && parentObj !== null) {
-            delete parentObj[child];
-          }
+      const parts = field.split('.');
+      let current: Record<string, unknown> | null = filtered as unknown as Record<string, unknown>;
+      for (const key of parts.slice(0, -1)) {
+        if (!Object.prototype.hasOwnProperty.call(current, key)) {
+          current = null;
+          break;
         }
-      } else {
-        delete filtered[field as keyof DecisionEvent<T>];
+        const child: unknown = current[key];
+        if (child === null || typeof child !== 'object') {
+          current = null;
+          break;
+        }
+        const copy = Array.isArray(child) ? [...child] : { ...child };
+        // A literal own __proto__ key is data, not the legacy prototype setter.
+        Object.defineProperty(current, key, {
+          value: copy, enumerable: true, configurable: true, writable: true
+        });
+        current = copy as unknown as Record<string, unknown>;
+      }
+      const leaf = parts[parts.length - 1];
+      if (current && Object.prototype.propertyIsEnumerable.call(current, leaf)) {
+        delete current[leaf];
       }
     }
 

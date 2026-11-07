@@ -1,0 +1,9 @@
+{
+  "frozen_parent": "04099fea90ceba3fd88c3b32f774ff0d7d0fd1b4",
+  "primary": "Six native HTTP error batches retained in order for next explicit flush",
+  "statuses": [400, 401, 422, 429, 500, 503],
+  "anchors": ["200 delivered once", "204 delivered once", "disabled remains no-op"],
+  "acceptance": "6/6 holdouts and 3/3 anchors in each of five trials; unchanged existing assertions; all project, security, CI and approval gates required for merge",
+  "bounds": "one production candidate; one Darwin generation and child; no deployment or automatic memory promotion",
+  "limitations": "No guarantee of durable delivery, exactly-once, bounded buffering or retry backoff; process restart can lose in-memory telemetry"
+}

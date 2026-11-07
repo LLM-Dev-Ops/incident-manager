@@ -1,0 +1,14 @@
+{
+  "id": "incident-ruvector-transport-v1",
+  "baseline": "834452bad11f38fd70cf73bb9991f83d9d19c299",
+  "frozen_before_source_change": true,
+  "holdout": ["slow-success", "slow-error", "partial-success", "network-cleanup"],
+  "anchor": ["health", "append-once", "patch-state", "client-error", "server-retry", "invalid-json", "rate-limit"],
+  "timeout_ms": 80,
+  "slow_body_ms": 450,
+  "maximum_timeout_completion_ms": 350,
+  "worker_timeout_ms": 2000,
+  "acceptance": "4/4 holdouts, 7/7 native HTTP anchors, all 106 existing workspace tests retained, workspace build and production audit pass. No source/API/schema/persistence changes outside client transport. Full Rust/CI safeguards remain separate merge requirements.",
+  "retry_semantics": "Preserve existing total-attempt semantics: max(1,retries); retry HTTP 429, HTTP >=500 and deadline aborts, with 1000ms exponential backoff; do not introduce replay of other network failures.",
+  "scope": "Per-attempt deadline covers connection, headers and response body; timer cleanup on every exit before retry backoff. No new persistence, no external service calls in evaluation, no deployment. Neutral Flywheel cost input is not a measured cost."
+}

@@ -326,13 +326,6 @@ async function listCommand(args: string[]): Promise<void> {
     limit: parseInt(values['limit'] as string, 10)
   };
 
-  const config = createAgentConfig();
-  const ruvectorClient = new RuvectorClient({
-    baseUrl: config.ruvector.baseUrl,
-    apiKey: config.ruvector.apiKey,
-    timeoutMs: config.ruvector.timeoutMs
-  });
-
   // Note: This would need a query endpoint in ruvector-service
   // For now, we'll show a placeholder message
   console.log('Listing active escalations...');

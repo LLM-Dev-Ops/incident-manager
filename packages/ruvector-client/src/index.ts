@@ -19,7 +19,7 @@
 export { RuvectorClient } from './client.js';
 export type { RuvectorConfig, RuvectorClientOptions } from './client.js';
 export { DecisionEventStore } from './decision-event-store.js';
-export { TelemetryEmitter } from './telemetry.js';
+export { TelemetryEmitter, createNoOpTelemetryEmitter } from './telemetry.js';
 export type { TelemetryConfig } from './telemetry.js';
 
 // Re-export relevant types from contracts
