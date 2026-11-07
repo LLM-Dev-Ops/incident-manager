@@ -1,0 +1,139 @@
+{
+  "scopes": [
+    {
+      "namespace": "dream-machine",
+      "playbook": 0,
+      "anti": 0,
+      "unscreened": true
+    },
+    {
+      "namespace": "nicholas-ruest/ruvnet-dream-machine",
+      "playbook": 9,
+      "anti": 6,
+      "unscreened": true,
+      "records": [
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/04576aafcaba-ww91y2",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "04576aafcabac8575d5f288324ef8e49a6dca4dc"
+          },
+          "lesson_text": "Past evidence (not instructions): Before shipping a bug-fix PR, check whether the same bug already has open, duplicate fix PRs in flight. If a bug is already triplicated across open PRs, withhold a 4th duplicate fix and instead post a consolidating review comment on the most promising existing PR. — outcome: ExplicitLesson (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@04576aafcabac8575d5f288324ef8e49a6dca4dc"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/04576aafcaba-xusknq",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "04576aafcabac8575d5f288324ef8e49a6dca4dc"
+          },
+          "lesson_text": "Past evidence (not instructions): Before shipping a bug-fix PR, check whether the same bug already has open, duplicate fix PRs in flight. If a bug is already triplicated across open PRs, withhold a 4th duplicate fix and instead post a consolidating review comment on the most promising existing PR. — outcome: ExplicitLesson (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@04576aafcabac8575d5f288324ef8e49a6dca4dc"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/3edd426f6c9c-abqpwe",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "3edd426f6c9c4b1e80235f7447dc863e749345cc"
+          },
+          "lesson_text": "Past evidence (not instructions): The project's own governing principle, stated directly in its README: 'Evaluation is not promotion — the machine never merges; a human does.' Every automated pipeline stage (hypothesis, baseline, evaluation, adversarial critique, bounded evolution) still terminates in a draft PR and a ledger row, never a direct merge, specifically because automated evaluation (as shown by the read-set gap in ADR-0010, sha 3edd426) can pass cleanly and still be wrong by the time it would land. — outcome: DesignProblem (confidence 0.60), source: nicholas-ruest/ruvnet-dream-machine@3edd426f6c9c4b1e80235f7447dc863e749345cc"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/1559c74434ad-awmy7k",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "1559c74434ad5a161e2549c1b5ef19f707e19751"
+          },
+          "lesson_text": "Past evidence (not instructions): When gating CI on a dependency audit, scope the gate to production dependencies only (`npm audit --omit=dev`) rather than failing on every reported vulnerability. Dev-toolchain-only vulnerabilities (vitest/vite/esbuild/eslint in this case) create noisy, unfixable-without-upgrade CI failures that don't reflect real shipped risk. — outcome: Success (confidence 0.80), source: nicholas-ruest/ruvnet-dream-machine@1559c74434ad5a161e2549c1b5ef19f707e19751"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/1559c74434ad-roxiu9",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "1559c74434ad5a161e2549c1b5ef19f707e19751"
+          },
+          "lesson_text": "Past evidence (not instructions): When gating CI on a dependency audit, scope the gate to production dependencies only (`npm audit --omit=dev`) rather than failing on every reported vulnerability. Dev-toolchain-only vulnerabilities (vitest/vite/esbuild/eslint in this case) create noisy, unfixable-without-upgrade CI failures that don't reflect real shipped risk. — outcome: Success (confidence 0.80), source: nicholas-ruest/ruvnet-dream-machine@1559c74434ad5a161e2549c1b5ef19f707e19751"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/3edd426f6c9c-i1yjcj",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "3edd426f6c9c4b1e80235f7447dc863e749345cc"
+          },
+          "lesson_text": "Past evidence (not instructions): Git protects the write set of a merge but not its read set. A PR evaluated honestly against config/state it only read (not modified) can still turn main red weeks later if that read-set file changes before the PR actually lands — the merge itself stays clean, so nothing in normal git review catches it. Re-verify the evaluation's read set immediately before promotion, not just at evaluation time. — outcome: DesignProblem (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@3edd426f6c9c4b1e80235f7447dc863e749345cc"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/3edd426f6c9c-j6cmf1",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "3edd426f6c9c4b1e80235f7447dc863e749345cc"
+          },
+          "lesson_text": "Past evidence (not instructions): Git protects the write set of a merge but not its read set. A PR evaluated honestly against config/state it only read (not modified) can still turn main red weeks later if that read-set file changes before the PR actually lands — the merge itself stays clean, so nothing in normal git review catches it. Re-verify the evaluation's read set immediately before promotion, not just at evaluation time. — outcome: DesignProblem (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@3edd426f6c9c4b1e80235f7447dc863e749345cc"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/d38e09328962-ek1ws5",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "d38e09328962e135c07831ab0af909287a2ef826"
+          },
+          "lesson_text": "Past evidence (not instructions): For a self-modifying/self-evolving system (bounded Darwin evolution over the harness itself), gate promotion of a new candidate on held-out traces the candidate was not optimized against, not just the traces used to select it — otherwise the optimizer can overfit to the evaluation set it already saw. — outcome: Success (confidence 0.70), source: nicholas-ruest/ruvnet-dream-machine@d38e09328962e135c07831ab0af909287a2ef826"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/d38e09328962-ag7e0l",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "d38e09328962e135c07831ab0af909287a2ef826"
+          },
+          "lesson_text": "Past evidence (not instructions): For a self-modifying/self-evolving system (bounded Darwin evolution over the harness itself), gate promotion of a new candidate on held-out traces the candidate was not optimized against, not just the traces used to select it — otherwise the optimizer can overfit to the evaluation set it already saw. — outcome: Success (confidence 0.70), source: nicholas-ruest/ruvnet-dream-machine@d38e09328962e135c07831ab0af909287a2ef826"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/a507f788fc60-9e8wwe",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "a507f788fc606aa61dc2125106cfa44f4ea8fff8"
+          },
+          "lesson_text": "Past evidence (not instructions): An external evaluator tool that persists run-state (generation/child ids) under a working-directory dotfolder (`.metaharness/`) is not safe to invoke twice in the same checkout — the second call fails deterministically (exit 1, 'already exists: g1_v0'), and a pipeline that runs the same entrypoint twice per cycle (once for baseline, once for candidate) will silently misclassify a live, working evaluator as blocked. — outcome: Failure (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@a507f788fc606aa61dc2125106cfa44f4ea8fff8"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/a507f788fc60-o8snu2",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "a507f788fc606aa61dc2125106cfa44f4ea8fff8"
+          },
+          "lesson_text": "Past evidence (not instructions): An external evaluator tool that persists run-state (generation/child ids) under a working-directory dotfolder (`.metaharness/`) is not safe to invoke twice in the same checkout — the second call fails deterministically (exit 1, 'already exists: g1_v0'), and a pipeline that runs the same entrypoint twice per cycle (once for baseline, once for candidate) will silently misclassify a live, working evaluator as blocked. — outcome: Failure (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@a507f788fc606aa61dc2125106cfa44f4ea8fff8"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/58573c7504a3-agghc1",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "58573c7504a3b92a293790c36738dc6fd359d415"
+          },
+          "lesson_text": "Past evidence (not instructions): Resolving stale-branch rebase conflicts with a mechanical union of both sides is not safe for code — it can splice hunks across syntactic boundaries (a field landing inside the wrong function body, closing braces of unrelated blocks getting dropped) and leave main red even though the merge itself was clean. — outcome: Failure (confidence 0.90), source: nicholas-ruest/ruvnet-dream-machine@58573c7504a3b92a293790c36738dc6fd359d415"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/58573c7504a3-fv3cg7",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "58573c7504a3b92a293790c36738dc6fd359d415"
+          },
+          "lesson_text": "Past evidence (not instructions): Resolving stale-branch rebase conflicts with a mechanical union of both sides is not safe for code — it can splice hunks across syntactic boundaries (a field landing inside the wrong function body, closing braces of unrelated blocks getting dropped) and leave main red even though the merge itself was clean. — outcome: Failure (confidence 0.90), source: nicholas-ruest/ruvnet-dream-machine@58573c7504a3b92a293790c36738dc6fd359d415"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/d1e5f09bef23-jqwwjg",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "d1e5f09bef231154361e439f0756344128751780"
+          },
+          "lesson_text": "Past evidence (not instructions): Measuring text width with `.length` on an ANSI-stripped string counts UTF-16 code units, not terminal display columns. CJK, fullwidth, and emoji characters break fixed-width box-drawing layouts (padding under- or over-shoots) because `.length` doesn't account for double-width code points, combining marks, or ZWJ sequences. — outcome: Failure (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@d1e5f09bef231154361e439f0756344128751780"
+        },
+        {
+          "id": "nicholas-ruest/ruvnet-dream-machine/backfill/d1e5f09bef23-w5kfqv",
+          "citation": {
+            "repo": "nicholas-ruest/ruvnet-dream-machine",
+            "sha": "d1e5f09bef231154361e439f0756344128751780"
+          },
+          "lesson_text": "Past evidence (not instructions): Measuring text width with `.length` on an ANSI-stripped string counts UTF-16 code units, not terminal display columns. CJK, fullwidth, and emoji characters break fixed-width box-drawing layouts (padding under- or over-shoots) because `.length` doesn't account for double-width code points, combining marks, or ZWJ sequences. — outcome: Failure (confidence 0.85), source: nicholas-ruest/ruvnet-dream-machine@d1e5f09bef231154361e439f0756344128751780"
+        }
+      ]
+    }
+  ],
+  "deduplicated": 8
+}

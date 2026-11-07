@@ -1,0 +1,2301 @@
+[
+  {
+    "repository": "LLM-Dev-Ops/shield",
+    "status": "DEFERRED",
+    "main": "1c46282495b94bb1fcae2d9e63cf34f495226699",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 41751835758,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 3,
+        "head": "34977db60672ef149c56a7bae2a844f5f0d0ac72",
+        "branch": "metaharness/shield-security-hardening-2026-10-12",
+        "updated": "2026-11-04T01:13:02Z",
+        "title": "fix(core): isolate scan cache boundaries and retain deterministic validation"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/test-bench",
+    "status": "DEFERRED",
+    "main": "4d58c46426fe085d25fef3fcb35fa5e2cce83b30",
+    "rootInventory": [
+      "CLAUDE.md",
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "cli-package",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41837226116,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 24,
+        "head": "1faca92c0313af326912cd1b39566d2b97fb7b31",
+        "branch": "metaharness/test-bench-cli-discovery-2026-10-10",
+        "updated": "2026-11-04T13:21:14Z",
+        "title": "fix: restore validation and patch dependency trust boundary"
+      },
+      {
+        "number": 23,
+        "head": "efd7dfec6453ebd250e6abf44b84ace8841b044d",
+        "branch": "dependabot/npm_and_yarn/ajv-8.18.0",
+        "updated": "2026-02-21T04:44:05Z",
+        "title": "chore(deps)(deps): bump ajv from 8.17.1 to 8.18.0"
+      },
+      {
+        "number": 21,
+        "head": "d72fbc1576f414bf0be1843ee9c700ef6ddb032f",
+        "branch": "dependabot/npm_and_yarn/yaml-2.8.2",
+        "updated": "2026-01-19T01:19:26Z",
+        "title": "chore(deps)(deps): bump yaml from 2.8.1 to 2.8.2"
+      },
+      {
+        "number": 19,
+        "head": "e1a92c290245fdece1ee405ce56fbd22f5f7d87f",
+        "branch": "dependabot/npm_and_yarn/linting-a1f4f38f5f",
+        "updated": "2026-02-23T09:37:42Z",
+        "title": "chore(deps)(deps-dev): Bump prettier from 3.6.2 to 3.7.2 in the linting group"
+      },
+      {
+        "number": 18,
+        "head": "1992779317b4d9e265f5d91aae18cf6c1cb32705",
+        "branch": "dependabot/github_actions/actions/checkout-6",
+        "updated": "2025-12-29T09:31:21Z",
+        "title": "chore(deps)(deps): Bump actions/checkout from 4 to 6"
+      },
+      {
+        "number": 17,
+        "head": "3696dcbe88b2228c1db4603b0dab704bd7669449",
+        "branch": "dependabot/npm_and_yarn/glob-10.5.0",
+        "updated": "2025-12-29T09:31:21Z",
+        "title": "chore(deps)(deps): Bump glob from 10.4.5 to 10.5.0"
+      },
+      {
+        "number": 16,
+        "head": "9394e959b5b7f5e3ecfe2bef18d297e8f623d0ab",
+        "branch": "dependabot/npm_and_yarn/build-962cbc3817",
+        "updated": "2026-02-23T09:37:34Z",
+        "title": "chore(deps)(deps-dev): Bump tsup from 8.5.0 to 8.5.1 in the build group"
+      },
+      {
+        "number": 15,
+        "head": "1afdd2b742ec394455d3607e0cb621fa7789461b",
+        "branch": "dependabot/npm_and_yarn/typescript-2700eca835",
+        "updated": "2026-02-23T09:37:52Z",
+        "title": "chore(deps)(deps-dev): Bump @types/node from 20.19.24 to 20.19.25 in the typescript group"
+      },
+      {
+        "number": 13,
+        "head": "69363f6ee0c637ae3a8b8aaff5b0e29abdeb46f4",
+        "branch": "dependabot/npm_and_yarn/typescript-eslint/eslint-plugin-tw-6.21.0",
+        "updated": "2025-11-04T17:57:34Z",
+        "title": "chore(deps)(deps-dev): update @typescript-eslint/eslint-plugin requirement from ^6.15.0 to ^6.21.0"
+      },
+      {
+        "number": 12,
+        "head": "3dff73d169cc8067e3614e20a6ce0906ff8abfbd",
+        "branch": "dependabot/npm_and_yarn/lint-staged-tw-15.5.2",
+        "updated": "2025-11-04T17:57:34Z",
+        "title": "chore(deps)(deps-dev): update lint-staged requirement from ^15.2.0 to ^15.5.2"
+      },
+      {
+        "number": 11,
+        "head": "770fdc7e2cc1f4d3bf65581b3364ad234b7881e3",
+        "branch": "dependabot/npm_and_yarn/typescript-eslint/parser-tw-6.21.0",
+        "updated": "2025-11-04T17:57:31Z",
+        "title": "chore(deps)(deps-dev): update @typescript-eslint/parser requirement from ^6.15.0 to ^6.21.0"
+      },
+      {
+        "number": 10,
+        "head": "7655134401fab456cd126984662839146ffd790f",
+        "branch": "dependabot/npm_and_yarn/openai-tw-4.104.0",
+        "updated": "2025-11-04T17:57:32Z",
+        "title": "chore(deps)(deps): update openai requirement from ^4.20.1 to ^4.104.0"
+      },
+      {
+        "number": 5,
+        "head": "d0d3b52cb0252d9c1a42098d6835762497a50999",
+        "branch": "dependabot/github_actions/actions/setup-node-6",
+        "updated": "2025-12-08T10:36:59Z",
+        "title": "chore(deps)(deps): bump actions/setup-node from 4 to 6"
+      },
+      {
+        "number": 4,
+        "head": "f199ef6e2f191219fabee51d9eecedfd55fce8a2",
+        "branch": "dependabot/github_actions/docker/build-push-action-6",
+        "updated": "2025-12-08T10:36:59Z",
+        "title": "chore(deps)(deps): bump docker/build-push-action from 5 to 6"
+      },
+      {
+        "number": 3,
+        "head": "b52b962ee01ef954d6135615e0806e2445498e5c",
+        "branch": "dependabot/github_actions/actions/upload-artifact-5",
+        "updated": "2025-12-08T10:36:59Z",
+        "title": "chore(deps)(deps): bump actions/upload-artifact from 4 to 5"
+      },
+      {
+        "number": 2,
+        "head": "48e32848e3f97e9d82abafa38cd76e5e02a38737",
+        "branch": "dependabot/github_actions/github/codeql-action-4",
+        "updated": "2025-12-08T10:36:59Z",
+        "title": "chore(deps)(deps): bump github/codeql-action from 3 to 4"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/observatory",
+    "status": "DEFERRED",
+    "main": "020f9031a2f1272d55deef0d6c715650b6647150",
+    "rootInventory": [
+      "CLAUDE.md",
+      "CONTRIBUTING.md",
+      "Cargo.toml",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42222740460,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 11,
+        "head": "03491701419bbceea3921f8c7aab0230196549bf",
+        "branch": "metaharness/observatory-input-validation-2026-10-12",
+        "updated": "2026-11-06T13:12:02Z",
+        "title": "fix(observatory): migration integrity and HTTP input boundaries"
+      },
+      {
+        "number": 9,
+        "head": "dec9eca5812ba18d0dcea540d2324e360a47503e",
+        "branch": "dependabot/docker/services/analytics-api/rust-1.93-slim-bookworm",
+        "updated": "2026-01-26T03:14:32Z",
+        "title": "chore(docker)(deps): bump rust from 1.82-slim-bookworm to 1.93-slim-bookworm in /services/analytics-api"
+      },
+      {
+        "number": 7,
+        "head": "d9e4c8ee9a80599dfa0328482c84993c5e1ba1ec",
+        "branch": "dependabot/github_actions/actions/checkout-6",
+        "updated": "2025-12-29T03:24:58Z",
+        "title": "chore(ci)(deps): bump actions/checkout from 4 to 6"
+      },
+      {
+        "number": 5,
+        "head": "905067b61259fc8f4a8ddbb4571910ac007b887d",
+        "branch": "dependabot/github_actions/codecov/codecov-action-5",
+        "updated": "2025-12-08T03:26:43Z",
+        "title": "chore(ci)(deps): bump codecov/codecov-action from 4 to 5"
+      },
+      {
+        "number": 4,
+        "head": "5b9c5478c47a26235e6aadcf83c67ec1a513265d",
+        "branch": "dependabot/github_actions/github/codeql-action-4",
+        "updated": "2025-12-08T03:26:43Z",
+        "title": "chore(ci)(deps): bump github/codeql-action from 3 to 4"
+      },
+      {
+        "number": 3,
+        "head": "a297880321bf89ff3c74104dd2644dff6e2167df",
+        "branch": "dependabot/github_actions/actions/download-artifact-6",
+        "updated": "2025-12-08T03:26:43Z",
+        "title": "chore(ci)(deps): bump actions/download-artifact from 4 to 6"
+      },
+      {
+        "number": 2,
+        "head": "5b3d59c225f12ddbf1f6e40372cb529dd986b33e",
+        "branch": "dependabot/github_actions/azure/setup-kubectl-4",
+        "updated": "2025-12-08T03:26:43Z",
+        "title": "chore(ci)(deps): bump azure/setup-kubectl from 3 to 4"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/sentinel",
+    "status": "DEFERRED",
+    "main": "504b0ea466620ffacfd7ea19993d5a62b71babdd",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42089908719,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 22,
+        "head": "85490b99a8bd1d0ba142a9f3bdea596c8691af6d",
+        "branch": "metaharness/sentinel-http-boundary-2026-10-13",
+        "updated": "2026-11-05T19:10:48Z",
+        "title": "fix(ci): harden Sentinel boundary and require healthy integration gates"
+      },
+      {
+        "number": 21,
+        "head": "af6ca0c2161a411073b97bfe209244c4d54ce079",
+        "branch": "dependabot/docker/rust-1.93-slim-bookworm",
+        "updated": "2026-01-26T09:53:24Z",
+        "title": "docker: bump rust from 1.85-slim-bookworm to 1.93-slim-bookworm"
+      },
+      {
+        "number": 19,
+        "head": "dd899114e8997204405a9ff3ebee26d414ec6eeb",
+        "branch": "dependabot/cargo/metrics-exporter-prometheus-0.18",
+        "updated": "2025-12-29T09:31:44Z",
+        "title": "deps(deps): update metrics-exporter-prometheus requirement from 0.16 to 0.18"
+      },
+      {
+        "number": 18,
+        "head": "e41c82a66b7a11862456e0c549297c20cb3ceaaa",
+        "branch": "dependabot/github_actions/actions/checkout-6",
+        "updated": "2025-12-29T09:31:44Z",
+        "title": "ci: bump actions/checkout from 4 to 6"
+      },
+      {
+        "number": 17,
+        "head": "f1b6cb02f271e1cb9f26528880daaf292b4977c5",
+        "branch": "dependabot/cargo/nalgebra-0.34",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update nalgebra requirement from 0.33 to 0.34"
+      },
+      {
+        "number": 16,
+        "head": "e99586ff18bb9e7bff1d7052b1c391d89be17ab8",
+        "branch": "dependabot/cargo/validator-0.20",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update validator requirement from 0.18 to 0.20"
+      },
+      {
+        "number": 15,
+        "head": "1d7bd08c53ef756d46aa490e619aa2cae953fcd7",
+        "branch": "dependabot/cargo/prost-0.14",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update prost requirement from 0.13 to 0.14"
+      },
+      {
+        "number": 14,
+        "head": "85ddbca75155dcc2227f4bb31e71085c864933ff",
+        "branch": "dependabot/cargo/ndarray-0.17",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update ndarray requirement from 0.16 to 0.17"
+      },
+      {
+        "number": 13,
+        "head": "33ed88554c01477f20e43db4d085272c9234eb9b",
+        "branch": "dependabot/cargo/statrs-0.18",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update statrs requirement from 0.17 to 0.18"
+      },
+      {
+        "number": 12,
+        "head": "6747c44ca199f8dda2e4c40b97ca10642a6f8a81",
+        "branch": "dependabot/cargo/rdkafka-0.38",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update rdkafka requirement from 0.36 to 0.38"
+      },
+      {
+        "number": 11,
+        "head": "0a71af3da501b701b38fa1bea74c151060d5aefe",
+        "branch": "dependabot/cargo/axum-0.8",
+        "updated": "2025-12-06T20:57:09Z",
+        "title": "deps(deps): update axum requirement from 0.7 to 0.8"
+      },
+      {
+        "number": 9,
+        "head": "d09db45a4607bcbd66d398e3a45e2bf72a4fd274",
+        "branch": "dependabot/cargo/lapin-3.7",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update lapin requirement from 2.5 to 3.7"
+      },
+      {
+        "number": 8,
+        "head": "0a6f4e48b07a17a0d53cf30117eeb2b7463fba68",
+        "branch": "dependabot/cargo/tonic-build-0.14",
+        "updated": "2025-12-15T09:45:18Z",
+        "title": "deps(deps): update tonic-build requirement from 0.12 to 0.14"
+      },
+      {
+        "number": 7,
+        "head": "4bf59c572d5a178f9b8d6abaf5785d419d615f13",
+        "branch": "dependabot/github_actions/github/codeql-action-4",
+        "updated": "2025-12-08T10:31:48Z",
+        "title": "ci: Bump github/codeql-action from 3 to 4"
+      },
+      {
+        "number": 6,
+        "head": "3999aea57ad7367f4ca8e066cbd87c514ca74742",
+        "branch": "dependabot/github_actions/actions/upload-artifact-5",
+        "updated": "2025-12-08T10:31:48Z",
+        "title": "ci: Bump actions/upload-artifact from 4 to 5"
+      },
+      {
+        "number": 5,
+        "head": "3dfc8733ab0ee6fcca1a6fef7d08a93b17a353fd",
+        "branch": "dependabot/github_actions/codecov/codecov-action-5",
+        "updated": "2025-12-08T10:31:48Z",
+        "title": "ci: Bump codecov/codecov-action from 4 to 5"
+      },
+      {
+        "number": 4,
+        "head": "43f808c0adc6ecf8e2e6f7d0a983a289675016b2",
+        "branch": "dependabot/github_actions/EmbarkStudios/cargo-deny-action-2",
+        "updated": "2025-12-08T10:31:48Z",
+        "title": "ci: Bump EmbarkStudios/cargo-deny-action from 1 to 2"
+      },
+      {
+        "number": 2,
+        "head": "20dede1e52a61a5d41a0d48f0089a85e75ed3172",
+        "branch": "dependabot/github_actions/azure/setup-kubectl-4",
+        "updated": "2025-12-08T10:31:48Z",
+        "title": "ci: Bump azure/setup-kubectl from 3 to 4"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/memory-graph",
+    "status": "DEFERRED",
+    "main": "d9b9dc5eb7ac313eedc2831dce6af46641bfaaa7",
+    "rootInventory": [
+      "CLAUDE.md",
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41371457162,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 3,
+        "head": "b640b966b0a07af5d0dc5ffe8e77823743ec9a4b",
+        "branch": "metaharness/memory-graph-2026-10-16",
+        "updated": "2026-11-02T01:20:29Z",
+        "title": "Protect memory HTTP integrity and restore locked Rust validation"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/latency-lens",
+    "status": "DEFERRED",
+    "main": "8370e90fa788959a0b80e3f9c4140422f3eccd69",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42143217349,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 26,
+        "head": "f8605fed7a373505e2384ef3eadf795b03d6fb96",
+        "branch": "metaharness/latency-order-20261031",
+        "updated": "2026-11-06T01:21:26Z",
+        "title": "fix(metrics): deterministic breakdowns and preflight input validation"
+      },
+      {
+        "number": 25,
+        "head": "5886c58a866c120c84a1c29f0433b2b76600ed13",
+        "branch": "dependabot/docker/rust-1.93-slim-bookworm",
+        "updated": "2026-01-26T09:53:49Z",
+        "title": "chore(docker)(deps): bump rust from 1.85-slim-bookworm to 1.93-slim-bookworm"
+      },
+      {
+        "number": 24,
+        "head": "c2d181e36cc7dc02cc99766dce4bf5b817cce7cf",
+        "branch": "dependabot/cargo/clap_complete-4.5.62",
+        "updated": "2026-01-25T05:19:16Z",
+        "title": "chore(deps)(deps): bump clap_complete from 4.5.60 to 4.5.62"
+      },
+      {
+        "number": 23,
+        "head": "04c13e2f19f6fe5179cadeae690d5d88a24c11bb",
+        "branch": "dependabot/cargo/http-694c32ea1c",
+        "updated": "2026-02-23T09:37:29Z",
+        "title": "chore(deps)(deps): bump reqwest from 0.12.24 to 0.12.26 in the http group"
+      },
+      {
+        "number": 21,
+        "head": "ea8a15eb987f18e59f8d448f0bf48c2ef0891e7e",
+        "branch": "dependabot/cargo/observability-7aa51c3566",
+        "updated": "2026-02-23T09:38:10Z",
+        "title": "chore(deps)(deps): bump the observability group across 1 directory with 2 updates"
+      },
+      {
+        "number": 18,
+        "head": "7e5f9115672c444371ec0d0815a5018accac71a7",
+        "branch": "dependabot/cargo/bytes-1.11.0",
+        "updated": "2025-12-29T09:32:11Z",
+        "title": "chore(deps)(deps): bump bytes from 1.10.1 to 1.11.0"
+      },
+      {
+        "number": 17,
+        "head": "40c5e1d3942d1eb43ca61e7c75ac5b2a2273be36",
+        "branch": "dependabot/cargo/governor-0.10.2",
+        "updated": "2025-12-29T09:32:10Z",
+        "title": "chore(deps)(deps): bump governor from 0.8.1 to 0.10.2"
+      },
+      {
+        "number": 16,
+        "head": "c8b6a431a5f340505a2093083abf4e02887c7297",
+        "branch": "dependabot/cargo/indicatif-0.18.3",
+        "updated": "2025-12-29T09:32:11Z",
+        "title": "chore(deps)(deps): bump indicatif from 0.17.11 to 0.18.3"
+      },
+      {
+        "number": 15,
+        "head": "cdf5fba1ad608b4b0d5e333d27e20303b0c7153e",
+        "branch": "dependabot/cargo/config-0.15.19",
+        "updated": "2025-12-29T09:32:10Z",
+        "title": "chore(deps)(deps): bump config from 0.14.1 to 0.15.19"
+      },
+      {
+        "number": 14,
+        "head": "e17d6b4787a7b2c8302fae6b37cd540bbeaf2578",
+        "branch": "dependabot/cargo/criterion-0.7.0",
+        "updated": "2025-12-08T10:32:39Z",
+        "title": "chore(deps)(deps): bump criterion from 0.5.1 to 0.7.0"
+      },
+      {
+        "number": 13,
+        "head": "9324102432e64666ac038d6557ab5891231d73ab",
+        "branch": "dependabot/cargo/console-0.16.1",
+        "updated": "2025-12-08T10:32:39Z",
+        "title": "chore(deps)(deps): bump console from 0.15.11 to 0.16.1"
+      },
+      {
+        "number": 12,
+        "head": "d14516a0b09b59e0cf4a02cc66c007cdc722384a",
+        "branch": "dependabot/cargo/tabled-0.20.0",
+        "updated": "2025-12-08T10:32:39Z",
+        "title": "chore(deps)(deps): bump tabled from 0.16.0 to 0.20.0"
+      },
+      {
+        "number": 6,
+        "head": "4c163d0ccde808400eda16d85744675f5006dc54",
+        "branch": "dependabot/github_actions/docker/build-push-action-6",
+        "updated": "2025-12-08T10:32:42Z",
+        "title": "chore(ci)(deps): bump docker/build-push-action from 5 to 6"
+      },
+      {
+        "number": 5,
+        "head": "6ceb56bb4b516227f9c7b7b584ae946021e4ea2a",
+        "branch": "dependabot/github_actions/github/codeql-action-4",
+        "updated": "2025-12-08T10:32:42Z",
+        "title": "chore(ci)(deps): bump github/codeql-action from 2 to 4"
+      },
+      {
+        "number": 4,
+        "head": "a672a0ef75c92594fd608b4dc70d9c69b5d663ec",
+        "branch": "dependabot/github_actions/slackapi/slack-github-action-2.1.1",
+        "updated": "2025-12-08T10:32:42Z",
+        "title": "chore(ci)(deps): bump slackapi/slack-github-action from 1.24.0 to 2.1.1"
+      },
+      {
+        "number": 3,
+        "head": "bc7952b948d9ba9580368c73b2d8c9e70cd2b780",
+        "branch": "dependabot/github_actions/actions/download-artifact-6",
+        "updated": "2025-12-08T10:32:42Z",
+        "title": "chore(ci)(deps): bump actions/download-artifact from 4 to 6"
+      },
+      {
+        "number": 2,
+        "head": "c0c1d747c19b5ceecc240460111edcc3246c797a",
+        "branch": "dependabot/github_actions/slsa-framework/slsa-github-generator/dot-github/workflows/generator_generic_slsa3.yml-2.1.0",
+        "updated": "2025-12-08T10:32:42Z",
+        "title": "chore(ci)(deps): bump slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml from 1.9.0 to 2.1.0"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/forge",
+    "status": "DEFERRED",
+    "main": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42328084792,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 106,
+        "head": "16ee0f09bb1ed52530d0eccb13b481f0da0c5699",
+        "branch": "dependabot/npm_and_yarn/production-dependencies-4db5d39a11",
+        "updated": "2026-11-02T09:23:45Z",
+        "title": "chore(deps)(deps): bump the production-dependencies group across 1 directory with 90 updates"
+      },
+      {
+        "number": 104,
+        "head": "246bce5b2d731498faf3487939a0eb4a79b64495",
+        "branch": "dependabot/npm_and_yarn/development-dependencies-c437ce97a2",
+        "updated": "2026-11-02T09:17:34Z",
+        "title": "chore(deps)(deps-dev): bump the development-dependencies group across 1 directory with 36 updates"
+      },
+      {
+        "number": 103,
+        "head": "34a8c8be4096b5ef79c16a2f7a814f7c7208da88",
+        "branch": "metaharness/forge-security-recovery-20261013",
+        "updated": "2026-11-04T19:15:19Z",
+        "title": "fix: restore Forge validation and classify invalid CLI JSON"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/edge-agent",
+    "status": "DEFERRED",
+    "main": "483c8a353855d8d54a1b1dee181f12376b5f592a",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "npm-packages",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42277021955,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 1,
+        "head": "bb7fe477c58e74bdfe9f4e491e23452f005b9af2",
+        "branch": "metaharness/edge-agent-cors-security-20261014",
+        "updated": "2026-11-06T19:16:54Z",
+        "title": "Harden edge policy validation and preserve circuit counter precision"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/auto-optimizer",
+    "status": "DEFERRED",
+    "main": "114865b4c3beb78b9fbeacbfc19ef93ab4501f97",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41641497212,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 3,
+        "head": "7b5d2e85c8d5ed23e66efea50072c949b374e397",
+        "branch": "metaharness/auto-optimizer-webhook-security-20261014",
+        "updated": "2026-11-03T13:18:18Z",
+        "title": "Harden Slack OAuth and signed webhook verification boundaries"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/incident-manager",
+    "status": "WORKED",
+    "main": "bcb8c8d027997c3363a9fd0ebd0ddc9c086227c6",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 41452026740,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 2,
+        "head": "04099fea90ceba3fd88c3b32f774ff0d7d0fd1b4",
+        "branch": "metaharness/incident-manager-2026-10-10",
+        "updated": "2026-11-02T13:24:36Z",
+        "title": "Restore Node quality gates and fix safe RuVector event redaction"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Resumed PR2; native telemetry failure retention"
+  },
+  {
+    "repository": "LLM-Dev-Ops/orchestrator",
+    "status": "DEFERRED",
+    "main": "24b373c41cbac1d946fda31b7c86a5ff26037375",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42322512370,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 4,
+        "head": "ff26db585c51355554a4eeb0d545c91546c8dbd3",
+        "branch": "metaharness/proxy-response-20261031",
+        "updated": "2026-11-07T01:18:43Z",
+        "title": "fix(proxy): bound upstream bodies and reject engine redirects"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/cost-ops",
+    "status": "DEFERRED",
+    "main": "aef76ae9c264b888abc60aace3dd6948f2422906",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.toml",
+      "Cargo.toml.backup",
+      "Cargo.toml.old",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 42370772535,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 111,
+        "head": "2d4a2fb52e7276ed6f5d72fa07c9a075a0d04e41",
+        "branch": "metaharness/cost-package-compat-20261020",
+        "updated": "2026-11-05T01:11:19Z",
+        "title": "Fix cost-ops compatibility and failed agent audit outcomes"
+      },
+      {
+        "number": 110,
+        "head": "5ab8326781cd913e7effc1162416f2ae2f12fff5",
+        "branch": "dependabot/cargo/brotli-9.0",
+        "updated": "2026-10-19T13:08:25Z",
+        "title": "chore(deps)(deps): Update brotli requirement from 3.4 to 9.0"
+      },
+      {
+        "number": 109,
+        "head": "f9a81266322869307968551de0c222ca352b2ef4",
+        "branch": "dependabot/cargo/redis-1.7",
+        "updated": "2026-10-19T13:08:10Z",
+        "title": "chore(deps)(deps): Update redis requirement from 0.23 to 1.7"
+      },
+      {
+        "number": 108,
+        "head": "60c6d78646271a19a3a15f92ef51822e1dcd80e7",
+        "branch": "dependabot/cargo/cron-0.17",
+        "updated": "2026-10-19T13:08:02Z",
+        "title": "chore(deps)(deps): Update cron requirement from 0.12 to 0.17"
+      },
+      {
+        "number": 107,
+        "head": "ed0582f3a036d51079865e2c00470445b5a190ab",
+        "branch": "dependabot/cargo/jsonwebtoken-11.1",
+        "updated": "2026-10-19T13:07:48Z",
+        "title": "chore(deps)(deps): Update jsonwebtoken requirement from 9.2 to 11.1"
+      },
+      {
+        "number": 106,
+        "head": "8a02872f99ba2d328e2ac9c086085ca810b3833f",
+        "branch": "dependabot/cargo/toml-1.1",
+        "updated": "2026-10-19T13:07:42Z",
+        "title": "chore(deps)(deps): Update toml requirement from 0.8 to 1.1"
+      },
+      {
+        "number": 105,
+        "head": "ca60d8a31fa9e44d1968f9acdc602d4bf0f6ce5e",
+        "branch": "dependabot/cargo/sha2-0.11",
+        "updated": "2026-10-19T13:07:32Z",
+        "title": "chore(deps)(deps): Update sha2 requirement from 0.10 to 0.11"
+      },
+      {
+        "number": 104,
+        "head": "9d4e07e55ed8da1beab351abfed155d3c25931f2",
+        "branch": "dependabot/cargo/thiserror-2.0",
+        "updated": "2026-10-19T13:07:21Z",
+        "title": "chore(deps)(deps): Update thiserror requirement from 1.0 to 2.0"
+      },
+      {
+        "number": 103,
+        "head": "9f976bf8acd204180bdbe03d5f4b2edeef6de0aa",
+        "branch": "dependabot/cargo/config-0.15",
+        "updated": "2026-10-19T13:06:26Z",
+        "title": "chore(deps)(deps): Update config requirement from 0.14 to 0.15"
+      },
+      {
+        "number": 102,
+        "head": "775180f8bcb6a9c0480b901cb825c26e3721c8a9",
+        "branch": "dependabot/cargo/constant_time_eq-0.6",
+        "updated": "2026-10-19T13:06:13Z",
+        "title": "chore(deps)(deps): Update constant_time_eq requirement from 0.3 to 0.6"
+      },
+      {
+        "number": 101,
+        "head": "15d02877b51840b590bb3229b91198d67dc22695",
+        "branch": "dependabot/cargo/rust_xlsxwriter-0.99",
+        "updated": "2026-10-19T13:06:06Z",
+        "title": "chore(deps)(deps): Update rust_xlsxwriter requirement from 0.64 to 0.99"
+      },
+      {
+        "number": 100,
+        "head": "f7efaa6b44938c33f87452fcdc448e15c393e210",
+        "branch": "dependabot/github_actions/madrapps/jacoco-report-1.8",
+        "updated": "2026-11-05T01:12:36Z",
+        "title": "ci(deps)(deps): Bump madrapps/jacoco-report from 1.3 to 1.8"
+      },
+      {
+        "number": 99,
+        "head": "94c3f32f17e060b0cf8923653951f1b22541422f",
+        "branch": "dependabot/github_actions/nwtgck/actions-netlify-4.0",
+        "updated": "2026-11-05T01:12:38Z",
+        "title": "ci(deps)(deps): Bump nwtgck/actions-netlify from 3.0 to 4.0"
+      },
+      {
+        "number": 98,
+        "head": "e477fd221bfaf28f44d44e2d640575e92c0dd8e1",
+        "branch": "dependabot/github_actions/actions/labeler-7",
+        "updated": "2026-11-05T01:12:40Z",
+        "title": "ci(deps)(deps): Bump actions/labeler from 5 to 7"
+      },
+      {
+        "number": 97,
+        "head": "1dca8dd1354342ffbf9629debdd13bbb2bfcbc6e",
+        "branch": "dependabot/github_actions/peter-evans/create-pull-request-8",
+        "updated": "2026-11-05T01:12:42Z",
+        "title": "ci(deps)(deps): Bump peter-evans/create-pull-request from 5 to 8"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/governance-dashboard",
+    "status": "DEFERRED",
+    "main": "53047917da900f397a5045cfc7ddf5e32e735872",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 42034344049,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 9,
+        "head": "dc3373d4df9a72e4fe5c62ededf47413824b4167",
+        "branch": "metaharness/governance-dashboard-20261026",
+        "updated": "2026-11-05T13:16:01Z",
+        "title": "Repair workspace and activate governance service contracts"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/policy-engine",
+    "status": "DEFERRED",
+    "main": "c44b699eadc6b8dbbd26fa35d7cf82d61275979b",
+    "rootInventory": [
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [
+      {
+        "number": 1,
+        "head": "343deaf5a4ac031b5b8e5cf4a6c964ec2dd62e77",
+        "branch": "metaharness/policy-engine-jwt-20261021",
+        "updated": "2026-10-21T18:41:54Z",
+        "title": "fix: enforce JWT trust boundary and restore locked Rust builds"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/registry",
+    "status": "DEFERRED",
+    "main": "ddede4cd93b0da9f003b2d90f91e33066877cae4",
+    "rootInventory": [
+      "CONTRIBUTING.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 40742658904,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 2,
+        "head": "b0e7b2cab83c55b050a73982ed87020b69531239",
+        "branch": "metaharness/registry-determinism-20261028",
+        "updated": "2026-10-28T18:15:27Z",
+        "title": "Make Rust dependency ordering and cycle diagnostics deterministic"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/marketplace",
+    "status": "DEFERRED",
+    "main": "70071f0eda8e8bf76574488f74779ed7f1229b47",
+    "rootInventory": [
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 30302618197,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/analytics-hub",
+    "status": "DEFERRED",
+    "main": "88f4ffa94afd4a14ec94c9b4b3dc723badc7fac1",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 39299741002,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 2,
+        "head": "4b4e48f056ef7f886573063e56f57e8b3db7d166",
+        "branch": "metaharness/analytics-auth-hardening-2026-10-11",
+        "updated": "2026-10-19T18:09:27Z",
+        "title": "fix(auth): validate signed JWT claims and enforce tenant boundaries"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/config-manager",
+    "status": "DEFERRED",
+    "main": "85667ace35b905fdd4acf79f2db06c64e4738969",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41558044940,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 4,
+        "head": "e10a3b1bbef8e3fe2f3a798434cd595d9158428f",
+        "branch": "metaharness/config-depth-20261101",
+        "updated": "2026-11-03T01:19:12Z",
+        "title": "Fix deep-config validation and close full npm security audit gate"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/schema-registry",
+    "status": "DEFERRED",
+    "main": "d0d89f267c32a2d31b622ad112836435c2534f39",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "npm-packages",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40791599725,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 3,
+        "head": "711a2ffaa68f5fb7375712a30571374ad5554dfc",
+        "branch": "metaharness/request-boundary-2026-10-22",
+        "updated": "2026-10-29T00:09:26Z",
+        "title": "fix: harden schema request boundary"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/connector-hub",
+    "status": "DEFERRED",
+    "main": "b25fcb3bd9a06ae9e7d73c7acd677607123d081d",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 39474930381,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 2,
+        "head": "7ac8863570764c4ebb15611e13b8a04fabc5b27d",
+        "branch": "metaharness/connector-oauth-20261020",
+        "updated": "2026-10-20T18:34:06Z",
+        "title": "fix(auth): fail closed at OAuth introspection trust boundary"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/copilot-agent",
+    "status": "DEFERRED",
+    "main": "756402a87e39419efa90a2accfe34b46083af945",
+    "rootInventory": [
+      "Cargo.toml",
+      "README.md",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40146472545,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 4,
+        "head": "89060ed6324433628b9a9c90c1e93b9dabca5847",
+        "branch": "metaharness/copilot-agent-boundary-2026-10-25",
+        "updated": "2026-10-25T00:24:11Z",
+        "title": "fix(functions): harden request boundary and restore tests"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/simulator",
+    "status": "DEFERRED",
+    "main": "96091398ad2cb1189774d2581fb26c2bebe1abd9",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41699837741,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 1,
+        "head": "320e41d8f8fab6814e9ceb687f7bd2a886a9f022",
+        "branch": "metaharness/cors-supply-chain-2026-10-09",
+        "updated": "2026-11-03T19:12:46Z",
+        "title": "fix: harden simulator CORS and dependencies"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/benchmark-exchange",
+    "status": "DEFERRED",
+    "main": "09236748843306e9cc5f33cd91b0c9182c7b18e1",
+    "rootInventory": [
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40001910662,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 3,
+        "head": "3fe6e55248a66bf7200da417936a22e0e8604f95",
+        "branch": "metaharness/benchmark-exchange-boundary-2026-10-23",
+        "updated": "2026-10-23T18:16:08Z",
+        "title": "fix: harden benchmark publication boundary"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/inference-gateway",
+    "status": "DEFERRED",
+    "main": "a07a604dc14a3eeb2b9a07e85e9c41212156de9a",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 41148111280,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 1,
+        "head": "f38eb7ac12477dbb3ccbcda18fefe8ae87de93f7",
+        "branch": "metaharness/inference-gateway-2026-10-10",
+        "updated": "2026-10-31T00:19:14Z",
+        "title": "fix: harden proxy and isolate Phase7 configuration validation"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/data-vault",
+    "status": "DEFERRED",
+    "main": "01c0240871f03f0cbc0f497bff47360940bcb637",
+    "rootInventory": [
+      "CLAUDE.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40120910116,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 2,
+        "head": "e3f668e433d823297110a933ee1a2fa1e7bce00c",
+        "branch": "metaharness/data-vault-error-boundary-2026-10-24",
+        "updated": "2026-10-24T18:29:06Z",
+        "title": "fix(api): sanitize error boundary and restore vault-api tests"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/research-lab",
+    "status": "DEFERRED",
+    "main": "83c4850c04d6243c1f700ec4a6a0e406a7d7198a",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 38920009861,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/infra",
+    "status": "DEFERRED",
+    "main": "a8bc89c190f63b139812f30a54e21a25b8f70e81",
+    "rootInventory": [
+      "Cargo.lock",
+      "Cargo.toml",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/integrations",
+    "status": "DEFERRED",
+    "main": "42bbcbaa9c7401dbaa1bb18fa8956c5ba837b8e2",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40192958928,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/ruvector-service",
+    "status": "DEFERRED",
+    "main": "e3a56d6c4c42f61fec8afb9da01939578e39ffa4",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 39834456701,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/intelligence-core",
+    "status": "DEFERRED",
+    "main": "2da20a031c6d02cc99bd3dc86da450791f0f37e7",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40043422062,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/security-core",
+    "status": "DEFERRED",
+    "main": "6b07fd1e61363ba981986927355bc8c2e2810e6b",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40093103835,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/automation-core",
+    "status": "DEFERRED",
+    "main": "3f1b6f7dc755756305527e3672fd91c95acfb8b0",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40220720108,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/governance-core",
+    "status": "DEFERRED",
+    "main": "7dc3b493ccfd9568b278d9f7a2bde351769b30d3",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40323345327,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/data-core",
+    "status": "DEFERRED",
+    "main": "d8a4d82b3918f2cf8aaf5fe003b5c351f184a9a9",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 38734205492,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/ecosystem-core",
+    "status": "DEFERRED",
+    "main": "2066fb4be1cc72031e19c71040e017310ab4dbae",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40376240205,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/research-core",
+    "status": "DEFERRED",
+    "main": "9853244c59179d7a8e5742814d226b2f979c3bde",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 39961105735,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/interface-core",
+    "status": "DEFERRED",
+    "main": "ccdaa69b8b8e1adede067848841a26df024a4e44",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40248800026,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-platform",
+    "status": "DEFERRED",
+    "main": "9b3fa8d3faeda67230e953355eee1ab87112fcaf",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-diligence-artifacts",
+    "status": "DEFERRED",
+    "main": "131b0aaa8d316655d7d860bc9ffa38fea4767447",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-deployment-intent",
+    "status": "DEFERRED",
+    "main": "95111d9f55c7aba9c392b2eab08540b3a67e1d51",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-simulation-planner",
+    "status": "DEFERRED",
+    "main": "144a6c41b8532cfc0ae8bffe7e2f1676cb5068fe",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-simulation-runner",
+    "status": "DEFERRED",
+    "main": "ead6a0f0b2f0af389c1cae6dc7b001ecfe7a90f8",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-deployment-exporters",
+    "status": "DEFERRED",
+    "main": "ea60a265f6fb9a89e0b2012ed7d0441cb6637168",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-org-manifests",
+    "status": "DEFERRED",
+    "main": "a52b61eea0e6b60883e436c982abc55bb9030edd",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-cli",
+    "status": "DEFERRED",
+    "main": "a6fa67a40fe3d08d51ff2c66d0f96e43a89ff9a6",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 28767269473,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/erp-surface",
+    "status": "DEFERRED",
+    "main": "188099d51ff1f1d4af944401d5fef18666317643",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 22001663894,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-orchestration-engine",
+    "status": "DEFERRED",
+    "main": "a365c1a6f954041aefef67678fc3fe1b0b4eba7d",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/enterprise-roi-engine",
+    "status": "DEFERRED",
+    "main": "1f4d33cc057740f9f96e75e6c11b0dfd44cd35e7",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [
+      {
+        "id": 40558898975,
+        "conclusion": "failure"
+      }
+    ],
+    "prs": [
+      {
+        "number": 1,
+        "head": "16f585c28c48fc42004ae2a05ba44fe01649de09",
+        "branch": "metaharness/roi-boundary-20261027",
+        "updated": "2026-10-27T18:21:34Z",
+        "title": "Harden ROI intake and repair normalization/validation diagnostics"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-contracts",
+    "status": "DEFERRED",
+    "main": "716a33348721f78a7a14bd98e6717e3b40470730",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-results-index",
+    "status": "DEFERRED",
+    "main": "876cd8cf38eb9e5687c92b73e8d3b8ac7e34e57c",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-usage-ledger",
+    "status": "DEFERRED",
+    "main": "dbd63a6ae35a45f889170fc2ca3e611907506c45",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-execution-engine",
+    "status": "DEFERRED",
+    "main": "accaf090c78cb0dfe439c771b2ecba868cdfbeac",
+    "rootInventory": [
+      "CLAUDE.md",
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-enforcement",
+    "status": "DEFERRED",
+    "main": "45277702166465be82fe2fa255aaa0dec0893994",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/platform-agents",
+    "status": "DEFERRED",
+    "main": "94fbbc82db9cc10f66093df428560ef01aa2b322",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-cli-test",
+    "status": "DEFERRED",
+    "main": "fb73fe95db97bd35cfe378291004f09f2929675d",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-evolution",
+    "status": "DEFERRED",
+    "main": "855c0b2e9a53ade5ab2f06d4185b7c3c8fff0369",
+    "rootInventory": [
+      "AGENTS.md",
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 31585157853,
+        "conclusion": "success"
+      }
+    ],
+    "prs": [
+      {
+        "number": 27,
+        "head": "e1d5f3236b4c938e1febb9cdd8ab0c2d4b1655d0",
+        "branch": "prompt/06-private-ruvector-brain",
+        "updated": "2026-08-12T09:56:03Z",
+        "title": "Prompt 06: deploy private RuVector Brain development substrate"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/RuVector",
+    "status": "DEFERRED",
+    "main": "9e12078ae2af74d0613ae604266cf22fb1113b10",
+    "rootInventory": [
+      "CLAUDE.md",
+      "Cargo.lock",
+      "Cargo.toml",
+      "METAHARNESS-README.md",
+      "README.md",
+      "package.json",
+      "packages"
+    ],
+    "ci": [],
+    "prs": [],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  },
+  {
+    "repository": "LLM-Dev-Ops/agentics-dream-machine",
+    "status": "DEFERRED",
+    "main": "2fba2550182d81b36423447221823e98e227482a",
+    "rootInventory": [
+      "README.md",
+      "package-lock.json",
+      "package.json",
+      "packages"
+    ],
+    "ci": [
+      {
+        "id": 42359206941,
+        "conclusion": "skipped"
+      }
+    ],
+    "prs": [
+      {
+        "number": 123,
+        "head": "2af5c0b92aedcd732828f01e04ac448436bd9a2e",
+        "branch": "dream/2026-11-07-evaluation-adapters",
+        "updated": "2026-11-07T09:18:52Z",
+        "title": "dream-cycle 2026-11-07: wire darwin --sandbox mock repo-independence (PR #111) into verify-entrypoint(s) output (evaluation-adapters)"
+      },
+      {
+        "number": 121,
+        "head": "5b43d475a5b5876f1dd00614b47d16d0fe1463a1",
+        "branch": "dream/2026-11-06-ledger-signals",
+        "updated": "2026-11-06T09:16:27Z",
+        "title": "dream-cycle 2026-11-06: candidate withdrawn — triplicate of PR #22/#109 (ledger-signals, docs/ledger only)"
+      },
+      {
+        "number": 119,
+        "head": "360d9ff90b167a9732df6c92a16b923bb0990af7",
+        "branch": "dream/2026-11-05-compiler-parity",
+        "updated": "2026-11-05T09:14:59Z",
+        "title": "dream-cycle 2026-11-05: independently reconfirm PR #87's compile-stdout double-newline bug (compiler-parity)"
+      },
+      {
+        "number": 117,
+        "head": "1a5348919009d258a218c012f7d29a4ab7e65e4b",
+        "branch": "dream/2026-11-04-developer-experience",
+        "updated": "2026-11-04T09:16:48Z",
+        "title": "dream-cycle 2026-11-04: tui verdictColor() ignores --no-color (developer-experience)"
+      },
+      {
+        "number": 115,
+        "head": "43bc32c8492c29d184a8222793b847b78b184a45",
+        "branch": "dream/2026-11-03-security-adversarial",
+        "updated": "2026-11-03T09:12:16Z",
+        "title": "dream-cycle 2026-11-03: npm audit fix 24→21, decay-rate evidence on PR #73 (security-adversarial)"
+      },
+      {
+        "number": 113,
+        "head": "854b8bc250ba262754c605a431bd0523d4def429",
+        "branch": "dream/2026-11-02-evaluation-adapters",
+        "updated": "2026-11-02T09:31:20Z",
+        "title": "dream-cycle 2026-11-02: generic swallowed-positional-arg entrypoint detector (evaluation-adapters)"
+      },
+      {
+        "number": 111,
+        "head": "8ff887d3dcbc9ba7740412c24ca69f48c364f358",
+        "branch": "dream/2026-11-01-evaluation-adapters",
+        "updated": "2026-11-01T09:19:58Z",
+        "title": "dream-cycle 2026-11-01: darwin --sandbox mock is repo-independent (evaluation-adapters)"
+      },
+      {
+        "number": 109,
+        "head": "5548eb0225c86424bae027dde32a3507e899b27b",
+        "branch": "dream/2026-10-31-ledger-signals",
+        "updated": "2026-11-06T09:15:38Z",
+        "title": "dream-cycle 2026-10-31: ledger append accepts schema-invalid rows (ledger-signals)"
+      },
+      {
+        "number": 107,
+        "head": "8de03c06452d7f70c011c745b69bc3a3ad83c55c",
+        "branch": "dream/2026-10-30-compiler-parity",
+        "updated": "2026-10-30T09:14:19Z",
+        "title": "dream-cycle 2026-10-30: validateConfig() silently accepts type-malformed optional fields (compiler-parity/config-schema)"
+      },
+      {
+        "number": 105,
+        "head": "d6e2f884ba4395c452c6728f910b8087f3f2f33d",
+        "branch": "dream/2026-10-29-developer-experience",
+        "updated": "2026-10-29T09:19:06Z",
+        "title": "dream-cycle 2026-10-29: ledger stats golden-snapshot (developer-experience)"
+      },
+      {
+        "number": 103,
+        "head": "8c4feb2060d2765f9c5b91111f857fc4141d841f",
+        "branch": "dream/2026-10-28-security-adversarial",
+        "updated": "2026-10-28T09:19:46Z",
+        "title": "dream-cycle 2026-10-28: pin GitHub Actions uses: refs to commit SHA (security-adversarial)"
+      },
+      {
+        "number": 101,
+        "head": "5ba55823a2d2327eadc8d05fe8ef9a1dc4ec2218",
+        "branch": "dream/2026-10-27-evaluation-adapters",
+        "updated": "2026-10-27T09:19:58Z",
+        "title": "dream-cycle 2026-10-27: darwin genome has zero textual overlap with this repo's source (evaluation-adapters)"
+      },
+      {
+        "number": 99,
+        "head": "0c4de8e921156f9f382102156680e86fd09d27ea",
+        "branch": "dream/2026-10-26-ledger-signals",
+        "updated": "2026-10-26T09:21:13Z",
+        "title": "dream-cycle 2026-10-26: surfaceStreak learning signal (ledger-signals)"
+      },
+      {
+        "number": 97,
+        "head": "89bdc067013287b1c65b32ad4706c12ea9b94636",
+        "branch": "dream/2026-10-25-compiler-parity",
+        "updated": "2026-10-25T09:21:29Z",
+        "title": "dream-cycle 2026-10-25: fix SLOT/bonus rotation collapsing to day-of-month (compiler-parity)"
+      },
+      {
+        "number": 95,
+        "head": "593b408f3dea15959a02a1cb5b9d7d9628ec2d27",
+        "branch": "dream/2026-10-24-developer-experience",
+        "updated": "2026-10-24T09:17:18Z",
+        "title": "dream-cycle 2026-10-24: tui pad() ANSI-safe truncation (developer-experience)"
+      },
+      {
+        "number": 93,
+        "head": "e7efbe2d3b9a7c54cc4a6e7bb57471a92aa4111e",
+        "branch": "dream/2026-10-23-security-adversarial",
+        "updated": "2026-10-23T09:16:37Z",
+        "title": "dream-cycle 2026-10-23: dream.config.json excluded from automerge guard (security-adversarial)"
+      },
+      {
+        "number": 91,
+        "head": "ceff2a35195a1264eba7a4131da506fc485928c6",
+        "branch": "dream/2026-10-22-security-adversarial",
+        "updated": "2026-10-22T09:19:00Z",
+        "title": "dream-cycle 2026-10-22: CodeQL gate flipped red→green at run #90, 49-day failure streak ended (security-adversarial, rotated)"
+      },
+      {
+        "number": 89,
+        "head": "2304450a606a95a83fc0dbcf2fab829bdc054b60",
+        "branch": "dream/2026-10-21-ledger-signals",
+        "updated": "2026-10-21T09:23:45Z",
+        "title": "dream-cycle 2026-10-21: backlog merge-readiness audit — 36/40 PRs eligible today, 0 conflicts (ledger-signals)"
+      },
+      {
+        "number": 87,
+        "head": "57aedefedf2e7de3877a8a2e7d01df2f4f7afa3e",
+        "branch": "dream/2026-10-20-compiler-parity",
+        "updated": "2026-10-20T09:18:53Z",
+        "title": "dream-cycle 2026-10-20: fix compile stdout double-trailing-newline, prove byte-parity vs live-fired prompt (compiler-parity)"
+      },
+      {
+        "number": 85,
+        "head": "9cd4a7ee2c83dc37b33950ce94dd3df8d654371c",
+        "branch": "dream/2026-10-19-developer-experience",
+        "updated": "2026-10-19T09:14:56Z",
+        "title": "dream-cycle 2026-10-19: CodeQL gate still red 41 days after #10, 44-PR backlog confirmed (developer-experience, docs/ledger only)"
+      },
+      {
+        "number": 83,
+        "head": "8e116361aeb3079bb9c55d6d4d6855a5c5891bad",
+        "branch": "dream/2026-10-18-security-adversarial",
+        "updated": "2026-10-18T09:18:05Z",
+        "title": "fix(ci): close automerge guard protected-path bypasses (nested manifests, alt lockfiles, case-sensitive keywords)"
+      },
+      {
+        "number": 81,
+        "head": "26c1bbdb3f8792a04acdb8c310a1d36eb0635621",
+        "branch": "dream/2026-10-17-evaluation-adapters",
+        "updated": "2026-10-17T09:27:55Z",
+        "title": "dream-cycle 2026-10-17: darwin stale-run-id collision classifier (evaluation-adapters)"
+      },
+      {
+        "number": 79,
+        "head": "c39085ea3210c857cf0c8256754e7399067c0e53",
+        "branch": "dream/2026-10-16-ledger-signals",
+        "updated": "2026-10-16T09:28:36Z",
+        "title": "dream-cycle 2026-10-16: conflictRisks() — real git-merge conflicts confirmed between PR #12/#16/#58 (ledger-signals)"
+      },
+      {
+        "number": 76,
+        "head": "53d4b7ea7597decb27d3254f12e56724ba2b5ae3",
+        "branch": "dream/2026-10-15-compiler-parity",
+        "updated": "2026-10-15T10:18:25Z",
+        "title": "dream-cycle 2026-10-15: compiler-parity confirmed clean; darwin-arg duplicate of #18 withheld (docs/ledger only)"
+      },
+      {
+        "number": 75,
+        "head": "84fd71ebc4c8deffd260a0e5e81dfbd2e2a3a95b",
+        "branch": "dream/2026-10-14-developer-experience",
+        "updated": "2026-10-14T09:25:01Z",
+        "title": "dream-cycle 2026-10-14: verdictColor --no-color bug independently rediscovered, duplicate of open PR #65 (developer-experience)"
+      },
+      {
+        "number": 73,
+        "head": "fcb8129a84b382402d06a1907cbe6ec39295b645",
+        "branch": "dream/2026-10-13-security-adversarial",
+        "updated": "2026-10-13T09:21:28Z",
+        "title": "dream-cycle 2026-10-13: non-breaking npm audit fix, 21→7 advisories (security-adversarial)"
+      },
+      {
+        "number": 71,
+        "head": "f5208532e05962ce6dbed9b413997276fbca13a3",
+        "branch": "dream/2026-10-12-evaluation-adapters",
+        "updated": "2026-10-12T09:24:13Z",
+        "title": "dream-cycle 2026-10-12: evaluation-adapters reconfirmed, no new candidate (69 open PRs)"
+      },
+      {
+        "number": 69,
+        "head": "6e7467a74a71886dc740e3ef6ba2ba1f1ea093b4",
+        "branch": "dream/2026-10-11-ledger-signals",
+        "updated": "2026-10-11T09:25:53Z",
+        "title": "dream-cycle 2026-10-11: automerge guard re-fires on ready_for_review (ledger-signals)"
+      },
+      {
+        "number": 67,
+        "head": "29fb4c570d1399f919e163d616d4e64f584124b3",
+        "branch": "dream/2026-10-10-compiler-parity",
+        "updated": "2026-10-10T18:21:02Z",
+        "title": "dream-cycle 2026-10-10: compiler-parity reconfirmed, 29-PR backlog audit (no new candidate — duplicate of #14)"
+      },
+      {
+        "number": 65,
+        "head": "792412a91861cb070a6821b33b4208a15a79c02d",
+        "branch": "dream/2026-10-09-developer-experience",
+        "updated": "2026-10-09T09:22:11Z",
+        "title": "dream-cycle 2026-10-09: consolidate #39+#49+#55, fix #49/#55 merge conflict (developer-experience)"
+      },
+      {
+        "number": 63,
+        "head": "67a9aedd482d9c36deccd74a9c6b9c876d7b9357",
+        "branch": "dream/2026-10-08-security-adversarial",
+        "updated": "2026-10-08T09:22:19Z",
+        "title": "dream-cycle 2026-10-08: pin darwin evaluatorEntrypoints (security-adversarial, 6th night, 1st fix)"
+      },
+      {
+        "number": 61,
+        "head": "a9071c45113b9ad72d9c046aedb64d26f1b95689",
+        "branch": "dream/2026-10-07-evaluation-adapters",
+        "updated": "2026-10-07T09:24:20Z",
+        "title": "dream-cycle 2026-10-07: evaluation-adapters reconfirmed, no new candidate (26 open PRs)"
+      },
+      {
+        "number": 58,
+        "head": "dbd897d744c57a251032f3a46c94efef23865de1",
+        "branch": "dream/2026-10-06-ledger-signals",
+        "updated": "2026-10-06T09:27:47Z",
+        "title": "dream-cycle 2026-10-06: backlogSaturated learning signal (ledger-signals)"
+      },
+      {
+        "number": 57,
+        "head": "d008846b708f3a26a904ee8a11148a5c4b49a2eb",
+        "branch": "dream/2026-10-05-compiler-parity",
+        "updated": "2026-10-05T09:23:35Z",
+        "title": "dream-cycle 2026-10-05: golden-snapshot coverage for CLI machine-readable outputs (compiler-parity)"
+      },
+      {
+        "number": 55,
+        "head": "33cb36382e5b23c9be4d471abd6817d4e8270deb",
+        "branch": "dream/2026-10-04-developer-experience",
+        "updated": "2026-10-04T09:21:39Z",
+        "title": "dream-cycle 2026-10-04: tui honors NO_COLOR env var (developer-experience)"
+      },
+      {
+        "number": 53,
+        "head": "c7cf2e70d920b4a6b4b5b24efb0c26c58ccdba61",
+        "branch": "dream/2026-10-01-evaluation-adapters",
+        "updated": "2026-10-01T09:17:57Z",
+        "title": "dream-cycle 2026-10-01: ledger-signals rotated to evaluation-adapters, backlog reconfirmed (no new candidate)"
+      },
+      {
+        "number": 51,
+        "head": "3f7163c36e2ca56f2eba7c073cefcf513f9f0a79",
+        "branch": "dream/2026-09-30-compiler-parity",
+        "updated": "2026-09-30T09:25:28Z",
+        "title": "dream-cycle 2026-09-30: dream.config.json JSON Schema (compiler-parity, closes PR #14's deferred gap)"
+      },
+      {
+        "number": 49,
+        "head": "fdd865fdc828fec3104f750caff26542d5790106",
+        "branch": "dream/2026-09-29-developer-experience",
+        "updated": "2026-09-29T09:16:33Z",
+        "title": "dream-cycle 2026-09-29: --no-color flag ignores =true/space-value forms (developer-experience)"
+      },
+      {
+        "number": 47,
+        "head": "23b6e883b5d5412e472aa2b7baafff2493b07fac",
+        "branch": "dream/2026-09-28-security-adversarial",
+        "updated": "2026-09-28T09:15:13Z",
+        "title": "dream-cycle 2026-09-28: security-adversarial reconfirmed, backlog crisis escalated (no new candidate)"
+      },
+      {
+        "number": 45,
+        "head": "6d99e21b50905b27d1fb4ef0cf78287decf70396",
+        "branch": "dream/2026-09-27-evaluation-adapters",
+        "updated": "2026-09-27T09:21:01Z",
+        "title": "dream-cycle 2026-09-27: extract entrypointExitCode shared helper (evaluation-adapters)"
+      },
+      {
+        "number": 43,
+        "head": "2e5a0ec95cd5e14c5a8f580516be5f86b63fd4b2",
+        "branch": "dream/2026-09-26-ledger-signals-audit",
+        "updated": "2026-09-26T09:35:45Z",
+        "title": "dream-cycle 2026-09-26: ledger-signals backlog reconfirmed (no new candidate)"
+      },
+      {
+        "number": 41,
+        "head": "27bcc0f041b43041564609c27e3811bd6c7c9277",
+        "branch": "dream/2026-09-25-compiler-parity",
+        "updated": "2026-09-25T09:20:15Z",
+        "title": "dream-cycle 2026-09-25: compiler-parity re-confirmed 4th time, rotated to ledger-signals backlog audit (no new candidate)"
+      },
+      {
+        "number": 39,
+        "head": "ad835db2f3a164f45cdcba5ace9b45698acf8018",
+        "branch": "dream/2026-09-24-developer-experience",
+        "updated": "2026-09-24T09:18:16Z",
+        "title": "dream-cycle 2026-09-24: verdictColor honors --no-color (developer-experience)"
+      },
+      {
+        "number": 37,
+        "head": "7207c0e9d8a15c654fc694076f10641ac3a82d92",
+        "branch": "dream/2026-09-23-developer-experience",
+        "updated": "2026-09-23T09:19:45Z",
+        "title": "dream-cycle 2026-09-23: compiler stops claiming auto-merge ENABLED when structurally unreachable (developer-experience)"
+      },
+      {
+        "number": 35,
+        "head": "f6a143d804ce25d6016f505cddb77f4281c1a805",
+        "branch": "dream/2026-09-22-evaluation-adapters",
+        "updated": "2026-09-22T09:22:25Z",
+        "title": "dream-cycle 2026-09-22: detect darwin entrypoint non-idempotency (evaluation-adapters)"
+      },
+      {
+        "number": 33,
+        "head": "6f706e5adb2514c03cb5026ea87b8fecd9a1784e",
+        "branch": "dream/2026-09-21-ledger-signals",
+        "updated": "2026-09-21T09:26:38Z",
+        "title": "dream-cycle 2026-09-21 (ledger-signals): quarantine contaminated ledger rows + CI gate"
+      },
+      {
+        "number": 31,
+        "head": "eda473dd25615de0ee3488334b13c287df8bd33a",
+        "branch": "dream/2026-09-20-compiler-parity",
+        "updated": "2026-09-20T09:19:15Z",
+        "title": "dream-cycle 2026-09-20: compiler-parity re-confirmed 3rd time, PR #14 CI-status finding (no new candidate)"
+      },
+      {
+        "number": 30,
+        "head": "06761bdba9b4746f643fa7be55eb2178a03a8761",
+        "branch": "dream/2026-09-19-developer-experience",
+        "updated": "2026-09-19T09:29:15Z",
+        "title": "dream-cycle 2026-09-19: reconcile LEDGER.md + witness self-reference bug (6/10 nights)"
+      },
+      {
+        "number": 28,
+        "head": "40692acc12c068a7e7b48cc10d41eb7963d08c1b",
+        "branch": "dream/2026-09-18-security-adversarial",
+        "updated": "2026-09-18T09:21:49Z",
+        "title": "dream-cycle 2026-09-18: security-adversarial — CodeQL 0/30 runs ever green"
+      },
+      {
+        "number": 26,
+        "head": "655c24f0d46d7edab4fa2b7688202a26463cf458",
+        "branch": "dream/2026-09-17-evaluation-adapters",
+        "updated": "2026-09-17T09:18:33Z",
+        "title": "dream-cycle 2026-09-17: instruct classifying evaluator-entrypoint liveness in compiled STEP 5-9"
+      },
+      {
+        "number": 24,
+        "head": "8915bdba6a5d63f3cf82f68b93aae26509ed8ca7",
+        "branch": "dream/2026-09-16-ledger-signals",
+        "updated": "2026-09-16T09:17:25Z",
+        "title": "dream-cycle 2026-09-16: ledger-signals backlog escalation (no new candidate)"
+      },
+      {
+        "number": 23,
+        "head": "0953415c3d13079570a59b214c75c85d22e5278e",
+        "branch": "dream/2026-09-15-compiler-parity",
+        "updated": "2026-09-19T12:51:29Z",
+        "title": "dream-cycle 2026-09-15: compiler-parity re-confirmed, backlog escalation (no new candidate)"
+      },
+      {
+        "number": 22,
+        "head": "bc4dd3158c66011e720c62a716293b76372f4978",
+        "branch": "dream/2026-09-14-developer-experience",
+        "updated": "2026-09-14T09:18:48Z",
+        "title": "dream-cycle 2026-09-14: validate ledger append rows before writing"
+      },
+      {
+        "number": 20,
+        "head": "ecdf8759ae12f797c6f3f17bcfaf87b46ccee63e",
+        "branch": "dream/2026-09-13-security-adversarial",
+        "updated": "2026-09-13T09:25:54Z",
+        "title": "dream-cycle 2026-09-13: static supply-chain pin check for unpinned npx evaluatorEntrypoints"
+      },
+      {
+        "number": 18,
+        "head": "b827b70ad6f049ef629508a946b5b4425af8f394",
+        "branch": "dream/2026-09-12-evaluation-adapters",
+        "updated": "2026-10-15T09:20:43Z",
+        "title": "dream-cycle 2026-09-12: fix darwin/flywheel evaluatorEntrypoints + ADR-0003"
+      },
+      {
+        "number": 16,
+        "head": "55a0893c1aabd8461f6c0b5e4734ad4a3feebb83",
+        "branch": "dream/2026-09-11-ledger-signals",
+        "updated": "2026-09-11T09:27:18Z",
+        "title": "dream-cycle 2026-09-11: add nightsSinceLastRow ledger-staleness signal"
+      },
+      {
+        "number": 14,
+        "head": "3c322eeaaffaa2aba3cb65a7ed6f7eb330678d18",
+        "branch": "dream/2026-09-10-compiler-parity",
+        "updated": "2026-09-10T09:18:30Z",
+        "title": "dream-cycle 2026-09-10: self-referential compiler-parity golden snapshot"
+      },
+      {
+        "number": 12,
+        "head": "dc7f8804861df66ef22e85581b8279b66c67d4fc",
+        "branch": "dream/2026-09-09-developer-experience",
+        "updated": "2026-09-09T09:23:41Z",
+        "title": "dream-cycle 2026-09-09: fix zeroMergeStreak false-positive in learningSignals"
+      },
+      {
+        "number": 6,
+        "head": "b1021c7097df63f24bc6157ba9f6b096aa5c2420",
+        "branch": "dependabot/github_actions/actions/checkout-7",
+        "updated": "2026-09-03T20:38:18Z",
+        "title": "chore(deps): bump actions/checkout from 4 to 7"
+      },
+      {
+        "number": 5,
+        "head": "3f3b36dd5d7c65ac795f085613b1f4463fb3f0c8",
+        "branch": "dependabot/github_actions/actions/setup-node-7",
+        "updated": "2026-09-03T20:38:14Z",
+        "title": "chore(deps): bump actions/setup-node from 4 to 7"
+      },
+      {
+        "number": 4,
+        "head": "ed94cd5b362954ff2bc6ed9aed19fca1c6927833",
+        "branch": "dependabot/github_actions/actions/configure-pages-6",
+        "updated": "2026-09-03T20:38:07Z",
+        "title": "chore(deps): bump actions/configure-pages from 5 to 6"
+      },
+      {
+        "number": 3,
+        "head": "fb9f37683f1e06b6ac13c3e9a77f211bc18c73d9",
+        "branch": "dependabot/github_actions/actions/upload-pages-artifact-5",
+        "updated": "2026-09-03T20:38:04Z",
+        "title": "chore(deps): bump actions/upload-pages-artifact from 3 to 5"
+      },
+      {
+        "number": 2,
+        "head": "e520845badf8a5a9df2d7ed6d1b4ceb18f2265f2",
+        "branch": "dependabot/github_actions/github/codeql-action-4",
+        "updated": "2026-09-03T20:38:00Z",
+        "title": "chore(deps): bump github/codeql-action from 3 to 4"
+      },
+      {
+        "number": 1,
+        "head": "070c8403bc4ac466b388f8bed03d14e2720c63eb",
+        "branch": "dependabot/npm_and_yarn/dev-dependencies-bd256a1f29",
+        "updated": "2026-11-05T18:15:27Z",
+        "title": "chore(deps-dev): bump the dev-dependencies group across 1 directory with 7 updates"
+      }
+    ],
+    "errors": [],
+    "scope": "Inventory/main/latest CI/open-PR pages inspected; full manifests and source reviewed only for worked repository",
+    "reason": "Bounded one-writer fair rotation; preserve existing PRs"
+  }
+]

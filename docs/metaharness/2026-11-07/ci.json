@@ -1,0 +1,49 @@
+{
+  "runs": [
+    {
+      "id": 42375654894,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/LLM-Dev-Ops/incident-manager/actions/runs/42375654894",
+      "head_sha": "86a068f436c3ee615e53d54ab263ab44fd3c33ba"
+    },
+    {
+      "id": 42375654892,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/LLM-Dev-Ops/incident-manager/actions/runs/42375654892",
+      "head_sha": "86a068f436c3ee615e53d54ab263ab44fd3c33ba"
+    }
+  ],
+  "jobs": [
+    {
+      "id": 128412576578,
+      "name": "declared MSRV 1.84 (known broken, non-blocking)",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 128412576744,
+      "name": "upstream pins are immutable",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128412576827,
+      "name": "default",
+      "status": "in_progress",
+      "conclusion": null
+    },
+    {
+      "id": 128412576895,
+      "name": "ecosystem",
+      "status": "in_progress",
+      "conclusion": null
+    }
+  ],
+  "msrvFailureExcerpt": "26-11-07T13:09:52.7039679Z \\u001b[1m\\u001b[32m  Downloaded\\u001b[0m matchit v0.7.3\\n2026-11-07T13:09:52.7084605Z \\u001b[1m\\u001b[32m  Downloaded\\u001b[0m measure_time v0.8.3\\n2026-11-07T13:09:52.7107175Z \\u001b[1m\\u001b[32m  Downloaded\\u001b[0m icu_properties v2.4.0\\n2026-11-07T13:09:52.7640349Z \\u001b[1m\\u001b[31merror\\u001b[0m\\u001b[1m:\\u001b[0m failed to parse manifest at `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/icu_properties-2.4.0/Cargo.toml`\\n2026-11-07T13:09:52.7641014Z \\n2026-11-07T13:09:52.7641104Z Caused by:\\n2026-11-07T13:09:52.7641728Z   feature `edition2024` is required\\n2026-11-07T13:09:52.7641918Z \\n2026-11-07T13:09:52.7642563Z   The package requires the Cargo feature called `edition2024`, but that feature is not stabilized in this version of Cargo (1.84.1 (66221abde 2024-11-19)).\\n2026-11-07T13:09:52.7643370Z   Consider trying a newer version of Cargo (this may require the nightly release).\\n2026-11-07T13:09:52.7644171Z   See https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#edition-2024 for more information about the status of this feature.\\n2026-11-07T13:09:52.7911394Z ##[error]Process completed with exit code 101.\\n2026-11-07T13:09:52.8046417Z Post job cleanup.\\n2026-11-07",
+  "main": "bcb8c8d027997c3363a9fd0ebd0ddc9c086227c6",
+  "head": "86a068f436c3ee615e53d54ab263ab44fd3c33ba",
+  "mergeable": true,
+  "merged": false
+}

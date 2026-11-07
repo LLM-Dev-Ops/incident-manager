@@ -1,0 +1,3364 @@
+{
+  "parentHash": "9cc0a6100b8240096cdf4d2512e180889a623f2f4c2c9b61e81c73f14dd25320",
+  "candidateHash": "d48613b6ddcc7d60594b9a99ea879302605c7690dd441c75d3ed8e685d80bb11",
+  "contract": {
+    "frozen_parent": "04099fea90ceba3fd88c3b32f774ff0d7d0fd1b4",
+    "primary": "Six native HTTP error batches retained in order for next explicit flush",
+    "statuses": [
+      400,
+      401,
+      422,
+      429,
+      500,
+      503
+    ],
+    "anchors": [
+      "200 delivered once",
+      "204 delivered once",
+      "disabled remains no-op"
+    ],
+    "acceptance": "6/6 holdouts and 3/3 anchors in each of five trials; unchanged existing assertions; all project, security, CI and approval gates required for merge",
+    "bounds": "one production candidate; one Darwin generation and child; no deployment or automatic memory promotion",
+    "limitations": "No guarantee of durable delivery, exactly-once, bounded buffering or retry backoff; process restart can lose in-memory telemetry"
+  },
+  "contractSha256": "ac8257fa18fb66e2f73bb9e2504d24a55ebffb9130d0f54f6f9c757980f4fe27",
+  "probeSha256": "4b2cc96c889cc9ea2cbf15573a788741c7a42145d35891de4013615044ce51de",
+  "trials": [
+    {
+      "trial": 0,
+      "root": "/tmp/inc7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 0,
+      "root": "/tmp/inc7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 1,
+      "root": "/tmp/inc7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 1,
+      "root": "/tmp/inc7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 2,
+      "root": "/tmp/inc7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 2,
+      "root": "/tmp/inc7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 3,
+      "root": "/tmp/inc7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 3,
+      "root": "/tmp/inc7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 4,
+      "root": "/tmp/inc7-base",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "trial": 4,
+      "root": "/tmp/inc7-exact",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "revision": "9cc0a6100b8240096cdf4d2512e180889a623f2f4c2c9b61e81c73f14dd25320",
+      "suite": "holdout",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 0,
+        "itemWins": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    },
+    {
+      "revision": "9cc0a6100b8240096cdf4d2512e180889a623f2f4c2c9b61e81c73f14dd25320",
+      "suite": "anchor",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": false,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 1,
+        "itemWins": [
+          true,
+          true,
+          true
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    },
+    {
+      "revision": "d48613b6ddcc7d60594b9a99ea879302605c7690dd441c75d3ed8e685d80bb11",
+      "suite": "holdout",
+      "report": {
+        "holdout": [
+          {
+            "id": "HTTP-400",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 400
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-401",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 401
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-422",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 422
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-429",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 429
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-500",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 500
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-503",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                }
+              ],
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 503
+                  }
+                },
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": "new"
+                  }
+                }
+              ]
+            ]
+          }
+        ],
+        "anchors": [
+          {
+            "id": "HTTP-200",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 200
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "HTTP-204",
+            "passed": true,
+            "batches": [
+              [
+                {
+                  "event_type": "metric",
+                  "agent_id": "fixture-agent",
+                  "execution_ref": "fixture-execution",
+                  "timestamp": "2026-11-07T13:00:00.000Z",
+                  "payload": {
+                    "id": 204
+                  }
+                }
+              ]
+            ]
+          },
+          {
+            "id": "disabled-noop",
+            "passed": true
+          }
+        ]
+      },
+      "score": {
+        "primary": 1,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": true
+      }
+    }
+  ],
+  "promotions": 0,
+  "fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen0(root)"
+  },
+  "replayBundle": {
+    "data_source": "LIVE_NATIVE_HTTP_COMPILED_TYPESCRIPT",
+    "root_id": "root",
+    "chain": [
+      {
+        "id": "root",
+        "generation": 0,
+        "parents": [],
+        "mutation": null,
+        "primaryDelta": 0,
+        "anchorScore": 1,
+        "verdict": "ROOT",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "root",
+            "root": "root"
+          },
+          "signature": "br3Bi6Q6rB9CPx7jPrZpFWACucam6f8uXJSa3lcG9YQFjrQVBgDrAXpI8JeEZBgW0o/rFyTGBNFf3ZXJSio5Ag==",
+          "publicKey": "MCowBQYDK2VwAyEAo/cBXekZrciihm8neVWlNzdVQm+F3n2easH2/rywPDo=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-0"
+      }
+    ],
+    "all_commits": [
+      {
+        "id": "root__revision_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "revision",
+          "summary": "Retain native HTTP failure batches",
+          "inverse": {
+            "path": "packages/ruvector-client/src/telemetry.ts",
+            "parentBytes": "/**\n * TelemetryEmitter - Emit telemetry events to LLM-Observatory\n *\n * This provides LLM-Observatory compatible telemetry emission\n * for Agentics agents.\n */\n\nimport type { TelemetryEvent, AgentId, UUID } from '@agentics/contracts';\n\n// ============================================================================\n// CONFIGURATION\n// ============================================================================\n\nexport interface TelemetryConfig {\n  /** LLM-Observatory endpoint */\n  endpoint: string;\n\n  /** API key for authentication */\n  apiKey?: string;\n\n  /** Service name for identification */\n  serviceName: string;\n\n  /** Environment */\n  environment: 'production' | 'staging' | 'development' | 'qa';\n\n  /** Enable telemetry (default: true) */\n  enabled?: boolean;\n\n  /** Batch size before flush (default: 10) */\n  batchSize?: number;\n\n  /** Flush interval in ms (default: 5000) */\n  flushIntervalMs?: number;\n\n  /** Custom fetch implementation */\n  fetch?: typeof fetch;\n}\n\n// ============================================================================\n// TELEMETRY EMITTER\n// ============================================================================\n\nexport class TelemetryEmitter {\n  private readonly config: Required<Omit<TelemetryConfig, 'fetch'>> & { fetch?: typeof fetch };\n  private readonly buffer: TelemetryEvent[] = [];\n  private flushTimer: ReturnType<typeof setInterval> | null = null;\n\n  constructor(config: TelemetryConfig) {\n    this.config = {\n      endpoint: config.endpoint.replace(/\\/$/, ''),\n      apiKey: config.apiKey ?? '',\n      serviceName: config.serviceName,\n      environment: config.environment,\n      enabled: config.enabled ?? true,\n      batchSize: config.batchSize ?? 10,\n      flushIntervalMs: config.flushIntervalMs ?? 5000,\n      fetch: config.fetch\n    };\n\n    if (this.config.enabled) {\n      this.startFlushTimer();\n    }\n  }\n\n  /**\n   * Emit an agent invocation event\n   */\n  emitInvocation(\n    agentId: AgentId,\n    executionRef: UUID,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'agent_invocation',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: metadata ?? {},\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment\n      }\n    });\n  }\n\n  /**\n   * Emit a decision made event\n   */\n  emitDecision(\n    agentId: AgentId,\n    executionRef: UUID,\n    decisionType: string,\n    confidence: number,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'decision_made',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: {\n        decision_type: decisionType,\n        confidence,\n        ...metadata\n      },\n      metrics: {\n        confidence\n      },\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment,\n        decision_type: decisionType\n      }\n    });\n  }\n\n  /**\n   * Emit an error event\n   */\n  emitError(\n    agentId: AgentId,\n    executionRef: UUID,\n    error: Error | string,\n    metadata?: Record<string, unknown>\n  ): void {\n    const errorMessage = error instanceof Error ? error.message : error;\n    const errorStack = error instanceof Error ? error.stack : undefined;\n\n    this.emit({\n      event_type: 'error',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: {\n        error: errorMessage,\n        stack: errorStack,\n        ...metadata\n      },\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment,\n        error_type: error instanceof Error ? error.name : 'string'\n      }\n    });\n  }\n\n  /**\n   * Emit a metric event\n   */\n  emitMetrics(\n    agentId: AgentId,\n    executionRef: UUID,\n    metrics: Record<string, number>,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'metric',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: metadata ?? {},\n      metrics,\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment\n      }\n    });\n  }\n\n  /**\n   * Emit a raw telemetry event\n   */\n  emit(event: TelemetryEvent): void {\n    if (!this.config.enabled) {\n      return;\n    }\n\n    this.buffer.push(event);\n\n    if (this.buffer.length >= this.config.batchSize) {\n      this.flush().catch(console.error);\n    }\n  }\n\n  /**\n   * Flush all buffered events\n   */\n  async flush(): Promise<void> {\n    if (this.buffer.length === 0) {\n      return;\n    }\n\n    const events = this.buffer.splice(0, this.buffer.length);\n\n    try {\n      const fetchFn = this.config.fetch ?? globalThis.fetch;\n\n      await fetchFn(`${this.config.endpoint}/api/v1/telemetry/events`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          ...(this.config.apiKey && {\n            'Authorization': `Bearer ${this.config.apiKey}`\n          }),\n          'X-Service': this.config.serviceName\n        },\n        body: JSON.stringify({ events })\n      });\n    } catch (error) {\n      // Log but don't throw - telemetry should never break the agent\n      console.error('[TelemetryEmitter] Failed to flush events:', error);\n      // Re-add events to buffer for retry\n      this.buffer.unshift(...events);\n    }\n  }\n\n  /**\n   * Stop the telemetry emitter\n   */\n  async shutdown(): Promise<void> {\n    if (this.flushTimer) {\n      clearInterval(this.flushTimer);\n      this.flushTimer = null;\n    }\n\n    await this.flush();\n  }\n\n  // ============================================================================\n  // PRIVATE METHODS\n  // ============================================================================\n\n  private startFlushTimer(): void {\n    this.flushTimer = setInterval(() => {\n      this.flush().catch(console.error);\n    }, this.config.flushIntervalMs);\n\n    // Don't let this timer prevent Node from exiting\n    if (this.flushTimer.unref) {\n      this.flushTimer.unref();\n    }\n  }\n}\n\n/**\n * Create a no-op telemetry emitter (for testing or when disabled)\n */\nexport function createNoOpTelemetryEmitter(): TelemetryEmitter {\n  return new TelemetryEmitter({\n    endpoint: 'http://localhost',\n    serviceName: 'noop',\n    environment: 'development',\n    enabled: false\n  });\n}\n",
+            "parentSha256": "9cc0a6100b8240096cdf4d2512e180889a623f2f4c2c9b61e81c73f14dd25320"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": null,
+        "verdict": "REJECTED",
+        "failureReasons": [
+          "safety_regressed"
+        ],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__revision_gen1",
+            "target": "revision",
+            "verdict": "REJECTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "itemWins": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+              ],
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "candidateScore": {
+              "primary": 1,
+              "itemWins": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "anchorScore": null,
+            "failureReasons": [
+              "safety_regressed"
+            ],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "++cfMGoHzScyD//JKklT7hxWi27Oi++uo7FxW2VtqO9yhliq39K0l6pAJPrrwQXftJjQfN1vzOMS/1zY0IaYDw==",
+          "publicKey": "MCowBQYDK2VwAyEAo/cBXekZrciihm8neVWlNzdVQm+F3n2easH2/rywPDo=",
+          "alg": "ed25519"
+        },
+        "createdAt": "gen-1",
+        "baselineScore": {
+          "primary": 0,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        },
+        "candidateScore": {
+          "primary": 1,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        }
+      }
+    ],
+    "lift_curve": [
+      {
+        "generation": 0,
+        "primary": 0,
+        "delta": 0,
+        "anchor": 1
+      }
+    ],
+    "gate_fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "verified_improvements": 0,
+    "anchor_surviving_improvements": 0,
+    "milestone_reached": false,
+    "created_at": "gen-1"
+  },
+  "inverse": {
+    "path": "packages/ruvector-client/src/telemetry.ts",
+    "parentBytes": "/**\n * TelemetryEmitter - Emit telemetry events to LLM-Observatory\n *\n * This provides LLM-Observatory compatible telemetry emission\n * for Agentics agents.\n */\n\nimport type { TelemetryEvent, AgentId, UUID } from '@agentics/contracts';\n\n// ============================================================================\n// CONFIGURATION\n// ============================================================================\n\nexport interface TelemetryConfig {\n  /** LLM-Observatory endpoint */\n  endpoint: string;\n\n  /** API key for authentication */\n  apiKey?: string;\n\n  /** Service name for identification */\n  serviceName: string;\n\n  /** Environment */\n  environment: 'production' | 'staging' | 'development' | 'qa';\n\n  /** Enable telemetry (default: true) */\n  enabled?: boolean;\n\n  /** Batch size before flush (default: 10) */\n  batchSize?: number;\n\n  /** Flush interval in ms (default: 5000) */\n  flushIntervalMs?: number;\n\n  /** Custom fetch implementation */\n  fetch?: typeof fetch;\n}\n\n// ============================================================================\n// TELEMETRY EMITTER\n// ============================================================================\n\nexport class TelemetryEmitter {\n  private readonly config: Required<Omit<TelemetryConfig, 'fetch'>> & { fetch?: typeof fetch };\n  private readonly buffer: TelemetryEvent[] = [];\n  private flushTimer: ReturnType<typeof setInterval> | null = null;\n\n  constructor(config: TelemetryConfig) {\n    this.config = {\n      endpoint: config.endpoint.replace(/\\/$/, ''),\n      apiKey: config.apiKey ?? '',\n      serviceName: config.serviceName,\n      environment: config.environment,\n      enabled: config.enabled ?? true,\n      batchSize: config.batchSize ?? 10,\n      flushIntervalMs: config.flushIntervalMs ?? 5000,\n      fetch: config.fetch\n    };\n\n    if (this.config.enabled) {\n      this.startFlushTimer();\n    }\n  }\n\n  /**\n   * Emit an agent invocation event\n   */\n  emitInvocation(\n    agentId: AgentId,\n    executionRef: UUID,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'agent_invocation',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: metadata ?? {},\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment\n      }\n    });\n  }\n\n  /**\n   * Emit a decision made event\n   */\n  emitDecision(\n    agentId: AgentId,\n    executionRef: UUID,\n    decisionType: string,\n    confidence: number,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'decision_made',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: {\n        decision_type: decisionType,\n        confidence,\n        ...metadata\n      },\n      metrics: {\n        confidence\n      },\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment,\n        decision_type: decisionType\n      }\n    });\n  }\n\n  /**\n   * Emit an error event\n   */\n  emitError(\n    agentId: AgentId,\n    executionRef: UUID,\n    error: Error | string,\n    metadata?: Record<string, unknown>\n  ): void {\n    const errorMessage = error instanceof Error ? error.message : error;\n    const errorStack = error instanceof Error ? error.stack : undefined;\n\n    this.emit({\n      event_type: 'error',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: {\n        error: errorMessage,\n        stack: errorStack,\n        ...metadata\n      },\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment,\n        error_type: error instanceof Error ? error.name : 'string'\n      }\n    });\n  }\n\n  /**\n   * Emit a metric event\n   */\n  emitMetrics(\n    agentId: AgentId,\n    executionRef: UUID,\n    metrics: Record<string, number>,\n    metadata?: Record<string, unknown>\n  ): void {\n    this.emit({\n      event_type: 'metric',\n      agent_id: agentId,\n      execution_ref: executionRef,\n      timestamp: new Date().toISOString(),\n      payload: metadata ?? {},\n      metrics,\n      tags: {\n        service: this.config.serviceName,\n        environment: this.config.environment\n      }\n    });\n  }\n\n  /**\n   * Emit a raw telemetry event\n   */\n  emit(event: TelemetryEvent): void {\n    if (!this.config.enabled) {\n      return;\n    }\n\n    this.buffer.push(event);\n\n    if (this.buffer.length >= this.config.batchSize) {\n      this.flush().catch(console.error);\n    }\n  }\n\n  /**\n   * Flush all buffered events\n   */\n  async flush(): Promise<void> {\n    if (this.buffer.length === 0) {\n      return;\n    }\n\n    const events = this.buffer.splice(0, this.buffer.length);\n\n    try {\n      const fetchFn = this.config.fetch ?? globalThis.fetch;\n\n      await fetchFn(`${this.config.endpoint}/api/v1/telemetry/events`, {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          ...(this.config.apiKey && {\n            'Authorization': `Bearer ${this.config.apiKey}`\n          }),\n          'X-Service': this.config.serviceName\n        },\n        body: JSON.stringify({ events })\n      });\n    } catch (error) {\n      // Log but don't throw - telemetry should never break the agent\n      console.error('[TelemetryEmitter] Failed to flush events:', error);\n      // Re-add events to buffer for retry\n      this.buffer.unshift(...events);\n    }\n  }\n\n  /**\n   * Stop the telemetry emitter\n   */\n  async shutdown(): Promise<void> {\n    if (this.flushTimer) {\n      clearInterval(this.flushTimer);\n      this.flushTimer = null;\n    }\n\n    await this.flush();\n  }\n\n  // ============================================================================\n  // PRIVATE METHODS\n  // ============================================================================\n\n  private startFlushTimer(): void {\n    this.flushTimer = setInterval(() => {\n      this.flush().catch(console.error);\n    }, this.config.flushIntervalMs);\n\n    // Don't let this timer prevent Node from exiting\n    if (this.flushTimer.unref) {\n      this.flushTimer.unref();\n    }\n  }\n}\n\n/**\n * Create a no-op telemetry emitter (for testing or when disabled)\n */\nexport function createNoOpTelemetryEmitter(): TelemetryEmitter {\n  return new TelemetryEmitter({\n    endpoint: 'http://localhost',\n    serviceName: 'noop',\n    environment: 'development',\n    enabled: false\n  });\n}\n",
+    "parentSha256": "9cc0a6100b8240096cdf4d2512e180889a623f2f4c2c9b61e81c73f14dd25320"
+  },
+  "boundary": "No full-gate promotion. regressed=true is a fail-closed repository veto, not a newly observed component regression. Zero cost inputs are neutral, not measured savings. Root-only replay is not candidate promotion proof. Rollback restores source bytes, never deletes service memory."
+}
