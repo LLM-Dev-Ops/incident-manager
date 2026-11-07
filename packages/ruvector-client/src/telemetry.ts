@@ -196,7 +196,7 @@ export class TelemetryEmitter {
     try {
       const fetchFn = this.config.fetch ?? globalThis.fetch;
 
-      await fetchFn(`${this.config.endpoint}/api/v1/telemetry/events`, {
+      const response = await fetchFn(`${this.config.endpoint}/api/v1/telemetry/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,6 +207,12 @@ export class TelemetryEmitter {
         },
         body: JSON.stringify({ events })
       });
+      // fetch resolves for HTTP failures too. Retain the batch just as for a
+      // transport failure, without logging potentially sensitive response data.
+      if (!response.ok) {
+        await response.body?.cancel();
+        throw new Error(`Telemetry endpoint returned HTTP ${response.status}`);
+      }
     } catch (error) {
       // Log but don't throw - telemetry should never break the agent
       console.error('[TelemetryEmitter] Failed to flush events:', error);
